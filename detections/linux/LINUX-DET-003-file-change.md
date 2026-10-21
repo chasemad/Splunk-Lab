@@ -1,6 +1,6 @@
 # LINUX-DET-003 — Monitored Linux file changes
 
-**Status:** Manual validation passed for three positive file changes and one read-only negative test; broader tuning, report saving and alert validation remain pending.
+**Status:** Manual validation passed for three positive file changes and one read-only negative test; broader tuning and alert validation remain pending. The Splunk Report has been saved (user-confirmed).
 **Index:** `soc-live` (live Ubuntu audit telemetry)
 **Purpose:** Surface successful audited changes in the intentionally monitored lab directory without double-counting multi-record Auditd events.
 
@@ -24,7 +24,7 @@ Negative test: the read-only `cat /opt/soc-lab-test/det003-validation.txt` execu
 
 `PATH nametype=NORMAL` does not mean "benign"; it indicates how Auditd labels the referenced object. These tests cover only the configured watched lab directory and this specific behavior. Operational precision and alert reliability still need more tuning and baseline tests.
 
-**Current stage:** Manual positive/negative validation complete; Splunk Report saving, noise tuning, scheduled alert testing and screenshot publication remain pending.
+**Current stage:** Manual positive/negative validation complete. The Splunk Report `LINUX-DET-003 - Monitored File Changes` is saved in Splunk Cloud (confirmed by lab operator on 2026-10-21). Noise tuning, scheduled alert testing, independent report-setting export, and screenshot publication remain pending.
 
 ## Query
 
@@ -73,7 +73,7 @@ index="soc-live" host="soc-ubuntu-01" source="/var/log/audit/audit.log"
 4. Generate a **controlled negative**: read a harmless file without changing it; this should not appear in a successful write/attribute-change detection.
 5. Review noise from known lab operations. Compare the actor, executable, target path and session to a documented allowlist. Tune as narrowly as possible (for example, a known benign process *and* path), not by broadly excluding `socadmin` or all `touch` events.
 6. Re-run with identical time windows before and after each tuning change; log true positives, expected benign activity, misses, and duplicate events.
-7. Save the **tested** SPL as a Splunk **Report**: `LINUX-DET-003 - Monitored File Changes`. Use scheduled alerting only if the trial permits it and the logic, time window, volume and duplicate suppression have been tested.
+7. **Completed (operator-confirmed):** Save the tested SPL as a Splunk **Report**: `LINUX-DET-003 - Monitored File Changes`. Use scheduled alerting only if the trial permits it and the logic, time window, volume and duplicate suppression have been tested.
 
 ### Important limitations
 
@@ -90,4 +90,4 @@ index="soc-live" host="soc-ubuntu-01" source="/var/log/audit/audit.log"
 - [x] Screenshot provided in conversation: positive create, chmod and append tests (repo image publication pending).
 - [x] Screenshot provided in conversation: read-only cat process audit (repo image publication pending).
 - [ ] Screenshot: before/after tuning comparison.
-- [ ] Exported final saved report SPL and settings.
+- [ ] Exported final saved report SPL and settings (report saved; independent export pending).
