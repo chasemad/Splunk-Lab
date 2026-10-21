@@ -6,7 +6,7 @@
 | Investigation date | 2026-10-21 |
 | Classification | Controlled security-monitoring exercise |
 | Analyst disposition | **Authorized laboratory activity; no confirmed compromise** |
-| Status | **Case narrative complete**; final screenshot publication and remaining optional follow-up validation pending |
+| Status | **Case report and nine-image evidence gallery published**; optional follow-up validation remains |
 | Source workstation | Kali Linux (`luxieum`), `172.16.110.128` |
 | Monitored endpoint | Ubuntu (`soc-ubuntu-01`), `172.16.110.130` |
 | Login identity | `socadmin` (Auditd original login ID `auid=1000`) |
