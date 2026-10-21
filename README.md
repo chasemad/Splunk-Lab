@@ -1,76 +1,120 @@
 # Splunk SOC Detection Engineering Lab
 
-Hands-on security monitoring, detection engineering, and incident investigation using **Splunk Cloud, Ubuntu Server, Kali Linux, Auditd, and SPL**.
+A hands-on security operations lab focused on **SIEM administration, security telemetry, incident investigation, SPL detection engineering, and analyst workflows**.
 
-> **Status: In progress (October 2026).** A historical synthetic investigation and five saved Splunk reports are complete. Four categories of real Linux telemetry have been validated. The live Linux investigation, Linux detections, and dashboard are not yet complete. This is a controlled personal lab, not production SOC experience.
+Built with Splunk Cloud, Ubuntu Server, Kali Linux, VMware Fusion, and Linux Auditd. The project combines a structured historical investigation dataset with live endpoint activity generated in a controlled virtual lab.
 
-## Project at a glance
-
-| Capability | Evidence | Status |
-|---|---|---|
-| SIEM ingestion | Splunk Universal Forwarder 10.4.3 ARM64 → Splunk Cloud TCP/9997 TLS | Verified |
-| Linux telemetry | syslog, auth.log, Auditd, HTTP access log | Verified |
-| SOC-001 | 205 synthetic events, evidence-based escalation | Complete |
-| Historical detections | DET-001–004 and COR-001 saved as **reports**, not alerts | Complete |
-| SOC-002 | Real Linux investigation, session attribution | In progress |
-| Linux detections | SSH, sudo, file changes, processes, web, correlation | Planned |
-| SOC dashboard | Dashboard Studio | Planned |
-
-## Architecture
+## Lab architecture
 
 ```mermaid
 flowchart TD
-  M[Apple Silicon Mac / VMware Fusion] --> N[VMware NAT network]
-  N --> K[Kali Linux / controlled lab activity]
-  N --> U[Ubuntu Server 24.04 ARM64]
-  K -->|SSH and HTTP test requests| U
-  U --> L[auth.log / syslog / audit.log / HTTP access.log]
-  L --> F[Splunk Universal Forwarder]
-  F -->|Encrypted TCP 9997| C[Splunk Cloud: soc-live]
-  C --> I[Investigations / SPL / future dashboard]
-  H[205 synthetic CSV events] --> S[Splunk Cloud: soc_lab]
-  S --> J[SOC-001 / DET-001–004 / COR-001]
+  A[Apple Silicon Mac / VMware Fusion] --> B[VMware NAT network]
+  B --> K[Kali Linux / activity generation]
+  B --> U[Ubuntu Server / monitored endpoint]
+  K -->|SSH and HTTP| U
+  U --> T[Authentication / system / audit / web logs]
+  T --> F[Splunk Universal Forwarder]
+  F -->|TLS / TCP 9997| S[Splunk Cloud / soc-live]
+  S --> D[Searches / investigations / detection engineering]
+  H[Historical synthetic event datasets] --> L[Splunk Cloud / soc_lab]
+  L --> I[SOC-001 / detection reports / correlation]
 ```
 
-**[PLACEHOLDER: finalized architecture image]**
+<!-- SCREENSHOT: Replace with final architecture diagram -->
 
-## Live data sources
+## Technology stack
 
-| Source | Sourcetype | Purpose |
+| Component | Technology | Role |
 |---|---|---|
-| `/var/log/syslog` | `syslog` | System and service logs |
+| SIEM | Splunk Cloud | Centralized search, analysis and reporting |
+| Collection | Splunk Universal Forwarder 10.4.3 ARM64 | Linux log forwarding |
+| Monitored endpoint | Ubuntu Server 24.04 LTS | Authentication, process, file and web telemetry |
+| Test workstation | Kali Linux | Controlled SSH and HTTP activity |
+| Audit | Linux Auditd | Process execution and file modification events |
+| Virtualization | VMware Fusion on Apple Silicon | Two-VM lab environment |
+| Analysis | Splunk Search Processing Language | Detection, aggregation and event correlation |
+
+## Security telemetry
+
+The Ubuntu endpoint forwards four complementary log sources into `index="soc-live"`.
+
+| Source | Splunk sourcetype | Security visibility |
+|---|---|---|
 | `/var/log/auth.log` | `linux_secure` | SSH and administrative authentication |
-| `/var/log/audit/audit.log` | `linux:audit` | Selected process and file audit records |
-| `/opt/soc-web-logs/access.log` | `soc:web:access` | Temporary Python HTTP server requests |
+| `/var/log/syslog` | `syslog` | Operating system and service activity |
+| `/var/log/audit/audit.log` | `linux:audit` | Selected process executions and file modifications |
+| `/opt/soc-web-logs/access.log` | `soc:web:access` | HTTP requests and response codes |
 
-Verified in `index="soc-live"`. An earlier three-source snapshot contained **6,128 records** (5,263 syslog; 644 Auditd; 221 auth). This excludes later HTTP logs and is not a current total. Multiple Auditd records may describe one operation.
+An initial three-source search returned 6,128 log records, including 5,263 syslog, 644 Auditd and 221 authentication records. HTTP collection was added separately. Auditd can produce multiple records for one operation, so raw record counts are not equivalent to action counts.
 
-**[PLACEHOLDER: ingestion source breakdown screenshot]**
+<!-- SCREENSHOT: Live ingestion by source -->
+<!-- SCREENSHOT: SSH authentication and Auditd events -->
+<!-- SCREENSHOT: HTTP request telemetry -->
 
-## Investigations
+See [telemetry documentation](telemetry/README.md), [forwarder configuration](telemetry/splunk-forwarder-config.md), and [Auditd rules](telemetry/auditd-rules.md).
 
-- [SOC-001 — Synthetic authentication and privilege investigation](investigations/SOC-001/README.md): eight failed VPN logins followed by success, discovery, unusual DNS, and identity changes. Escalated for further investigation; no confirmed compromise.
-- [SOC-002 — Live Linux endpoint investigation](investigations/SOC-002/README.md): working investigation; cross-source timeline and session attribution remain to be validated.
+## Security investigations
+
+### SOC-001 — Suspicious authentication and privilege-related activity
+
+A structured investigation using 205 synthetic security events across VPN authentication, endpoint processes, DNS queries, and Windows identity auditing.
+
+The timeline includes repeated failed VPN authentication followed by success, account/group discovery, an unusual DNS query, and security group membership activity. The event sequence warranted escalation for additional investigation; the available evidence did not establish compromise.
+
+[Read the SOC-001 case study](investigations/SOC-001/README.md)
+
+<!-- SCREENSHOT: SOC-001 timeline and supporting evidence -->
+
+### SOC-002 — Linux endpoint activity
+
+A live telemetry case study centered on SSH authentication, Auditd process and file activity, administrative events, and HTTP access logs. Investigation work focuses on reconstructing events, evaluating session attribution, and distinguishing expected lab administration from activity warranting further review.
+
+[Read the SOC-002 case study](investigations/SOC-002/README.md)
+
+<!-- SCREENSHOT: SOC-002 cross-source timeline -->
+<!-- SCREENSHOT: SSH session attribution and grouped Auditd records -->
 
 ## Detection engineering
 
-[Detection catalog](detections/README.md): four saved standalone reports and one correlation report. Exact saved SPL definitions have **not yet been exported**. Linux detections are planned, not implemented.
+The historical dataset supports five saved Splunk reports:
 
-## Documentation
+| ID | Detection focus |
+|---|---|
+| DET-001 | Repeated failed VPN authentication followed by success |
+| DET-002 | PowerShell account and group discovery |
+| DET-003 | Sensitive security group membership additions |
+| DET-004 | Rare DNS queries |
+| COR-001 | Authentication failures, success, and subsequent group discovery |
 
-- [Architecture and setup](architecture/lab-setup.md)
-- [Telemetry collection](telemetry/README.md)
-- [Forwarder configuration](telemetry/splunk-forwarder-config.md)
-- [Auditd rules](telemetry/auditd-rules.md)
-- [Dashboard plan](dashboards/README.md)
-- [Evidence and screenshots checklist](evidence/README.md)
-- [Limitations and security](docs/limitations.md)
+The searches incorporate filtering, aggregation, chronological ordering and tuning of known-benign activity. These are saved reports rather than active alerting rules.
+
+The Linux detection track covers SSH authentication, sudo activity, monitored file changes, selected process execution, web requests and cross-source correlation. Supporting SPL and validation examples belong in the [detection catalog](detections/README.md) as they are developed.
+
+<!-- SCREENSHOT: Saved detection reports -->
+<!-- SCREENSHOT: Correlation results -->
+<!-- SCREENSHOT: Linux detection examples -->
+
+## SOC dashboard
+
+The [dashboard section](dashboards/README.md) houses the Splunk Dashboard Studio design and exports, with views for ingestion trends, SSH authentication, process and file auditing, HTTP activity, detection findings, and investigation timelines.
+
+<!-- SCREENSHOT: Dashboard Studio overview -->
+
+## Project documentation
+
+- [Lab architecture and setup](architecture/lab-setup.md)
+- [Log collection and telemetry](telemetry/README.md)
+- [Detection engineering](detections/README.md)
+- [SOC-001 investigation](investigations/SOC-001/README.md)
+- [SOC-002 investigation](investigations/SOC-002/README.md)
+- [Evidence gallery](evidence/README.md)
+- [Engineering considerations](docs/limitations.md)
 - [Lessons learned](docs/lessons-learned.md)
-- [Project roadmap](docs/roadmap.md)
-- [Demo placeholder](demo/README.md)
+- [Development roadmap](docs/roadmap.md)
+- [Demonstration](demo/README.md)
 
-## Responsible lab scope
+## Engineering considerations
 
-Testing is limited to owned lab VMs. NAT does not guarantee isolation. No credentials, Splunk Cloud packages, tokens, sensitive raw logs, or passwords belong in this repository. Synthetic IP `203.0.113.77` and `.example` domains are documentation-only.
+This project is a personal lab, not a production SOC deployment. Historical SOC-001 events are synthetic; Linux endpoint telemetry is generated through controlled testing. Correlation results are evaluated against available session context, and suspicious patterns are not treated as proof of compromise. Secrets, credential packages and sensitive raw logs are excluded from the repository.
 
-**[PLACEHOLDER: recruiter walkthrough video]**
+<!-- VIDEO: Insert final recruiter-friendly walkthrough -->
