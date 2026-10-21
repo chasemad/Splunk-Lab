@@ -86,7 +86,7 @@ Using real logs from my Linux lab, I followed a remote login to the commands tha
 
 ### SOC-001 — Investigating suspicious-looking activity
 
-Using **205 simulated security records**, I reviewed repeated failed logins, a successful login, account lookups, unusual web-related activity, and a Windows account-group change. The sequence deserved closer review, but the available data did not prove that an account had been compromised.
+Using **205 simulated security records**, I reviewed repeated failed logins, a successful login, account lookups, an unusual domain-name lookup, and a Windows account-group change. The sequence deserved closer review, but the available data did not prove that an account had been compromised.
 
 **[Read SOC-001](investigations/SOC-001/README.md)**
 
