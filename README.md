@@ -96,11 +96,11 @@ The Linux detection track covers SSH authentication, sudo activity, monitored fi
 
 ### Live reporting pack and end-to-end investigation
 
-The [one-pass report save runbook](docs/report-save-runbook.md) collects eight live SIEM reporting searches, including the already-saved LINUX-DET-003 file-change report, six additional operational and analytic report candidates, and the SOC-003 investigation timeline. The unsaved report queries are prepared in GitHub and must be run and saved in Splunk Cloud; GitHub commits do not create Cloud reports. The [SOC-003 case outline](investigations/SOC-003/README.md) specifies the controlled Kali-to-Ubuntu investigation to perform after the dashboard is ready.
+All **eight live Linux reports** have been saved in Splunk Cloud and connected to the three-tab Dashboard Studio dashboard. The [report runbook](docs/report-save-runbook.md) records the exact saved-report titles and SPL source files. Their results and time-range behavior are being validated: the [dashboard validation log](docs/dashboard-validation-2026-10-21.md) documents tests, open limitations, and attribution questions. The [SOC-003 investigation runbook](investigations/SOC-003/README.md) is prepared; that distinct end-to-end exercise has not yet been executed.
 
 ## SOC dashboard
 
-The [dashboard section](dashboards/README.md) houses the Splunk Dashboard Studio design and exports, with views for ingestion trends, SSH authentication, process and file auditing, HTTP activity, detection findings, and investigation timelines.
+The [dashboard section](dashboards/README.md) contains the **actual exported three-tab Dashboard Studio definition**, with source inventory, ingestion trends, SSH sessions, sudo commands, process and file auditing, HTTP logs, candidate correlation and investigation timeline. All eight saved-report sources are bound to the dashboard's global time-range input; remaining functional checks are recorded in the [validation log](docs/dashboard-validation-2026-10-21.md).
 
 <!-- SCREENSHOT: Dashboard Studio overview -->
 
