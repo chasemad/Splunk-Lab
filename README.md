@@ -47,9 +47,9 @@ The Ubuntu endpoint forwards four complementary log sources into `index="soc-liv
 
 An initial three-source search returned 6,128 log records, including 5,263 syslog, 644 Auditd and 221 authentication records. HTTP collection was added separately. Auditd can produce multiple records for one operation, so raw record counts are not equivalent to action counts.
 
-<!-- SCREENSHOT: Live ingestion by source -->
-<!-- SCREENSHOT: SSH authentication and Auditd events -->
-<!-- SCREENSHOT: HTTP request telemetry -->
+![Splunk source inventory, SSH sessions, and grouped Auditd file evidence](dashboards/screenshots/01-soc-operations-overview.png)
+
+*Figure 1 — Actual Splunk Cloud dashboard showing monitored Linux sources and analyst views.*
 
 See [telemetry documentation](telemetry/README.md), [forwarder configuration](telemetry/splunk-forwarder-config.md), and [Auditd rules](telemetry/auditd-rules.md).
 
@@ -80,7 +80,9 @@ A completed controlled investigation traced an authorized Kali SSH login (**sour
 
 [Read the SOC-003 analyst case report](investigations/SOC-003/case-report.md) · [Reproduction runbook](investigations/SOC-003/README.md)
 
-<!-- SCREENSHOT: SOC-003 Kali SSH, Auditd LOGIN, session-54 dashboard and raw file-creation records -->
+![SOC-003 session 54 correlation — Kali origin and selected Auditd session](investigations/SOC-003/screenshots/04-session54-correlation.png)
+
+*Figure 2 — Session-focused correlation in the actual Investigation Workspace. See the [full case evidence gallery](investigations/SOC-003/case-report.md#evidence-gallery--real-screenshots).*
 
 ## Detection engineering
 
@@ -104,13 +106,15 @@ The Linux detection track covers SSH authentication, sudo activity, monitored fi
 
 ### Live reporting pack and end-to-end investigation
 
-All **eight live Linux reports** have been saved in Splunk Cloud and connected to the three-tab Dashboard Studio dashboard. The [report runbook](docs/report-save-runbook.md) records the exact saved-report titles and SPL source files. Their results and time-range behavior are being validated: the [dashboard validation log](docs/dashboard-validation-2026-10-21.md) documents tests, open limitations, and attribution questions. The [SOC-003 investigation](investigations/SOC-003/case-report.md) is now documented from real controlled-lab authentication and Auditd evidence, including raw file-creation records; sanitized image publication and final repository polish are still pending.
+All **eight live Linux reports** have been saved in Splunk Cloud and connected to the three-tab Dashboard Studio dashboard. The [report runbook](docs/report-save-runbook.md) records the exact saved-report titles and SPL source files. Their results and time-range behavior are being validated: the [dashboard validation log](docs/dashboard-validation-2026-10-21.md) documents tests, open limitations, and attribution questions. The [SOC-003 investigation](investigations/SOC-003/case-report.md) is now documented from real controlled-lab authentication and Auditd evidence, including raw file-creation records; the curated, original-data screenshot gallery has now been published.
 
 ## SOC dashboard
 
 The [dashboard section](dashboards/README.md) contains the **actual exported three-tab Dashboard Studio definition**, with source inventory, ingestion trends, SSH sessions, sudo commands, process and file auditing, HTTP logs, candidate correlation and investigation timeline. All eight saved-report sources are bound to the dashboard's global time-range input. Investigation Workspace also supports a selected Auditd session for the correlation and file/process evidence tables, preserving a separate all-session context timeline. Session 33 and session 6 evidence filtering was tested in the lab; independent authentication attribution remains a separate check. See the [validation log](docs/dashboard-validation-2026-10-21.md).
 
-<!-- SCREENSHOT: Dashboard Studio overview -->
+![Splunk Dashboard Studio — endpoint telemetry and analyst report panels](dashboards/screenshots/02-endpoint-telemetry.png)
+
+*Figure 3 — Endpoint investigation panels using saved Splunk reports. [Browse five dashboard screenshots](dashboards/README.md#screenshot-gallery).*
 
 ## Project documentation
 
@@ -119,6 +123,7 @@ The [dashboard section](dashboards/README.md) contains the **actual exported thr
 - [Detection engineering](detections/README.md)
 - [SOC-001 investigation](investigations/SOC-001/README.md)
 - [SOC-002 investigation](investigations/SOC-002/README.md)
+- [SOC-003 analyst case report and screenshots](investigations/SOC-003/case-report.md)
 - [Evidence gallery](evidence/README.md)
 - [Engineering considerations](docs/limitations.md)
 - [Lessons learned](docs/lessons-learned.md)
