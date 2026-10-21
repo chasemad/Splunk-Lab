@@ -1,0 +1,16 @@
+# Local secrets and raw telemetry
+*.spl
+*.pem
+*.key
+*.p12
+*.pfx
+.env
+.env.*
+*token*
+*secret*
+*credential*
+*.log
+*.pcap
+*.pcapng
+.DS_Store
+__pycache__/
