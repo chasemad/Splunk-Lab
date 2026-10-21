@@ -1,6 +1,6 @@
 # LINUX-DET-003 — Monitored Linux file changes
 
-**Status:** Candidate detection / manual search working; tuning and alert validation are not yet complete.
+**Status:** Manual validation passed for three positive file changes and one read-only negative test; broader tuning, report saving and alert validation remain pending.
 **Index:** `soc-live` (live Ubuntu audit telemetry)
 **Purpose:** Surface successful audited changes in the intentionally monitored lab directory without double-counting multi-record Auditd events.
 
@@ -8,7 +8,23 @@
 
 An earlier exploratory SPL grouping query returned **25 matching raw log records grouped into 7 distinct audit event IDs** in a selected search window on 2026-10-21. A row for `/opt/soc-lab-test/soc002-test.txt` was associated with `ses=27`. Separately, SOC-002 confirmed the file's `openat` operation with `success=yes` and `nametype=CREATE`.
 
-The *updated candidate SPL below has not yet been executed or saved as a Splunk Report.* The seven rows are evidence for the earlier exploratory query, not a validation claim for this revised query.
+The updated candidate SPL has now been run against the live lab. On 2026-10-21, its search reported **34 matching input log records** and produced **10 grouped, successful file-change operations** over the selected time window. The grouped output included three operations against `/opt/soc-lab-test/det003-validation.txt` from Auditd session `33`. Do not confuse the number of input log records with the number of file operations; the query filters and groups audit records by event ID.
+
+## Controlled validation — 2026-10-21
+
+| Audit ID | Executing process | AArch64 syscall | PATH nametype | Result | Expected lab action |
+|---|---|---|---|---|---|
+| `1792583424.645:1038` | `bash` | `56` (`openat`) | `CREATE`, `PARENT` | `success=yes` | Create `det003-validation.txt` via shell redirection |
+| `1792583424.649:1041` | `chmod` | `53` (`fchmodat`) | `NORMAL` | `success=yes` | Permission change |
+| `1792583424.649:1042` | `bash` | `56` (`openat`) | `NORMAL`, `PARENT` | `success=yes` | Append to existing file via shell redirection |
+
+Positive tests: **3/3** controlled write/attribute-change actions appeared as distinct grouped operations.
+
+Negative test: the read-only `cat /opt/soc-lab-test/det003-validation.txt` execution appeared separately in the process audit stream at approximately 11:50:24 UTC as an `execve` event (session `33`, `euid=1000`), but **did not create a fourth matching file-change operation** in the grouped detection results. Other `cat` executions in the screenshot were earlier processes with different privilege context; those were not treated as additional file-change positives.
+
+`PATH nametype=NORMAL` does not mean "benign"; it indicates how Auditd labels the referenced object. These tests cover only the configured watched lab directory and this specific behavior. Operational precision and alert reliability still need more tuning and baseline tests.
+
+**Current stage:** Manual positive/negative validation complete; Splunk Report saving, noise tuning, scheduled alert testing and screenshot publication remain pending.
 
 ## Query
 
@@ -71,7 +87,7 @@ index="soc-live" host="soc-ubuntu-01" source="/var/log/audit/audit.log"
 
 - [ ] Screenshot: exploratory search grouped 25 raw records into 7 audit operations.
 - [ ] Screenshot: revised SPL results showing SOC-002 file creation.
-- [ ] Screenshot: positive create and modify test cases.
-- [ ] Screenshot: negative read-only test.
+- [x] Screenshot provided in conversation: positive create, chmod and append tests (repo image publication pending).
+- [x] Screenshot provided in conversation: read-only cat process audit (repo image publication pending).
 - [ ] Screenshot: before/after tuning comparison.
 - [ ] Exported final saved report SPL and settings.
