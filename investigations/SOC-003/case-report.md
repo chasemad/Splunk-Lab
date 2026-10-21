@@ -189,9 +189,9 @@ These **nine genuine screenshots** were captured during the controlled exercise,
 
 ### 01 — Kali SSH authentication
 
-![Accepted SSH authentication from Kali, PID 5613](screenshots/01-kali-ssh-authentication.png)
+![Annotated Kali SSH authentication showing time, PID 5613 and source IP 172.16.110.128](screenshots/01-kali-ssh-authentication-annotated.svg)
 
-*Source `172.16.110.128`, username `socadmin`, SSH PID `5613`.*
+*Ubuntu accepted the authorized SSH login from Kali (`172.16.110.128`) at 14:32:20.566 UTC. SSH process ID `5613` is the correlation key used to match the Auditd LOGIN record in Exhibit 02. [View the unannotated original](screenshots/01-kali-ssh-authentication.png).*
 
 ### 02 — Matching Auditd LOGIN
 
