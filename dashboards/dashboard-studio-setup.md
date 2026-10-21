@@ -1,6 +1,6 @@
 # SOC Dashboard Studio — Three-tab source dashboard
 
-The [Dashboard Studio JSON](soc-lab-dashboard-studio.json) is a **prepared definition**, not a claimed deployment to Splunk Cloud. It references all eight report names from the [report-save runbook](../docs/report-save-runbook.md), assuming reports live in the `search` app and are visible to the dashboard owner.
+The [Dashboard Studio JSON](soc-lab-dashboard-studio.json) is the maintained repository definition for the existing Splunk Cloud dashboard. The operator has shown the Grid layout working on all three tabs and has confirmed all eight reports in the `search` app. **The source correction for six mismatched report titles has been committed but is awaiting import and runtime verification.** See the [report-save runbook](../docs/report-save-runbook.md) for the exact saved titles.
 
 ## Import into Splunk Cloud
 
@@ -23,7 +23,7 @@ The [Dashboard Studio JSON](soc-lab-dashboard-studio.json) is a **prepared defin
 
 ## Practical caveats
 
-- **Report names and permissions are not directly visible to ChatGPT inside Splunk.** User has confirmed eight saved reports, but this JSON has not been executed in their Cloud workspace.
+- Report title, owner, app, sharing and enabled status have been seen in an operator-provided Splunk Reports screenshot. The final saved-report source corrections have not yet been executed in the live dashboard; compare source and test all panels after importing.
 - The `minutes since newest indexed event` metric measures data freshness, **not VM uptime, collection uptime, or SLA**.
 - Source count, process execution count, and grouped file-operation count answer different questions.
 - `LINUX-COR-001` correlation was only prepared in the repository and still requires real output validation; if empty, audit LOGIN/PID matching and time picker configuration rather than interpreting it as zero suspicious sessions.
@@ -89,6 +89,27 @@ The operator imported the temporary `diagnostic-dashboard-studio.json` into Splu
 **Implication:** the minimal grid structure, live inline SPL access, and at least one saved report reference work in this Splunk Cloud workspace. This does **not** prove the other seven saved searches resolve or that the production dashboard source is current. The input's *presence* does not prove time picker propagation.
 
 **Next gate:** open the *production* three-tab dashboard (not the temporary Diagnostic dashboard) in Edit > Source, and compare the layout coordinates to `main`. Confirm `viz_total_events.position.y=130`, `viz_proc.position.y=445`, `viz_session_correlation.position.y=115` and `viz_process_evidence.position.x=600`. If old coordinates persist in Splunk, back up its source and apply the current checked-in production definition; then recheck. If coordinates already match, capture the full Source and precise validation errors before editing. Review failing individual saved reports by selecting them via the Studio report picker.
+
+## Saved-search title mismatch resolved in source (2026-10-21)
+
+An operator screenshot of **Search & Reporting > Reports** showed all eight Linux reports in the `search` app, owned by `sc_admin`, with `Private` sharing and `Enabled` status. The two functioning dashboard reports had matching titles. The remaining six failed because their actual saved titles were shorter and used an **em dash**, while the source JSON referenced different, longer titles with a regular hyphen.
+
+The source dashboard was updated on `main` to reference these actual titles:
+
+| Source key | Exact Splunk report title |
+|---|---|
+| `ds_telemetry` | `LINUX-MON-001 — Telemetry Health` |
+| `ds_ssh` | `LINUX-DET-001 - SSH Authentication Sessions` |
+| `ds_sudo` | `LINUX-DET-002 — Sudo Activity` |
+| `ds_files` | `LINUX-DET-003 - Monitored File Changes` |
+| `ds_process` | `LINUX-DET-004 — Process Execution` |
+| `ds_web` | `LINUX-DET-005 — HTTP Requests` |
+| `ds_correlation` | `LINUX-COR-001 — Session Correlation` |
+| `ds_timeline` | `LINUX-INV-001 — Investigation Timeline` |
+
+**Apply:** Back up the existing production dashboard Source locally, replace it with the newest [production JSON](soc-lab-dashboard-studio.json), click **Apply**, inspect all three tabs, then **Save**. Do not replace the dashboard with the *temporary diagnostic JSON*. The grid geometry and inline sources were not modified in the title-correction commit. Check that each panel stops showing `Could not find object id=...`, then test the reports' actual results and time picker. This fix is committed to GitHub, **not yet confirmed applied in Splunk Cloud**.
+
+**Note:** A report being `Private` is not itself evidence of an error in this owner's dashboard; two private reports were already rendering. If dashboards need to be shared with a different account later, change report/dashboard sharing according to the intended permissions.
 
 ### Completion criteria
 
