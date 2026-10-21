@@ -10,14 +10,14 @@ A Splunk Cloud **free trial cannot use the management REST API**. Do these steps
 
 | # | Splunk Report title | Canonical SPL | Status |
 |---|---|---|---|
-| 1 | `LINUX-MON-001 - Live Telemetry Health` | [SPL](../../detections/linux/LINUX-MON-001-telemetry-health.spl) | To save |
-| 2 | `LINUX-DET-001 - SSH Authentication Sessions` | [SPL](../../detections/linux/LINUX-DET-001-ssh-session-summary.spl) | To save |
-| 3 | `LINUX-DET-002 - Sudo Command Activity` | [SPL](../../detections/linux/LINUX-DET-002-sudo-activity.spl) | To save |
-| 4 | `LINUX-DET-003 - Monitored File Changes` | [SPL](../../detections/linux/LINUX-DET-003-file-change.spl) | Already saved |
-| 5 | `LINUX-DET-004 - Audited Process Executions` | [SPL](../../detections/linux/LINUX-DET-004-process-execution.spl) | To save |
-| 6 | `LINUX-DET-005 - HTTP Access Activity` | [SPL](../../detections/linux/LINUX-DET-005-web-requests.spl) | To save |
-| 7 | `LINUX-COR-001 - SSH Endpoint Session Correlation` | [SPL](../../detections/linux/LINUX-COR-001-ssh-endpoint-session.spl) | To save |
-| 8 | `LINUX-INV-001 - Live Investigation Timeline` | [SPL](../../investigations/SOC-003/live-investigation-timeline.spl) | To save |
+| 1 | `LINUX-MON-001 - Live Telemetry Health` | [SPL](../detections/linux/LINUX-MON-001-telemetry-health.spl) | To save |
+| 2 | `LINUX-DET-001 - SSH Authentication Sessions` | [SPL](../detections/linux/LINUX-DET-001-ssh-session-summary.spl) | To save |
+| 3 | `LINUX-DET-002 - Sudo Command Activity` | [SPL](../detections/linux/LINUX-DET-002-sudo-activity.spl) | To save |
+| 4 | `LINUX-DET-003 - Monitored File Changes` | [SPL](../detections/linux/LINUX-DET-003-file-change.spl) | Already saved |
+| 5 | `LINUX-DET-004 - Audited Process Executions` | [SPL](../detections/linux/LINUX-DET-004-process-execution.spl) | To save |
+| 6 | `LINUX-DET-005 - HTTP Access Activity` | [SPL](../detections/linux/LINUX-DET-005-web-requests.spl) | To save |
+| 7 | `LINUX-COR-001 - SSH Endpoint Session Correlation` | [SPL](../detections/linux/LINUX-COR-001-ssh-endpoint-session.spl) | To save |
+| 8 | `LINUX-INV-001 - Live Investigation Timeline` | [SPL](../investigations/SOC-003/live-investigation-timeline.spl) | To save |
 
 ### Report notes
 
