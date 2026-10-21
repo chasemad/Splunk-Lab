@@ -1,59 +1,70 @@
-# Roadmap
+# Splunk Dashboard Studio — Live Security Operations
 
-- [x] Import 205 synthetic SOC events and investigate SOC-001.
-- [x] Save four historical detection reports and one correlation report.
-- [x] Install Ubuntu/Kali lab VMs and verify connectivity.
-- [x] Connect ARM64 Universal Forwarder to Splunk Cloud.
-- [x] Validate syslog, auth, Auditd and HTTP telemetry.
-- [ ] Step 42: cleaner investigation timeline.
-- [x] Step 43: SSH session attribution with Auditd (Kali SSH PID 4937 mapped to audit session 27).
-- [x] Step 44: group related Auditd records by audit event ID.
-- [x] Complete SOC-002 investigation and evidence-backed report (authorized lab activity).
-- [ ] Build and validate Linux-specific detections (LINUX-DET-003 manual positive/negative tests passed for monitored lab file changes; saved Splunk Report operator-confirmed; broader tuning and scheduled-alert evaluation still pending).
-- [x] Validate the three-tab dashboard renders, references eight Linux reports, binds global time inputs, displays parsed HTTP request rows, and filters candidate case evidence by Audit session 33 versus 6.
-- [ ] Independently verify SSH-to-Auditd attribution, audit count semantics, all report time-range behaviors, and source-of-truth saved SPL.
-- [ ] Export exact saved SPL searches.
-- [x] Publish curated, genuine dashboard screenshots (unrelated browser clutter cropped; data preserved).
-- [ ] Verify Auditd rule persistence and forwarder/log rotation behavior.
-- [ ] Investigate Ubuntu disk capacity and tune event volume.
-- [ ] Rotate/revoke temporary HEC token and secure credential copies.
-- [ ] Record short portfolio demonstration video.
+The [exported three-tab dashboard](soc-lab-dashboard-studio.json) provides a practical investigation workspace for Linux telemetry collected in Splunk Cloud from the controlled Ubuntu lab.
 
-See [detection-to-dashboard implementation plan](detection-to-dashboard-plan.md) for the exact order, test gates, report names and dashboard panels.
+| Tab | Analyst purpose | Key views |
+|---|---|---|
+| SOC Overview | Check indexed telemetry and review authentication patterns | Event volume, source inventory, host/event counts, SSH sessions, grouped file operations |
+| Endpoint Activity | Examine administrative and endpoint behavior | Sudo, audited process executions, monitored file operations, HTTP requests |
+| Investigation Workspace | Correlate one authenticated session to subsequent endpoint activity | SSH-to-Auditd correlation, session-scoped process/file evidence, all-session contextual timeline |
 
-- [x] Save eight live Linux reports in Splunk Cloud (operator-confirmed 2026-10-21; individual results, app contexts and permissions still require validation).
-- [x] Complete SOC-003 controlled Kali-to-Ubuntu case study and publish the evidence-backed report.
+## Investigation workflow
 
-The latest [production JSON export](soc-lab-dashboard-studio.json) was copied from the operator's working Splunk Cloud Dashboard Studio source on 2026-10-21, including the session-filtered Investigation Workspace. It preserves all three edge-aligned Grid tabs and binds each of the eight saved report sources to the global time picker. See [source setup/troubleshooting](dashboard-studio-setup.md) and [validation findings](../docs/dashboard-validation-2026-10-21.md). The [temporary diagnostic JSON](diagnostic-dashboard-studio.json) is retained for reproducible troubleshooting.
+1. Select a time window containing the known activity.
+2. Identify the relevant SSH connection and its source IP and process ID.
+3. Confirm the matching Auditd LOGIN record before using the Audit session filter.
+4. Enter the assigned session number to inspect case-specific process and file evidence.
+5. Review the broader timeline separately; events in that timeline are not necessarily attributable to the selected login.
+6. Inspect raw Auditd record groups when an individual file operation requires confirmation.
 
-## Latest validation checkpoint
+**Important:** Session numbers are not globally unique; use host, timestamp and matching LOGIN evidence for attribution. Dashboard counts reflect the underlying SPL aggregation and do not necessarily count human-entered commands.
 
-The dashboard export now includes a session-specific input and case-filtered SSH correlation, process and file evidence tables. The operator's session 33/6 comparison and HTTP classification (4 request records, 1 diagnostic) were documented on 2026-10-21. Remaining questions concern independent PID/session attribution, precise saved HTTP report SPL, and broader operational testing. See [validation findings](../docs/dashboard-validation-2026-10-21.md).
+## Configuration and validation
 
-- [x] Sync actual working Dashboard Studio JSON export (all eight named saved reports and global time bindings) to GitHub.
+- [Working Dashboard Studio JSON](soc-lab-dashboard-studio.json) — exported from Splunk Cloud on October 21, 2026.
+- [Setup and troubleshooting](dashboard-studio-setup.md) — layout and data-source configuration.
+- [Validation record](../docs/dashboard-validation-2026-10-21.md) — time picker, saved-report references, HTTP parsing and session-filter tests.
+- [Saved report runbook](../docs/report-save-runbook.md) — eight exact report titles and canonical SPL references.
+- [SOC-003 case report](../investigations/SOC-003/case-report.md) — complete session 54 investigation with evidence.
+
+The eight saved-report sources use the global time input rather than their individually saved search windows. The HTTP request panel excludes a diagnostic line that is retained in the raw index. Additional report-by-report tests and exact saved-SPL reconciliation are still outstanding.
+
+The [diagnostic dashboard JSON](diagnostic-dashboard-studio.json) is retained as troubleshooting history and is **not** the working dashboard export.
 
 ## Screenshot gallery
 
-These are curated screenshots captured from Splunk Cloud. Titles, frames, and explanatory captions have been added **outside** the screenshots; the Splunk rows, fields, timestamps and metrics themselves have not been recreated.
+These are curated captures from the real Splunk environment. Cropping and captions improve readability without replacing Splunk data.
 
-### SOC Operations
+### 01 — SOC Overview
 
-![SOC Overview dashboard](screenshots/01-soc-operations-overview.png)
+![SOC Overview: telemetry sources, SSH sessions and file operations](screenshots/01-soc-operations-overview.png)
 
-### Endpoint Activity
+*Live source inventory, SSH activity, and grouped file operations.*
 
-![Endpoint telemetry dashboard](screenshots/02-endpoint-telemetry.png)
+### 02 — Endpoint Activity
 
-### Session-scoped investigation evidence
+![Endpoint Activity: sudo, process, file and HTTP panels](screenshots/02-endpoint-telemetry.png)
 
-![Session-scoped file and process evidence](screenshots/03-session-scoped-evidence.png)
+*Endpoint investigation panels backed by saved reports.*
 
-### HTTP parser validation
+### 03 — Investigation Workspace
 
-The HTTP dataset includes **four parsed request lines** and **one distinct server diagnostic line**. The corrected request panel displays GET requests and response codes without counting the diagnostic message as a request.
+![Session-scoped process and file evidence](screenshots/03-session-scoped-evidence.png)
 
-![HTTP log classification in Splunk search](screenshots/04-http-request-classification.png)
+*Selected-session evidence is separate from the broader all-session timeline.*
 
-![Parsed HTTP requests in the dashboard](screenshots/05-clean-http-request-view.png)
+### 04 — HTTP classification test
 
-For the actual SSH-to-Auditd investigation, see the [SOC-003 case report](../investigations/SOC-003/case-report.md).
+![HTTP request and diagnostic record classification](screenshots/04-http-request-classification.png)
+
+*Four request records and one diagnostic/unparsed record were distinguished during parser validation.*
+
+### 05 — Corrected HTTP request view
+
+![Parsed HTTP requests and response codes](screenshots/05-clean-http-request-view.png)
+
+*The dashboard shows recognized HTTP requests without presenting the server diagnostic as an additional request.*
+
+## Remaining operational checks
+
+Exact saved-report SPL comparison, complete time-range behavior tests, Auditd rule persistence, forwarder restart/log rotation, and alert scheduling remain separate tasks. See the [project roadmap](../docs/roadmap.md).
