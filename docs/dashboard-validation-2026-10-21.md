@@ -15,7 +15,7 @@ Operator screenshots showed functioning SOC Overview, Endpoint Activity and Inve
 | Endpoint Activity | Sudo commands, process executions, file operations and HTTP access rows | Saved searches resolve and show meaningful fields |
 | Investigation Workspace | Candidate SSH/Auditd session correlation and timeline plus file/process tables | Tables render, but attribution needs confirmation |
 
-The raw screenshots still need to be added to the repository in sanitized form.
+Five curated dashboard screenshots have been published in the [dashboard gallery](../dashboards/README.md#screenshot-gallery).
 
 ## Time-picker diagnosis and fix
 
