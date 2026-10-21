@@ -100,7 +100,7 @@ All **eight live Linux reports** have been saved in Splunk Cloud and connected t
 
 ## SOC dashboard
 
-The [dashboard section](dashboards/README.md) contains the **actual exported three-tab Dashboard Studio definition**, with source inventory, ingestion trends, SSH sessions, sudo commands, process and file auditing, HTTP logs, candidate correlation and investigation timeline. All eight saved-report sources are bound to the dashboard's global time-range input; remaining functional checks are recorded in the [validation log](docs/dashboard-validation-2026-10-21.md).
+The [dashboard section](dashboards/README.md) contains the **actual exported three-tab Dashboard Studio definition**, with source inventory, ingestion trends, SSH sessions, sudo commands, process and file auditing, HTTP logs, candidate correlation and investigation timeline. All eight saved-report sources are bound to the dashboard's global time-range input. Investigation Workspace also supports a selected Auditd session for the correlation and file/process evidence tables, preserving a separate all-session context timeline. Session 33 and session 6 evidence filtering was tested in the lab; independent authentication attribution remains a separate check. See the [validation log](docs/dashboard-validation-2026-10-21.md).
 
 <!-- SCREENSHOT: Dashboard Studio overview -->
 
