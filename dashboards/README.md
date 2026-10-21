@@ -1,12 +1,20 @@
-# Splunk Dashboard Studio — Live Security Operations
+# Splunk Dashboard — Monitoring and Investigation
 
-The [exported three-tab dashboard](soc-lab-dashboard-studio.json) provides a practical investigation workspace for Linux telemetry collected in Splunk Cloud from the controlled Ubuntu lab.
+I built this dashboard in Splunk Cloud to turn a stream of Linux system records into views that are easier to monitor and investigate. Instead of reading thousands of individual log entries, I can see recent activity, focus on a particular computer or login, and then check the underlying evidence.
 
-| Tab | Analyst purpose | Key views |
-|---|---|---|
-| SOC Overview | Check indexed telemetry and review authentication patterns | Event volume, source inventory, host/event counts, SSH sessions, grouped file operations |
-| Endpoint Activity | Examine administrative and endpoint behavior | Sudo, audited process executions, monitored file operations, HTTP requests |
-| Investigation Workspace | Correlate one authenticated session to subsequent endpoint activity | SSH-to-Auditd correlation, session-scoped process/file evidence, all-session contextual timeline |
+## What the three views show
+
+| View | In plain English |
+|---|---|
+| **SOC Overview** | Are security records coming in, and what activity has been recorded recently? |
+| **Endpoint Activity** | What commands ran, what files changed, and what requests reached the test web server? |
+| **Investigation Workspace** | After a particular login, what happened on that same session, and what else was occurring around the same time? |
+
+**[See the completed SOC-003 investigation](../investigations/SOC-003/case-report.md)** for a real example of using these views to follow a remote login, review commands and a test-file change, and write an evidence-supported conclusion.
+
+The [screenshot gallery](#screenshot-gallery) shows five annotated captures from the working dashboard. Each one also links to its unannotated original.
+
+**For technical readers:** The [exported three-tab Dashboard Studio JSON](soc-lab-dashboard-studio.json) and documentation below explain the configuration, searches and validation results.
 
 ## Investigation workflow
 
