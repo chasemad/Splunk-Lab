@@ -1,11 +1,24 @@
 # Splunk SOC dashboard
 
-**Status: planned; not yet built.** Intended tool: Splunk Dashboard Studio.
+The Splunk Dashboard Studio section presents analyst-focused views of endpoint security telemetry and investigation activity.
 
-Proposed panels: event volume over time; source distribution; active hosts; SSH successes/failures; sudo activity; process execution; monitored file changes; HTTP requests/status codes; validated detections; recent events; investigation timeline.
+## Dashboard layout
 
-Clearly separate synthetic `soc_lab` from real `soc-live`. Validate each panel against available fields and time ranges. Do not imply scheduled alerts exist until configured.
+| Panel | Analyst question |
+|---|---|
+| Event volume over time | Is ingestion behaving as expected? |
+| Events by source | Which log streams contribute most? |
+| Active monitored hosts | Which endpoints are represented? |
+| SSH authentication | Who is logging in, and from where? |
+| Administrative activity | Which sudo and privileged events deserve review? |
+| Process execution | Which audited processes are appearing? |
+| File modification activity | What monitored paths have changed? |
+| HTTP requests | What requests and response codes are recorded? |
+| Detection findings | Which searches surfaced activity for review? |
+| Investigation timeline | How do relevant events align chronologically? |
 
-**[PLACEHOLDER: final dashboard screenshot]**
+The historical synthetic index `soc_lab` and live telemetry index `soc-live` are treated as separate datasets.
 
-**[PLACEHOLDER: Dashboard Studio export]**
+<!-- SCREENSHOT: Dashboard overview -->
+<!-- SCREENSHOT: Authentication and process analysis -->
+<!-- EXPORT: Add Dashboard Studio JSON once built -->
