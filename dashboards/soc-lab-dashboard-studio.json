@@ -203,7 +203,7 @@
     "ds_telemetry": {
       "type": "ds.savedSearch",
       "options": {
-        "ref": "LINUX-MON-001 - Live Telemetry Health",
+        "ref": "LINUX-MON-001 — Telemetry Health",
         "app": "search"
       }
     },
@@ -217,7 +217,7 @@
     "ds_sudo": {
       "type": "ds.savedSearch",
       "options": {
-        "ref": "LINUX-DET-002 - Sudo Command Activity",
+        "ref": "LINUX-DET-002 — Sudo Activity",
         "app": "search"
       }
     },
@@ -231,28 +231,28 @@
     "ds_process": {
       "type": "ds.savedSearch",
       "options": {
-        "ref": "LINUX-DET-004 - Audited Process Executions",
+        "ref": "LINUX-DET-004 — Process Execution",
         "app": "search"
       }
     },
     "ds_web": {
       "type": "ds.savedSearch",
       "options": {
-        "ref": "LINUX-DET-005 - HTTP Access Activity",
+        "ref": "LINUX-DET-005 — HTTP Requests",
         "app": "search"
       }
     },
     "ds_correlation": {
       "type": "ds.savedSearch",
       "options": {
-        "ref": "LINUX-COR-001 - SSH Endpoint Session Correlation",
+        "ref": "LINUX-COR-001 — Session Correlation",
         "app": "search"
       }
     },
     "ds_timeline": {
       "type": "ds.savedSearch",
       "options": {
-        "ref": "LINUX-INV-001 - Live Investigation Timeline",
+        "ref": "LINUX-INV-001 — Investigation Timeline",
         "app": "search"
       }
     },
