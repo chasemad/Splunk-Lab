@@ -1,28 +1,24 @@
-# Splunk SOC dashboard
+# Roadmap
 
-The Splunk Dashboard Studio section presents analyst-focused views of endpoint security telemetry and investigation activity.
+- [x] Import 205 synthetic SOC events and investigate SOC-001.
+- [x] Save four historical detection reports and one correlation report.
+- [x] Install Ubuntu/Kali lab VMs and verify connectivity.
+- [x] Connect ARM64 Universal Forwarder to Splunk Cloud.
+- [x] Validate syslog, auth, Auditd and HTTP telemetry.
+- [ ] Step 42: cleaner investigation timeline.
+- [x] Step 43: SSH session attribution with Auditd (Kali SSH PID 4937 mapped to audit session 27).
+- [x] Step 44: group related Auditd records by audit event ID.
+- [x] Complete SOC-002 investigation and evidence-backed report (authorized lab activity).
+- [ ] Build and validate Linux-specific detections (LINUX-DET-003 manual positive/negative tests passed for monitored lab file changes; saved Splunk Report operator-confirmed; broader tuning and scheduled-alert evaluation still pending).
+- [ ] Build and validate Dashboard Studio dashboard.
+- [ ] Export exact saved SPL searches.
+- [ ] Capture and redact genuine screenshots.
+- [ ] Verify Auditd rule persistence and forwarder/log rotation behavior.
+- [ ] Investigate Ubuntu disk capacity and tune event volume.
+- [ ] Rotate/revoke temporary HEC token and secure credential copies.
+- [ ] Record short portfolio demonstration video.
 
-## Dashboard layout
+See [detection-to-dashboard implementation plan](detection-to-dashboard-plan.md) for the exact order, test gates, report names and dashboard panels.
 
-| Panel | Analyst question |
-|---|---|
-| Event volume over time | Is ingestion behaving as expected? |
-| Events by source | Which log streams contribute most? |
-| Active monitored hosts | Which endpoints are represented? |
-| SSH authentication | Who is logging in, and from where? |
-| Administrative activity | Which sudo and privileged events deserve review? |
-| Process execution | Which audited processes are appearing? |
-| File modification activity | What monitored paths have changed? |
-| HTTP requests | What requests and response codes are recorded? |
-| Detection findings | Which searches surfaced activity for review? |
-| Investigation timeline | How do relevant events align chronologically? |
-
-The historical synthetic index `soc_lab` and live telemetry index `soc-live` are treated as separate datasets.
-
-<!-- SCREENSHOT: Dashboard overview -->
-<!-- SCREENSHOT: Authentication and process analysis -->
-<!-- EXPORT: Add Dashboard Studio JSON once built -->
-
-For detection validation, proposed reports, panel SPL ideas, layout and stage gates, see the [detection-to-dashboard plan](../docs/detection-to-dashboard-plan.md). Dashboard Studio has not yet been configured or exported.
-
-The prepared report bundle and detailed dashboard build order live in [the one-pass report runbook](../docs/report-save-runbook.md). Report-backed panels should use the saved report's exact name and app context after saving.
+- [ ] Save prepared one-pass live report pack in Splunk Cloud (only LINUX-DET-003 confirmed saved so far).
+- [ ] Build SOC-003 controlled Kali-to-Ubuntu investigation using validated reports and dashboard.
