@@ -6,9 +6,9 @@ This page highlights **real screenshots from the live Linux monitoring lab**. St
 
 ### SOC-003 — Trace an SSH login to endpoint activity
 
-![SOC-003 SSH authentication from Kali](../investigations/SOC-003/screenshots/01-kali-ssh-authentication.png)
+![Annotated SOC-003 Kali SSH authentication with timestamp, SSH PID and source IP](../investigations/SOC-003/screenshots/01-kali-ssh-authentication-annotated.svg)
 
-*The authentication event identifies the authorized Kali source and the SSH connection.*
+*The SSH authentication record identifies Kali (`172.16.110.128`) as the source, shows the accepted login, and provides PID `5613` for correlation with Auditd. [Original, unannotated screenshot](../investigations/SOC-003/screenshots/01-kali-ssh-authentication.png).*
 
 ![SOC-003 SSH-to-Auditd session correlation](../investigations/SOC-003/screenshots/04-session54-correlation.png)
 
