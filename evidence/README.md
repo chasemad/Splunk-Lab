@@ -11,7 +11,7 @@ Only upload genuine, reviewed, redacted evidence. Do not fabricate screenshots o
 - [ ] Five historical saved reports
 - [ ] COR-001 ordered event sequence
 - [ ] SOC-001 timeline
-- [x] SOC-002 verified timeline and attribution reviewed in conversation; sanitized GitHub screenshots still pending
+- [ ] SOC-002 case is documented; dedicated sanitized screenshots not yet published
 - [ ] LINUX-DET-003 exploratory grouping: 25 raw events to 7 audit operations; screenshot sanitized/upload pending
 - [ ] Linux detections validation (positive/negative tests and tuning still pending)
 - [x] Dashboard Studio gallery published — [five screenshots](../dashboards/README.md#screenshot-gallery)
