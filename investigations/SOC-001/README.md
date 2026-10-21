@@ -1,5 +1,15 @@
 # SOC-001 — Suspicious authentication and privilege-related activity
 
+## At a glance
+
+**Investigation question:** When failed logins, account discovery, DNS activity and a group-membership change occur close together, what can an analyst reasonably conclude?
+
+**What I did:** Examined **205 synthetic security events** in Splunk, reconstructed their sequence, and assessed whether the combined evidence warranted escalation.
+
+**What it demonstrates:** SIEM searches, multi-source investigation, detection correlation, cautious interpretation of suspicious patterns, and concise reporting.
+
+**Outcome:** The sequence justified **further investigation**, but the available synthetic records did **not** prove compromise or establish the actor responsible for the group change. This is a completed analysis exercise, not a live incident or an actual attack.
+
 **Dataset: synthetic. Status: investigation completed; escalated for further investigation.**
 
 ## Scope
@@ -27,6 +37,6 @@ The tightly grouped authentication, discovery, DNS, and identity events justifie
 ## Limitations and next evidence
 Corroborate authenticating session, actor identity, group privileges, authorized change context and independent endpoint telemetry. The dataset is intentionally synthetic.
 
-**[PLACEHOLDER: investigation timeline screenshot]**
+## Supporting evidence
 
-**[PLACEHOLDER: detection correlation screenshot]**
+The synthetic event sequence and assessment are documented above. Dedicated screenshots for the SOC-001 timeline and correlation searches have not yet been published. For authentic screenshots from the live Linux track, see the [SOC-003 evidence gallery](../SOC-003/case-report.md#evidence-gallery--real-screenshots).
