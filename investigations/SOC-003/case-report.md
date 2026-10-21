@@ -1,5 +1,15 @@
 # SOC-003 — Kali-to-Ubuntu SSH Session Investigation
 
+## At a glance
+
+**Investigation question:** After a remote SSH login, can we identify the activity that belongs to that specific session rather than simply grouping nearby events together?
+
+**What I did:** Used actual Splunk Cloud authentication and Linux Auditd logs to trace an authorized Kali login to its matching audit session, inspect commands and file operations, and confirm a successful file creation using raw audit evidence.
+
+**What it demonstrates:** Multi-source correlation, careful interpretation of raw security logs, a repeatable analyst workflow, and a written conclusion supported by evidence.
+
+**Outcome:** The observed activity matched the planned lab exercise, so the case was closed as **authorized activity**. The [nine-image evidence gallery](#evidence-gallery--real-screenshots) and [dashboard screenshots](../../dashboards/README.md#screenshot-gallery) show the work; technical details follow below.
+
 | Case attribute | Value |
 |---|---|
 | Case ID | SOC-003 |
