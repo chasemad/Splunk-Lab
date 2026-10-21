@@ -17,9 +17,9 @@ The Linux investigations use **real logs from my lab**. The earlier Windows/VPN 
 
 **Best place to begin:** [Read SOC-003](investigations/SOC-003/case-report.md), then [view the dashboard screenshots](dashboards/README.md#screenshot-gallery). The [evidence index](evidence/README.md) collects additional exhibits.
 
-![Actual Splunk Cloud investigation dashboard](dashboards/screenshots/01-soc-operations-overview.png)
+![Actual Splunk Cloud investigation dashboard](dashboards/screenshots/01-soc-operations-overview-annotated.svg)
 
-*Actual Splunk Cloud dashboard from the lab. See the linked gallery for the full-size images and other views.*
+*The SOC Overview presents indexed-event volume, monitored sources, SSH sessions, and grouped file operations for the selected time range. Counts are time-window snapshots, not an uptime guarantee.* · [Original PNG](dashboards/screenshots/01-soc-operations-overview.png)
 
 ## Skills demonstrated
 
@@ -61,9 +61,9 @@ I initiated an approved SSH connection from Kali to Ubuntu and then examined the
 
 The investigation also separated an unrelated local SSH test from the Kali session rather than combining them into one story.
 
-![SOC-003 SSH-to-Auditd session correlation](investigations/SOC-003/screenshots/04-session54-correlation.png)
+![SOC-003 SSH-to-Auditd session correlation](investigations/SOC-003/screenshots/04-session54-correlation-annotated.svg)
 
-*Actual session-correlation evidence from SOC-003.*
+*The workspace is filtered to session `54` and identifies Kali source `172.16.110.128` and SSH PID `5613`. The 77 audited executions are aggregated Auditd events, not 77 individually verified human-entered commands.* · [Original PNG](investigations/SOC-003/screenshots/04-session54-correlation.png)
 
 **[Read the full SOC-003 case report and see all nine screenshots](investigations/SOC-003/case-report.md)**
 
@@ -79,9 +79,9 @@ The dashboard turns several kinds of Linux logs into three views designed around
 
 Eight saved Linux reports support the dashboard. A global time picker controls the search window, and the investigation workspace provides a session filter for case-specific process and file evidence.
 
-![Splunk Endpoint Activity dashboard](dashboards/screenshots/02-endpoint-telemetry.png)
+![Splunk Endpoint Activity dashboard](dashboards/screenshots/02-endpoint-telemetry-annotated.svg)
 
-*Actual endpoint activity panels from Splunk Cloud.*
+*Endpoint Activity combines sudo, audited process execution, and HTTP tables. This earlier capture includes a diagnostic line classified as unparsed; the cleaned HTTP evidence appears in Exhibit 05.* · [Original PNG](dashboards/screenshots/02-endpoint-telemetry.png)
 
 **[Explore the dashboard, screenshots and exported configuration](dashboards/README.md)**
 
