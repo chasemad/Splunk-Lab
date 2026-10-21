@@ -1,6 +1,6 @@
 # Evidence gallery — Splunk SOC Lab
 
-This page highlights **real screenshots from the live Linux monitoring lab**. Start with the SOC-003 investigation if you want to see how authentication, process activity and a file operation were connected into one evidence-supported case.
+This page highlights **annotated copies of real screenshots from the live Linux monitoring lab**. Every exhibit retains a link to its unannotated original. Start with the SOC-003 investigation if you want to see how authentication, process activity and a file operation were connected into one evidence-supported case.
 
 ## Featured evidence
 
@@ -10,29 +10,29 @@ This page highlights **real screenshots from the live Linux monitoring lab**. St
 
 *The SSH authentication record identifies Kali (`172.16.110.128`) as the source, shows the accepted login, and provides PID `5613` for correlation with Auditd. [Original, unannotated screenshot](../investigations/SOC-003/screenshots/01-kali-ssh-authentication.png).*
 
-![SOC-003 SSH-to-Auditd session correlation](../investigations/SOC-003/screenshots/04-session54-correlation.png)
+![SOC-003 SSH-to-Auditd session correlation](../investigations/SOC-003/screenshots/04-session54-correlation-annotated.svg)
 
-*Matching SSH and Auditd LOGIN evidence links the connection to audit session 54.*
+*The workspace is filtered to session `54` and identifies Kali source `172.16.110.128` and SSH PID `5613`. The 77 audited executions are aggregated Auditd events, not 77 individually verified human-entered commands.* · [Original PNG](../investigations/SOC-003/screenshots/04-session54-correlation.png)
 
-![SOC-003 raw Auditd file-creation evidence](../investigations/SOC-003/screenshots/06-raw-file-creation-audit-id.png)
+![SOC-003 raw Auditd file-creation evidence](../investigations/SOC-003/screenshots/06-raw-file-creation-audit-id-annotated.svg)
 
-*Five related Auditd records describe one successful file-creation event.*
+*Five companion Auditd records share ID `1792593148.187:1492`: two `PATH` entries, `CWD`, a successful `SYSCALL`, and `PROCTITLE`—evidence of one successful file-creation event, not five separate operations.* · [Original PNG](../investigations/SOC-003/screenshots/06-raw-file-creation-audit-id.png)
 
 **[Read the complete SOC-003 case report and all nine screenshots](../investigations/SOC-003/case-report.md#evidence-gallery--real-screenshots)**
 
 ### Splunk Dashboard Studio — Monitoring and investigation
 
-![SOC Overview dashboard](../dashboards/screenshots/01-soc-operations-overview.png)
+![SOC Overview dashboard](../dashboards/screenshots/01-soc-operations-overview-annotated.svg)
 
-*Live source inventory, SSH sessions and grouped file operations.*
+*The SOC Overview presents indexed-event volume, monitored sources, SSH sessions, and grouped file operations for the selected time range. Counts are time-window snapshots, not an uptime guarantee.* · [Original PNG](../dashboards/screenshots/01-soc-operations-overview.png)
 
-![Endpoint Activity dashboard](../dashboards/screenshots/02-endpoint-telemetry.png)
+![Endpoint Activity dashboard](../dashboards/screenshots/02-endpoint-telemetry-annotated.svg)
 
-*Saved-report views for endpoint behavior.*
+*Endpoint Activity combines sudo, audited process execution, and HTTP tables. This earlier capture includes a diagnostic line classified as unparsed; the cleaned HTTP evidence appears in Exhibit 05.* · [Original PNG](../dashboards/screenshots/02-endpoint-telemetry.png)
 
-![HTTP request parsing results](../dashboards/screenshots/05-clean-http-request-view.png)
+![HTTP request parsing results](../dashboards/screenshots/05-clean-http-request-view-annotated.svg)
 
-*The corrected request table separates HTTP requests from a server diagnostic record.*
+*The refined HTTP request table shows parsed methods, paths, and response codes (including `404` and `200`) without treating the diagnostic line as an HTTP request.* · [Original PNG](../dashboards/screenshots/05-clean-http-request-view.png)
 
 **[See the full five-image dashboard gallery](../dashboards/README.md#screenshot-gallery)**
 
