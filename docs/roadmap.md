@@ -9,7 +9,7 @@
 - [x] Step 43: SSH session attribution with Auditd (Kali SSH PID 4937 mapped to audit session 27).
 - [x] Step 44: group related Auditd records by audit event ID.
 - [x] Complete SOC-002 investigation and evidence-backed report (authorized lab activity).
-- [ ] Build and validate Linux-specific detections (LINUX-DET-003 manual positive/negative tests passed for monitored lab file changes; saved Splunk Report, broader tuning and scheduled-alert evaluation still pending).
+- [ ] Build and validate Linux-specific detections (LINUX-DET-003 manual positive/negative tests passed for monitored lab file changes; saved Splunk Report operator-confirmed; broader tuning and scheduled-alert evaluation still pending).
 - [ ] Build and validate Dashboard Studio dashboard.
 - [ ] Export exact saved SPL searches.
 - [ ] Capture and redact genuine screenshots.
