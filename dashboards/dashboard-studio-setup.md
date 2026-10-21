@@ -82,6 +82,14 @@ Official references:
 - [Splunk Cloud: call saved searches](https://help.splunk.com/en/splunk-cloud-platform/create-dashboards-and-reports/dashboard-studio/9.3.2411/use-data-sources/use-reports-and-saved-searches-with-ds.savedsearch)
 - [Splunk: Dashboard definition and multi-tab grid schema](https://help.splunk.com/en/splunk-cloud-platform/create-dashboards-and-reports/dashboard-studio/10.6/source-code-editor/what-is-a-dashboard-definition)
 
+### Diagnostic gate 2 result — screenshot, 2026-10-21
+
+The operator imported the temporary `diagnostic-dashboard-studio.json` into Splunk Cloud and shared a screenshot. **The test rendered with no red grid layout errors.** The inline `ds.search` panel returned counts for `syslog` (5401), `linux:audit` (3079), `linux_secure` (299), `soc:web:access` (5), plus a separate HEC test sourcetype (1). The right panel successfully displayed actual file-change rows using `ds.savedSearch` with `ref=LINUX-DET-003 - Monitored File Changes` and `app=search` (including commands shown as `bash`, `chmod`, `touch`).
+
+**Implication:** the minimal grid structure, live inline SPL access, and at least one saved report reference work in this Splunk Cloud workspace. This does **not** prove the other seven saved searches resolve or that the production dashboard source is current. The input's *presence* does not prove time picker propagation.
+
+**Next gate:** open the *production* three-tab dashboard (not the temporary Diagnostic dashboard) in Edit > Source, and compare the layout coordinates to `main`. Confirm `viz_total_events.position.y=130`, `viz_proc.position.y=445`, `viz_session_correlation.position.y=115` and `viz_process_evidence.position.x=600`. If old coordinates persist in Splunk, back up its source and apply the current checked-in production definition; then recheck. If coordinates already match, capture the full Source and precise validation errors before editing. Review failing individual saved reports by selecting them via the Studio report picker.
+
 ### Completion criteria
 
 Only consider the production dashboard ready after Grid errors disappear on every tab, **all eight saved report references** resolve, process/file/HTTP/correlation outputs are reviewed against actual SPL, time picker behavior is confirmed separately for inline and saved searches, and the saved dashboard survives reopen. Capture actual Studio source/export for GitHub after validation. SOC-003 remains pending until this gate passes.
