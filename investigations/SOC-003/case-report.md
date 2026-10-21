@@ -195,9 +195,9 @@ These **nine genuine screenshots** were captured during the controlled exercise,
 
 ### 02 — Matching Auditd LOGIN
 
-![Auditd LOGIN mapped PID 5613 to session 54](screenshots/02-auditd-login-session54.png)
+![Annotated Auditd LOGIN showing matching event time, SSH PID 5613, and audit session 54](screenshots/02-auditd-login-session54-annotated.svg)
 
-*Auditd LOGIN: matching SSH PID `5613`, assigned session `54`.*
+*The Auditd LOGIN record matches the Kali SSH authentication event by host, timestamp (14:32:20.566 UTC), and process ID `5613`. Auditd assigns session `54`, which is used to scope subsequent audited process and file activity. [View the original, unannotated screenshot](screenshots/02-auditd-login-session54.png).*
 
 ### 03 — Authentication session summary
 
