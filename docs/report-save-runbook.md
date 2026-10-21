@@ -2,40 +2,42 @@
 
 ## Purpose and limitations
 
-These SPL files are prepared for `index="soc-live"`, `host="soc-ubuntu-01"`. **All eight searches are now user-confirmed saved in Splunk Cloud (2026-10-21), though ChatGPT has not inspected the saved-search objects directly**. LINUX-DET-001 SSH session summary was tested against real data, and a separate synthetic threshold test returned 3 failures/1 success. Other new report SPL is **draft, not run in Splunk yet**. Saving a report makes a search reusable; it does not mean that every intended field parsed correctly or that it is a validated alert.
+These SPL files are prepared for `index="soc-live"`, `host="soc-ubuntu-01"`. **All eight searches are user-confirmed saved in Splunk Cloud (2026-10-21), and their titles, owner, app, sharing and status have been inspected from an operator-supplied Splunk Reports screenshot. The actual saved SPL contents have not been independently compared with the GitHub source files.** LINUX-DET-001 SSH session summary was tested against real data, and a separate synthetic threshold test returned 3 failures/1 success. Other new report SPL is **draft, not run in Splunk yet**. Saving a report makes a search reusable; it does not mean that every intended field parsed correctly or that it is a validated alert.
 
 A Splunk Cloud **free trial cannot use the management REST API**. Do these steps in **Search & Reporting** for each unsaved report: click file below, copy raw SPL, paste into Search, choose **Last 24 hours** (or a range containing known events), **Run**, examine fields, select **Save As > Report**, enter the exact report name, **Save**. Keep scheduling disabled; enable time-range picker when offered. If a report yields 0 events, save it only as an exploratory or baseline report and record why it is empty.
+
+The list below uses the **actual Splunk saved-report titles** from the Reports page. Six of the names contain an **em dash (—)**, while the working SSH and file-change reports use a normal **hyphen (-)**. Dashboard Studio `ds.savedSearch.options.ref` must match the exact title, including punctuation. All eight reports are owned by `sc_admin`, belong to the `search` app, are marked `Private`, and show `Enabled` in the screenshot. Private sharing works for an owner-accessible dashboard, but can limit other viewers; review this before sharing the dashboard with recruiters.
 
 ## Save in this order
 
 | # | Splunk Report title | Canonical SPL | Status |
 |---|---|---|---|
-| 1 | `LINUX-MON-001 - Live Telemetry Health` | [SPL](../detections/linux/LINUX-MON-001-telemetry-health.spl) | Operator-confirmed saved; panel/results review pending |
+| 1 | `LINUX-MON-001 — Telemetry Health` | [SPL](../detections/linux/LINUX-MON-001-telemetry-health.spl) | Operator-confirmed saved; panel/results review pending |
 | 2 | `LINUX-DET-001 - SSH Authentication Sessions` | [SPL](../detections/linux/LINUX-DET-001-ssh-session-summary.spl) | Operator-confirmed saved; panel/results review pending |
-| 3 | `LINUX-DET-002 - Sudo Command Activity` | [SPL](../detections/linux/LINUX-DET-002-sudo-activity.spl) | Operator-confirmed saved; panel/results review pending |
+| 3 | `LINUX-DET-002 — Sudo Activity` | [SPL](../detections/linux/LINUX-DET-002-sudo-activity.spl) | Operator-confirmed saved; panel/results review pending |
 | 4 | `LINUX-DET-003 - Monitored File Changes` | [SPL](../detections/linux/LINUX-DET-003-file-change.spl) | Operator-confirmed saved; panel/results review pending |
-| 5 | `LINUX-DET-004 - Audited Process Executions` | [SPL](../detections/linux/LINUX-DET-004-process-execution.spl) | Operator-confirmed saved; panel/results review pending |
-| 6 | `LINUX-DET-005 - HTTP Access Activity` | [SPL](../detections/linux/LINUX-DET-005-web-requests.spl) | Operator-confirmed saved; panel/results review pending |
-| 7 | `LINUX-COR-001 - SSH Endpoint Session Correlation` | [SPL](../detections/linux/LINUX-COR-001-ssh-endpoint-session.spl) | Operator-confirmed saved; panel/results review pending |
-| 8 | `LINUX-INV-001 - Live Investigation Timeline` | [SPL](../investigations/SOC-003/live-investigation-timeline.spl) | Operator-confirmed saved; panel/results review pending |
+| 5 | `LINUX-DET-004 — Process Execution` | [SPL](../detections/linux/LINUX-DET-004-process-execution.spl) | Operator-confirmed saved; panel/results review pending |
+| 6 | `LINUX-DET-005 — HTTP Requests` | [SPL](../detections/linux/LINUX-DET-005-web-requests.spl) | Operator-confirmed saved; panel/results review pending |
+| 7 | `LINUX-COR-001 — Session Correlation` | [SPL](../detections/linux/LINUX-COR-001-ssh-endpoint-session.spl) | Operator-confirmed saved; panel/results review pending |
+| 8 | `LINUX-INV-001 — Investigation Timeline` | [SPL](../investigations/SOC-003/live-investigation-timeline.spl) | Operator-confirmed saved; panel/results review pending |
 
 ### Report notes
 
-**LINUX-MON-001 - Live Telemetry Health:** Operational visibility: event counts and freshest timestamp per indexed log source. Historical counts do not imply a currently healthy forwarder.
+**LINUX-MON-001 — Telemetry Health:** Operational visibility: event counts and freshest timestamp per indexed log source. Historical counts do not imply a currently healthy forwarder.
 
 **LINUX-DET-001 - SSH Authentication Sessions:** Summarize accepted and failed SSH authentication by connection; baseline already tested with 8 events and 7 connections.
 
-**LINUX-DET-002 - Sudo Command Activity:** Actual sudo command authorization records from auth.log; does not claim every root process represents a human sudo action.
+**LINUX-DET-002 — Sudo Activity:** Actual sudo command authorization records from auth.log; does not claim every root process represents a human sudo action.
 
 **LINUX-DET-003 - Monitored File Changes:** Audited successful write/attribute changes grouped by audit event ID. Saved in Splunk Cloud; no need to create twice.
 
-**LINUX-DET-004 - Audited Process Executions:** Auditd process execution events with original/effective IDs and session context; execve success does not prove command intent or subsequent filesystem success.
+**LINUX-DET-004 — Process Execution:** Auditd process execution events with original/effective IDs and session context; execve success does not prove command intent or subsequent filesystem success.
 
-**LINUX-DET-005 - HTTP Access Activity:** Web request investigation view; parser handles common log style and some key=value variants, and visibly flags unparsed formats.
+**LINUX-DET-005 — HTTP Requests:** Web request investigation view; parser handles common log style and some key=value variants, and visibly flags unparsed formats.
 
-**LINUX-COR-001 - SSH Endpoint Session Correlation:** Candidate correlation linking SSH pid from auth.log with Auditd LOGIN pid and audit session; tests needed for real output and join limits.
+**LINUX-COR-001 — Session Correlation:** Candidate correlation linking SSH pid from auth.log with Auditd LOGIN pid and audit session; tests needed for real output and join limits.
 
-**LINUX-INV-001 - Live Investigation Timeline:** Three-source analyst event timeline; not a direct proof that timestamp-adjacent events share an origin.
+**LINUX-INV-001 — Investigation Timeline:** Three-source analyst event timeline; not a direct proof that timestamp-adjacent events share an origin.
 
 ## Quick confirmation before opening Dashboard Studio
 
@@ -47,7 +49,7 @@ A Splunk Cloud **free trial cannot use the management REST API**. Do these steps
 - [ ] LINUX-DET-005 method/URI/status extraction checked against actual access.log entries. If values display `unparsed`, adapt regex before relying on charts.
 - [ ] LINUX-COR-001 returns plausible matched SSH and Auditd sessions (if none, troubleshoot subsearch match + timestamps; don't force a fake match).
 - [ ] LINUX-INV-001 timeline sorts across auth, process, watched file operations and HTTP data.
-- [ ] Saved report names, app context, sharing permissions and time ranges recorded for dashboard setup.
+- [x] Saved report names, app context (`search`), owner (`sc_admin`), sharing (`Private`) and enabled status recorded from the Reports page; individual report time-range behavior still needs testing.
 
 ## Dashboard plan — next phase
 
