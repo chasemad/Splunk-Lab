@@ -25,6 +25,8 @@ Built with Splunk Cloud, Ubuntu Server, Kali Linux, Auditd, and VMware Fusion. T
 
 ## Lab architecture
 
+The diagram below separates the live Linux pipeline from the historical synthetic dataset. [Architecture and setup details](architecture/lab-setup.md) explain the network, sources and operational caveats.
+
 ```mermaid
 flowchart TD
   A[Apple Silicon Mac / VMware Fusion] --> B[VMware NAT network]
@@ -34,7 +36,9 @@ flowchart TD
   U --> T[Authentication / system / audit / web logs]
   T --> F[Splunk Universal Forwarder]
   F -->|TLS / TCP 9997| S[Splunk Cloud / soc-live]
-  S --> D[Searches / investigations / detection engineering]
+  S --> D[Saved reports and SPL searches]
+  D --> W[Three-tab Dashboard Studio]
+  D --> C[SOC-002 and SOC-003 case reports]
   H[Historical synthetic event datasets] --> L[Splunk Cloud / soc_lab]
   L --> I[SOC-001 / detection reports / correlation]
 ```
@@ -140,6 +144,10 @@ The [dashboard section](dashboards/README.md) contains the **actual exported thr
 - [Engineering considerations](docs/limitations.md)
 - [Lessons learned](docs/lessons-learned.md)
 - [Development roadmap](docs/roadmap.md)
+- [Linux report validation matrix](docs/linux-report-validation-matrix.md)
+- [Detection test plan](docs/detection-test-plan.md)
+- [SOC analyst triage playbook](docs/detection-triage-playbook.md)
+- [Short demonstration storyboard](docs/recruiter-demo-script.md)
 - [Demonstration](demo/README.md)
 
 ## Engineering considerations
