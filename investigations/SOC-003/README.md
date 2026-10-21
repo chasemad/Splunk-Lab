@@ -36,7 +36,7 @@ If the existing local training web server is already running, a normal HTTP GET 
 
 ## Stage 2 — trace the event across Splunk reports
 
-Open the three-tab [SOC dashboard definition](../../dashboards/soc-lab-dashboard-studio.json) once imported. Set a narrow time window covering the session. Make sure saved report time ranges follow the input (or explicitly adjust individual report ranges).
+Open the working three-tab [SOC dashboard definition](../../dashboards/soc-lab-dashboard-studio.json). Its saved-report data sources are already bound to the global time picker in the exported source. Set a narrow time window covering the session. On Investigation Workspace, enter the **newly observed Auditd session** in the `Audit session (case filter)` numeric input (the initial `33` is only a prior-session default, not the expected new session ID). Its candidate correlation and file/process evidence tables are session-scoped; the general activity timeline remains all sessions.
 
 1. **Authentication:** In LINUX-DET-001, identify the new successful SSH connection using `socadmin`, `172.16.110.128`, `sshd[PID]`, port and UTC timestamp.
 2. **Session binding:** In LINUX-COR-001, look for the matching Auditd `LOGIN` record with the same SSH PID on the same host and within the time bound. Extract its `ses` value. If this returns nothing, inspect `type=LOGIN` records manually and record correlation coverage limitations.
@@ -91,6 +91,6 @@ To see companion records with the same `audit_id`, run a second search for that 
 - [ ] Optional lab HTTP test and response code.
 - [ ] Screenshots of all three dashboard tabs with data and readable labels.
 - [ ] Investigation timeline, conclusion, limitations, and analyst disposition.
-- [ ] Dashboard Studio JSON exported after actual configuration and committed.
+- [x] Session-filtered Dashboard Studio JSON exported from the working configuration and committed before the SOC-003 exercise.
 
 All outputs should be described as **controlled lab evidence**.
