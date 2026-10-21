@@ -1,109 +1,100 @@
 # Splunk SOC Lab — Security Monitoring & Investigation
 
-I built this lab to practice how a security analyst investigates activity on a real system: **collect logs, recognize useful signals, connect events across different sources, and explain what the evidence shows.**
+I built this hands-on lab to practice what a security analyst does: **monitor a computer for activity, investigate what happened, and explain the findings using evidence.**
 
-Using two virtual Linux machines and Splunk Cloud, I generated controlled activity, monitored it, built an investigation dashboard, and documented three cases. The goal was to go beyond following a tutorial and practice the decisions an analyst makes when investigating an event.
+I connected two virtual Linux computers to Splunk Cloud, a platform used to search and investigate security records. One computer generates planned test activity; the other records it. I built a dashboard to examine those records and documented three investigations.
 
-The Linux investigations use **real logs from my lab**. The earlier Windows/VPN investigation uses a **clearly identified synthetic dataset**. All activity was authorized; these are training cases, not claims of real-world attacks.
+**These are controlled training exercises, not real attacks.** The Linux cases use actual logs collected from my lab. The earlier Windows/VPN case uses a clearly labeled practice dataset.
 
-## Start here — strongest work
+## Start here — a complete investigation
 
-| Project highlight | What you'll see | Why it matters |
-|---|---|---|
-| **[SOC-003: Complete Linux investigation](investigations/SOC-003/case-report.md)** | A step-by-step investigation tracing a Kali SSH login to a Linux audit session, executed commands and a file creation; **nine real screenshots** | Demonstrates evidence-based investigation, cross-source correlation and clear case reporting |
-| **[Splunk SOC dashboard](dashboards/README.md)** | Three working views for monitoring, endpoint activity and investigation; **five real screenshots** | Shows how raw logs become a practical analyst workspace |
-| **[SOC-002: Linux endpoint investigation](investigations/SOC-002/README.md)** | An earlier SSH-to-process-and-file investigation using live Linux logs | Shows repeatable investigation methodology |
-| **[SOC-001: Multi-source investigation](investigations/SOC-001/README.md)** | Analysis of VPN, Windows, process and DNS activity from 205 synthetic events | Shows detection logic, event sequencing and cautious conclusions |
+### SOC-003: What happened after a remote login?
 
-**Best place to begin:** [Read SOC-003](investigations/SOC-003/case-report.md), then [view the dashboard screenshots](dashboards/README.md#screenshot-gallery). The [evidence index](evidence/README.md) collects additional exhibits.
+**The question:** After someone signs in to a server, can I determine what they did next—and avoid mixing in unrelated activity?
 
-![Actual Splunk Cloud investigation dashboard](dashboards/screenshots/01-soc-operations-overview-annotated.svg)
+I signed in to my Ubuntu test server from a separate Kali Linux computer, then investigated the records in Splunk.
 
-*The SOC Overview presents indexed-event volume, monitored sources, SSH sessions, and grouped file operations for the selected time range. Counts are time-window snapshots, not an uptime guarantee.* · [Original PNG](dashboards/screenshots/01-soc-operations-overview.png)
+1. **Find the login.** Identify when the server accepted the connection and where it came from.
+2. **Follow the right activity.** Match the login with the server's records of commands and file changes, rather than assuming everything nearby is connected.
+3. **Check the original evidence.** Confirm that a test file really was created, and avoid counting several log entries as separate actions.
+4. **Write the conclusion.** Explain why this was expected, authorized lab activity—not evidence of a break-in.
 
-## Skills demonstrated
+![Annotated investigation dashboard showing the login linked to later server activity](investigations/SOC-003/screenshots/04-session54-correlation-annotated.svg)
 
-- **Security monitoring (SIEM):** Forwarded Linux authentication, system, audit and web logs into Splunk Cloud and searched them together.
-- **Incident investigation:** Reconstructed what happened, in what order, and which evidence supported each conclusion.
-- **Detection engineering:** Wrote and refined Splunk searches for authentication patterns, process activity, file changes, web requests and event correlation.
-- **Multi-source correlation:** Linked an SSH login to the correct Linux audit session using matching host, process ID and timestamp rather than assuming nearby events were related.
-- **Dashboard development:** Built a three-tab Splunk Dashboard Studio workspace with time controls and session-specific investigation views.
-- **Technical reporting:** Wrote case timelines, findings, limitations and defensible dispositions, including when the evidence **did not** support a compromise claim.
+*An actual Splunk screenshot from SOC-003, annotated to show the connection between a login and the related server activity. [View the original screenshot](investigations/SOC-003/screenshots/04-session54-correlation.png).*
+
+**[Read the completed SOC-003 case study and view all nine evidence screenshots →](investigations/SOC-003/case-report.md)**
+
+## Explore the project
+
+| Where to go | What you'll find |
+|---|---|
+| **[SOC-003 — Featured investigation](investigations/SOC-003/case-report.md)** | A full case write-up: the question, evidence, timeline, findings, and annotated screenshots |
+| **[Security monitoring dashboard](dashboards/README.md)** | Five annotated screenshots of the dashboard I built to review activity and investigate events |
+| **[SOC-002 — Earlier Linux investigation](investigations/SOC-002/README.md)** | A second investigation following a remote login to commands and file creation |
+| **[SOC-001 — Windows/VPN practice case](investigations/SOC-001/README.md)** | A separate investigation using 205 clearly labeled simulated security records |
+
+Want to see the screenshots without reading every report? Visit the **[evidence gallery](evidence/README.md)**.
+
+## What this project demonstrates
+
+- **Security monitoring:** Set up log collection so activity from a Linux server could be searched in Splunk.
+- **Investigation:** Worked backward from recorded events to understand what occurred and which events were actually related.
+- **Threat detection:** Created reusable searches for login activity, commands, file changes, and web requests.
+- **Dashboard building:** Built three views that help organize monitoring and investigations.
+- **Case reporting:** Documented timelines, screenshots, conclusions, and important limits—without claiming that expected test activity was a real attack.
 
 ## How the lab works
 
-I run **Kali Linux** as an authorized test workstation and **Ubuntu Server** as the monitored endpoint, both in VMware Fusion on an Apple Silicon Mac. Ubuntu records authentication, operating-system, process, file and web activity. A **Splunk Universal Forwarder** sends those logs to **Splunk Cloud**, where I search, correlate and investigate them.
+Both computers run as virtual machines on my Mac. **Kali Linux** is my test computer. **Ubuntu Server** is the computer I monitor. Ubuntu records logins, commands, file activity, and web requests; a Splunk forwarding service sends those records to **Splunk Cloud**. I use saved searches and a dashboard to review them.
 
 ```mermaid
 flowchart LR
-  K["Kali Linux<br/>Controlled test activity"] -->|"SSH and HTTP"| U["Ubuntu Server<br/>Monitored endpoint"]
-  U --> L["Authentication, system,<br/>Auditd and web logs"]
-  L --> F["Splunk Universal Forwarder"]
-  F --> S["Splunk Cloud<br/>soc-live"]
-  S --> Q["Saved SPL reports"]
-  Q --> D["Three-tab dashboard"]
-  S --> I["SOC-002 / SOC-003<br/>Investigations"]
+  K["Kali Linux<br/>Test computer"] -->|"Planned test activity"| U["Ubuntu Server<br/>Monitored computer"]
+  U --> L["System and security logs"]
+  L --> F["Log forwarding service"]
+  F --> S["Splunk Cloud"]
+  S --> D["Dashboard and searches"]
+  S --> I["Investigation reports"]
 ```
 
-The separate `soc_lab` index contains synthetic historical events used for SOC-001 and its detection exercises. [Architecture and setup details](architecture/lab-setup.md) explain the environment and collection path.
+For implementation details, see the [lab architecture and setup](architecture/lab-setup.md) and [log collection documentation](telemetry/README.md).
 
-## Featured investigation — SOC-003
+## The dashboard
 
-**Question:** Can I trace a successful remote login to the commands and file activity that followed it, using more than one log source?
+I built a three-view dashboard to make security records easier to understand and investigate:
 
-I initiated an approved SSH connection from Kali to Ubuntu and then examined the resulting logs in Splunk.
-
-1. **Find the login.** Ubuntu's authentication log showed the Kali source address and SSH process ID **5613**.
-2. **Confirm the session.** A matching Linux Auditd LOGIN record used the same host, process ID and timestamp and assigned **audit session 54**.
-3. **Review endpoint activity.** The dashboard showed commands such as `whoami`, `id`, `chmod` and `stat` within that session.
-4. **Confirm the file operation.** Raw Auditd evidence showed a successful creation of a file in the approved test directory. Five related audit records described **one operation**, not five separate file changes.
-5. **Reach a supported conclusion.** The activity matched the planned exercise and was closed as **authorized lab activity**, not an intrusion.
-
-The investigation also separated an unrelated local SSH test from the Kali session rather than combining them into one story.
-
-![SOC-003 SSH-to-Auditd session correlation](investigations/SOC-003/screenshots/04-session54-correlation-annotated.svg)
-
-*The workspace is filtered to session `54` and identifies Kali source `172.16.110.128` and SSH PID `5613`. The 77 audited executions are aggregated Auditd events, not 77 individually verified human-entered commands.* · [Original PNG](investigations/SOC-003/screenshots/04-session54-correlation.png)
-
-**[Read the full SOC-003 case report and see all nine screenshots](investigations/SOC-003/case-report.md)**
-
-## Splunk dashboard
-
-The dashboard turns several kinds of Linux logs into three views designed around an analyst's workflow.
-
-| View | Purpose |
+| View | What it helps me do |
 |---|---|
-| **SOC Overview** | See which sources are sending data and review authentication and file activity |
-| **Endpoint Activity** | Examine sudo commands, audited processes, monitored file changes and HTTP requests |
-| **Investigation Workspace** | Select an audit session and review related evidence alongside the broader event timeline |
+| **SOC Overview** | Check whether the main log sources are sending data and see a summary of recent activity |
+| **Endpoint Activity** | Review commands, administrative activity, file changes, and web requests |
+| **Investigation Workspace** | Focus on the activity connected to a particular login, alongside a wider timeline |
 
-Eight saved Linux reports support the dashboard. A global time picker controls the search window, and the investigation workspace provides a session filter for case-specific process and file evidence.
+![Actual Splunk Cloud SOC Overview dashboard](dashboards/screenshots/01-soc-operations-overview-annotated.svg)
 
-![Splunk Endpoint Activity dashboard](dashboards/screenshots/02-endpoint-telemetry-annotated.svg)
+*Actual Splunk Cloud dashboard screenshot. Its totals describe the selected time range; they are not a guarantee that monitoring is always available. [Original screenshot](dashboards/screenshots/01-soc-operations-overview.png).*
 
-*Endpoint Activity combines sudo, audited process execution, and HTTP tables. This earlier capture includes a diagnostic line classified as unparsed; the cleaned HTTP evidence appears in Exhibit 05.* · [Original PNG](dashboards/screenshots/02-endpoint-telemetry.png)
-
-**[Explore the dashboard, screenshots and exported configuration](dashboards/README.md)**
+**[Explore the dashboard and its five annotated screenshots →](dashboards/README.md)**
 
 ## Other investigations
 
-### SOC-002 — Linux authentication to file creation
+### SOC-002 — Following a login to a file change
 
-This live-log exercise traced a Kali SSH login through Linux audit session **27**, process executions (`whoami`, `id`, `touch`) and a successful test-file creation. It reinforced how to establish session identity and avoid mistaking multiple audit records for multiple actions.
+Using real logs from my Linux lab, I followed a remote login to the commands that were run and a file that was created. This case helped me practice linking the right events together rather than counting every log entry as a separate action.
 
 **[Read SOC-002](investigations/SOC-002/README.md)**
 
-### SOC-001 — Multi-source investigation
+### SOC-001 — Investigating suspicious-looking activity
 
-Using **205 synthetic security events**, I investigated repeated VPN login failures followed by success, account and group discovery, a rare DNS query, and a Windows group-membership change. I wrote detection and correlation searches, evaluated benign explanations, and documented why the evidence warranted further review without proving compromise.
+Using **205 simulated security records**, I reviewed repeated failed logins, a successful login, account lookups, unusual web-related activity, and a Windows account-group change. The sequence deserved closer review, but the available data did not prove that an account had been compromised.
 
 **[Read SOC-001](investigations/SOC-001/README.md)**
 
-## Detection engineering
+## Searches and technical work
 
-I created searches to answer practical questions: Which SSH connections succeeded or failed? What processes executed? Which monitored files changed? Which web requests were recorded? Can authentication events be connected to activity in the same audit session?
+I created reusable Splunk searches to answer practical questions: Who signed in? Were there failed logins? Which commands ran? What files changed? What web requests were recorded? Which events belonged to the same login?
 
-The project includes **eight saved live Linux reports** and **five historical reports** for the synthetic dataset. These are reusable Splunk searches, **not deployed real-time alerts**. Selected searches and case evidence have been tested; the [validation matrix](docs/linux-report-validation-matrix.md) distinguishes those results from additional checks.
+The project includes **eight saved live Linux reports** and **five historical reports** for the synthetic dataset. These are searches I can run again in Splunk; they are **not deployed real-time alerts**. Selected searches and case evidence have been tested; the [validation matrix](docs/linux-report-validation-matrix.md) distinguishes those results from additional checks.
 
 For the technical detail, see the [Linux detection catalog](detections/linux/README.md), [historical detection catalog](detections/README.md), [SPL/report runbook](docs/report-save-runbook.md), [test plan](docs/detection-test-plan.md) and [analyst triage playbook](docs/detection-triage-playbook.md).
 
@@ -120,7 +111,7 @@ For the technical detail, see the [Linux detection catalog](detections/linux/REA
 
 The live data is stored in Splunk's `soc-live` index; the synthetic historical data is kept in `soc_lab`.
 
-## Documentation and reproducibility
+## Technical documentation — for a deeper look
 
 - [SOC-003 case report and screenshot gallery](investigations/SOC-003/case-report.md)
 - [Dashboard screenshots and exported JSON](dashboards/README.md)
