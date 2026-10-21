@@ -67,7 +67,7 @@ The timeline includes repeated failed VPN authentication followed by success, ac
 
 ### SOC-002 — Linux endpoint activity
 
-A live telemetry case study centered on SSH authentication, Auditd process and file activity, administrative events, and HTTP access logs. Investigation work focuses on reconstructing events, evaluating session attribution, and distinguishing expected lab administration from activity warranting further review.
+A completed, controlled Linux investigation correlating Kali SSH authentication (PID 4937), Auditd login session 27, `whoami`/`id`/`touch` process executions, and a successfully recorded file creation operation. Disposition: authorized lab activity, not confirmed compromise.
 
 [Read the SOC-002 case study](investigations/SOC-002/README.md)
 
@@ -88,7 +88,7 @@ The historical dataset supports five saved Splunk reports:
 
 The searches incorporate filtering, aggregation, chronological ordering and tuning of known-benign activity. These are saved reports rather than active alerting rules.
 
-The Linux detection track covers SSH authentication, sudo activity, monitored file changes, selected process execution, web requests and cross-source correlation. Supporting SPL and validation examples belong in the [detection catalog](detections/README.md) as they are developed.
+The Linux detection track covers SSH authentication, sudo activity, monitored file changes, selected process execution, web requests and cross-source correlation. The [file-change pilot and its SPL](detections/linux/LINUX-DET-003-file-change.md) are documented, but Linux scheduled alerts have not yet been deployed. See the [detection-to-dashboard implementation plan](docs/detection-to-dashboard-plan.md) for validation, tuning, saved reports and dashboard sequencing.
 
 <!-- SCREENSHOT: Saved detection reports -->
 <!-- SCREENSHOT: Correlation results -->

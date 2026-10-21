@@ -11,8 +11,9 @@ Only upload genuine, reviewed, redacted evidence. Do not fabricate screenshots o
 - [ ] Five historical saved reports
 - [ ] COR-001 ordered event sequence
 - [ ] SOC-001 timeline
-- [ ] SOC-002 verified timeline and attribution (pending)
-- [ ] Linux detections validation (pending)
+- [x] SOC-002 verified timeline and attribution reviewed in conversation; sanitized GitHub screenshots still pending
+- [ ] LINUX-DET-003 exploratory grouping: 25 raw events to 7 audit operations; screenshot sanitized/upload pending
+- [ ] Linux detections validation (positive/negative tests and tuning still pending)
 - [ ] Dashboard Studio screenshot (pending)
 
 Record query, time range, UTC/local time basis, source and what each screenshot actually proves.

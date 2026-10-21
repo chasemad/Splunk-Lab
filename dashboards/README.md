@@ -22,3 +22,5 @@ The historical synthetic index `soc_lab` and live telemetry index `soc-live` are
 <!-- SCREENSHOT: Dashboard overview -->
 <!-- SCREENSHOT: Authentication and process analysis -->
 <!-- EXPORT: Add Dashboard Studio JSON once built -->
+
+For detection validation, proposed reports, panel SPL ideas, layout and stage gates, see the [detection-to-dashboard plan](../docs/detection-to-dashboard-plan.md). Dashboard Studio has not yet been configured or exported.

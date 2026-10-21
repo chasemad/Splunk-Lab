@@ -1,10 +1,10 @@
 # Linux detection backlog
 
-**Status: planned; none validated yet.**
+**Status: a file-change pilot search is documented; Linux detection reports and scheduled alerts remain to be built/tested.**
 
 - LINUX-DET-001 — SSH authentication anomalies.
 - LINUX-DET-002 — Unexpected sudo or administrative activity.
-- LINUX-DET-003 — Monitored file modifications.
+- [LINUX-DET-003 — Monitored file changes (candidate SPL + tuning plan)](LINUX-DET-003-file-change.md).
 - LINUX-DET-004 — Selected process executions.
 - LINUX-DET-005 — HTTP access anomalies.
 - LINUX-COR-001 — SSH followed by related endpoint activity, subject to verified session attribution.
