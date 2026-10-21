@@ -1,0 +1,18 @@
+index="soc-live" host="soc-ubuntu-01" source="/var/log/auth.log"
+("Accepted password" OR "Accepted publickey" OR "Failed password" OR "Failed publickey")
+| rex field=_raw "sshd\[(?<sshd_pid>\d+)\]"
+| rex field=_raw "(?<auth_status>Accepted|Failed) (?<method>password|publickey) for (?:invalid user )?(?<account>\S+) from (?<src_ip>(?:\d{1,3}\.){3}\d{1,3}) port (?<src_port>\d+)"
+| eval outcome=case(auth_status="Accepted","Success",auth_status="Failed","Failure")
+| where isnotnull(outcome) AND isnotnull(src_ip) AND isnotnull(sshd_pid)
+| stats
+    count(eval(outcome="Failure")) as failures
+    count(eval(outcome="Success")) as successes
+    max(eval(if(outcome="Failure",_time,null()))) as last_failure
+    min(eval(if(outcome="Success",_time,null()))) as first_success
+    by host account src_ip src_port sshd_pid
+| eval failure_then_success=if(failures>0 AND successes>0 AND last_failure<first_success,"Yes","No")
+| eval time_between=if(failure_then_success="Yes",round(first_success-last_failure,2),null())
+| eval last_failure=if(isnotnull(last_failure),strftime(last_failure,"%Y-%m-%d %H:%M:%S"),null())
+| eval first_success=if(isnotnull(first_success),strftime(first_success,"%Y-%m-%d %H:%M:%S"),null())
+| table host account src_ip src_port sshd_pid failures successes failure_then_success time_between last_failure first_success
+| sort -failures

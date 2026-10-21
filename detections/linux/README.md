@@ -2,7 +2,7 @@
 
 **Status: a file-change pilot search is documented; Linux detection reports and scheduled alerts remain to be built/tested.**
 
-- LINUX-DET-001 — SSH authentication anomalies.
+- [LINUX-DET-001 — SSH authentication baseline and candidate detection](LINUX-DET-001-ssh-auth.md) (8 observed auth events; tuning and saved report pending).
 - LINUX-DET-002 — Unexpected sudo or administrative activity.
 - [LINUX-DET-003 — Monitored file changes (candidate SPL + tuning plan)](LINUX-DET-003-file-change.md).
 - LINUX-DET-004 — Selected process executions.
