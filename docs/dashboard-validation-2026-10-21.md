@@ -71,6 +71,18 @@ Long `_raw` fields and multivalue process lists crowd the tables, particularly i
 
 The Splunk Reports page showed eight enabled Linux reports, app `search`, owner `sc_admin`, and `Private` sharing. The telemetry SPL was inspected in Studio and matched the canonical repository search visually. The remaining saved SPL searches have **not** been exported and systematically compared byte for byte to the repository. Private reports may not be accessible to other Splunk accounts.
 
+## HTTP cleanup and session-filter pilot — 2026-10-21
+
+The operator provided four new Splunk Cloud screenshots after following the HTTP report and session-filter candidate instructions:
+
+- **HTTP classification:** Within a 24-hour search over `/opt/soc-web-logs/access.log`, five source events were classified as **four HTTP requests** and **one diagnostic_or_unparsed** record.
+- **HTTP dashboard:** Endpoint Activity's **Web request activity** panel displayed parsed GET requests, including `/missing-page` with **404**, `/third-test.txt` with **200**, and `/` with **200**. The previously visible separate unparsed diagnostic row was not present in the shown portion of the panel. The saved report's precise SPL/export still requires confirmation before synchronizing the canonical GitHub SPL.
+- **Session input:** The revised Investigation Workspace was visible in Edit mode with an **Audit session (case filter)** number input set to **33**, and the selected correlation table returned SSH PID `5124`, Auditd session `33`, `audited_execs=73`, `monitored_file_ops=3`. This confirms the selected correlation renders for session 33; the counts and attribution still require raw-log examination.
+- **Session 6 comparison:** Changing the Audit session input to **6** displayed **No search results returned** in the selected SSH-to-Auditd correlation table. The independently labeled **Recent activity timeline — all sessions** continued to display background records. Empty correlation is an acceptable outcome if no qualified login/PID match exists; it is not evidence of missing session-6 file activity.
+- **Pending:** Capture the *bottom evidence tables* at session **33** and again at **6**, to show that their returned `audit_session`/`sessions` fields match the input. Verify no cross-session leakage and that the all-session timeline deliberately remains broader. Then save, reopen, and export Splunk's actual revised JSON to synchronize GitHub. The candidate file currently shown in Splunk is **not yet** the repository's canonical production JSON.
+
+These are operator-supplied screenshots of a controlled lab, not confirmed enterprise incident evidence. Publication screenshots still need browser/account chrome cropped and review for sensitive details.
+
 ## Remaining validation and deliverables
 
 - [x] Three tabs render without the previously reported grid or unresolved-report errors.
