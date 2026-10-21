@@ -1,6 +1,6 @@
 # SOC-003 — Controlled Kali-to-Ubuntu Investigation
 
-**State:** SOC-003 case report published with confirmed SSH-to-Auditd session attribution, session-filtered process/file evidence, and a raw five-record successful file-creation group. **Disposition: authorized lab activity.** Sanitized screenshots and two optional follow-up audit groups remain to be published/verified.
+**State:** SOC-003 case report published with confirmed SSH-to-Auditd session attribution, session-filtered process/file evidence, and a raw five-record successful file-creation group. **Disposition: authorized lab activity.** Nine curated original-data screenshots are published; two optional later raw file-operation groups remain to be verified.
 **System:** Kali test workstation `172.16.110.128` → Ubuntu `172.16.110.130` (`soc-ubuntu-01`) → Splunk Cloud `index="soc-live"`.
 **Purpose:** Demonstrate authorized SSH access, audited identity commands, controlled file changes, cross-source correlation, and an evidence-backed analyst disposition.
 
@@ -75,7 +75,7 @@ index="soc-live" host="soc-ubuntu-01" source="/var/log/audit/audit.log"
 
 **Verified**: the raw PATH filename, `nametype=CREATE`, and companion SYSCALL `ses=54`, `auid=1000` and `success=yes`. The other two grouped file-operation IDs (`1792593148.188:1494`, `1792593148.188:1495`) have dashboard evidence only; their raw companions can be validated separately as a follow-up. Multiple PATH/SYSCALL records under the same ID describe a single audited action, not multiple independent operations.
 
-The complete chronology, detection outcomes, attribution limits, and authorized-training disposition are published in [case-report.md](case-report.md). Sanitized screenshots still need to be added to GitHub; filenames and captions are cataloged in the report.
+The complete chronology, detection outcomes, attribution limits, and authorized-training disposition are published in [case-report.md](case-report.md). Nine curated screenshots are now published in GitHub and embedded in [the report's evidence gallery](case-report.md#evidence-gallery--real-screenshots).
 
 ## Stage 2 — trace the event across Splunk reports
 
@@ -133,7 +133,7 @@ To see companion records with the same `audit_id`, run a second search for that 
 - [x] Verify raw grouped PATH/SYSCALL for file creation event `1792593148.187:1492`, session 54.
 - [ ] Optional: independently inspect raw companion records for later file event IDs `:1494` and `:1495`.
 - [ ] Optional lab HTTP test and response code.
-- [ ] Publish sanitized screenshot files and captions in GitHub (operator supplied screenshot evidence for the case; original images are not yet committed).
+- [x] Publish nine curated screenshots and captions in GitHub while preserving original Splunk output.
 - [x] Investigation timeline, conclusion, limitations, and analyst disposition written in [case report](case-report.md).
 - [x] Session-filtered Dashboard Studio JSON exported from the working configuration and committed before the SOC-003 exercise.
 
