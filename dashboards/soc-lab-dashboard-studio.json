@@ -9,6 +9,16 @@
             },
             "title": "Investigation time range",
             "type": "input.timerange"
+        },
+        "input_investigation_session": {
+            "options": {
+                "defaultValue": 33,
+                "min": 0,
+                "step": 1,
+                "token": "investigation_session"
+            },
+            "title": "Audit session (case filter)",
+            "type": "input.number"
         }
     },
     "defaults": {
@@ -60,12 +70,13 @@
         },
         "viz_file_evidence": {
             "dataSources": {
-                "primary": "ds_files"
+                "primary": "ds_case_files"
             },
+            "description": "Only monitored operations matching the chosen audit session (ses).",
             "options": {
                 "backgroundColor": "transparent"
             },
-            "title": "Auditd file evidence",
+            "title": "File evidence - selected audit session",
             "type": "splunk.table"
         },
         "viz_host_count": {
@@ -80,7 +91,7 @@
         },
         "viz_investigation_intro": {
             "options": {
-                "markdown": "## INVESTIGATION WORKSPACE  ·  SOC-003\nCorrelate SSH authentication to Auditd LOGIN by PID **and** time, then review the resulting audit session.\nOnly an analyst review determines whether observed events were authorized."
+                "markdown": "## INVESTIGATION WORKSPACE · SESSION-FOCUSED REVIEW\nChoose an **Audit session number** below. The correlation table and the two evidence tables use that session; the broad activity timeline below remains **all sessions** for background context. Set the global time range to include the selected session before investigating. Different sessions are not interchangeable, and nearby events are not proof of attribution."
             },
             "type": "splunk.markdown"
         },
@@ -99,16 +110,16 @@
             "dataSources": {
                 "primary": "ds_timeline"
             },
-            "description": "A chronological view is not proof that nearby events share the same initiating connection.",
+            "description": "This timeline remains global within the selected time window and is NOT filtered by Audit session; use it only for surrounding context.",
             "options": {
                 "backgroundColor": "transparent"
             },
-            "title": "Cross-source activity timeline",
+            "title": "Recent activity timeline - all sessions",
             "type": "splunk.table"
         },
         "viz_overview_intro": {
             "options": {
-                "markdown": "## SOC OPERATIONS  ·  LIVE LINUX\nMonitored endpoint: `soc-ubuntu-01`  ·  Index: `soc-live`  ·  Lab traffic only\n\nUse the time picker for inline KPIs/trends; saved report time selection should be checked in Studio."
+                "markdown": "## SOC OPERATIONS · LIVE LINUX\nMonitored endpoint: `soc-ubuntu-01` · Index: `soc-live` · Lab traffic only\n\nThe investigation time picker controls inline metrics and all eight saved report sources."
             },
             "type": "splunk.markdown"
         },
@@ -125,23 +136,24 @@
         },
         "viz_process_evidence": {
             "dataSources": {
-                "primary": "ds_process"
+                "primary": "ds_case_process"
             },
+            "description": "Only audited process executions matching the chosen audit session (ses).",
             "options": {
                 "backgroundColor": "transparent"
             },
-            "title": "Process and session evidence",
+            "title": "Process evidence - selected audit session",
             "type": "splunk.table"
         },
         "viz_session_correlation": {
             "dataSources": {
-                "primary": "ds_correlation"
+                "primary": "ds_case_correlation"
             },
-            "description": "Review joins and time bounds before relying on this panel.",
+            "description": "Candidate PID and timestamp matching, scoped to selected audit session. Verify raw LOGIN and auth records.",
             "options": {
                 "backgroundColor": "transparent"
             },
-            "title": "SSH ↔ Auditd session correlation (candidate)",
+            "title": "SSH to Auditd correlation - selected audit session",
             "type": "splunk.table"
         },
         "viz_ssh": {
@@ -208,6 +220,27 @@
         }
     },
     "dataSources": {
+        "ds_case_correlation": {
+            "name": "Case-scoped SSH to Auditd correlation",
+            "options": {
+                "query": "index=\"soc-live\" host=\"soc-ubuntu-01\" source=\"/var/log/audit/audit.log\"\n(\"type=LOGIN\" OR (\"type=SYSCALL\" (\"soc_lab_exec\" OR \"soc_lab_file_change\")))\n| rex field=_raw \"^type=(?<record_type>[A-Z_]+)\"\n| rex field=_raw \"(?:^|\\s)pid=(?<pid>\\d+)\"\n| rex field=_raw \"(?:^|\\s)ses=(?<audit_session>\\d+)\"\n| rex field=_raw \"(?:^|\\s)comm=\\\"(?<process>[^\\\"]+)\\\"\"\n| eval is_exec=if(record_type=\"SYSCALL\" AND match(_raw,\"key=\\\"soc_lab_exec\\\"\"),1,0)\n| eval is_file=if(record_type=\"SYSCALL\" AND match(_raw,\"key=\\\"soc_lab_file_change\\\"\"),1,0)\n| stats\n    values(eval(if(record_type=\"LOGIN\",pid,null()))) as ssh_pid\n    min(eval(if(record_type=\"LOGIN\",_time,null()))) as audit_login_time\n    sum(is_exec) as audited_execs\n    sum(is_file) as monitored_file_ops\n    values(eval(if(is_exec=1,process,null()))) as executed_processes\n    by host audit_session\n| where isnotnull(ssh_pid)\n| mvexpand ssh_pid\n| join type=inner host ssh_pid [\n    search index=\"soc-live\" host=\"soc-ubuntu-01\" source=\"/var/log/auth.log\" (\"Accepted password\" OR \"Accepted publickey\")\n    | rex field=_raw \"sshd\\[(?<ssh_pid>\\d+)\\]\"\n    | rex field=_raw \"Accepted (?:password|publickey) for (?<account>\\S+) from (?<src_ip>(?:\\d{1,3}\\.){3}\\d{1,3})\"\n    | eval auth_time=_time\n    | table host ssh_pid account src_ip auth_time\n]\n| where abs(audit_login_time-auth_time)<=120\n| where audit_session=\"$investigation_session$\"\n| eval auth_time=strftime(auth_time,\"%Y-%m-%d %H:%M:%S\")\n| table auth_time host account src_ip ssh_pid audit_session audited_execs monitored_file_ops\n| sort 0 -auth_time"
+            },
+            "type": "ds.search"
+        },
+        "ds_case_files": {
+            "name": "Case-scoped file audit evidence",
+            "options": {
+                "query": "index=\"soc-live\" host=\"soc-ubuntu-01\" source=\"/var/log/audit/audit.log\"\n(\"soc_lab_file_change\" OR \"/opt/soc-lab-test/\")\n| rex field=_raw \"msg=audit\\((?<audit_id>[^)]+)\\)\"\n| rex field=_raw \"type=(?<record_type>[A-Z_]+)\"\n| rex field=_raw \"name=\\\"(?<file_path>/opt/soc-lab-test/[^\\\"]+)\\\"\"\n| rex field=_raw \"success=(?<operation_success>\\w+)\"\n| rex field=_raw \"comm=\\\"(?<process>[^\\\"]+)\\\"\"\n| rex field=_raw \"\\bauid=(?<audit_user>\\d+)\"\n| rex field=_raw \"\\bses=(?<audit_session>\\d+)\"\n| eval has_file_rule=if(match(_raw,\"key=\\\"soc_lab_file_change\\\"\"),1,0)\n| stats earliest(_time) as first_seen\n        max(has_file_rule) as has_file_rule\n        values(file_path) as files\n        values(operation_success) as outcomes\n        values(process) as processes\n        values(audit_user) as audit_users\n        values(audit_session) as sessions\n        values(record_type) as record_types\n        count as raw_records\n        by host audit_id\n| where has_file_rule=1 AND isnotnull(files) AND mvfind(outcomes,\"^yes$\")>=0\n| mvexpand sessions\n| where sessions=\"$investigation_session$\"\n| eval first_seen=strftime(first_seen,\"%Y-%m-%d %H:%M:%S\")\n| table first_seen host audit_id files processes audit_users sessions outcomes raw_records record_types\n| sort 0 -first_seen"
+            },
+            "type": "ds.search"
+        },
+        "ds_case_process": {
+            "name": "Case-scoped audited processes",
+            "options": {
+                "query": "index=\"soc-live\" host=\"soc-ubuntu-01\" source=\"/var/log/audit/audit.log\" \"type=SYSCALL\" \"key=\\\"soc_lab_exec\\\"\"\n| rex field=_raw \"msg=audit\\((?<audit_id>[^)]+)\\)\"\n| rex field=_raw \"(?:^|\\s)comm=\\\"(?<process>[^\\\"]+)\\\"\"\n| rex field=_raw \"(?:^|\\s)auid=(?<audit_user>\\d+)\"\n| rex field=_raw \"(?:^|\\s)euid=(?<effective_uid>\\d+)\"\n| rex field=_raw \"(?:^|\\s)ses=(?<audit_session>\\d+)\"\n| rex field=_raw \"(?:^|\\s)pid=(?<pid>\\d+)\"\n| rex field=_raw \"(?:^|\\s)ppid=(?<parent_pid>\\d+)\"\n| rex field=_raw \"(?:^|\\s)success=(?<success>\\w+)\"\n| where audit_session=\"$investigation_session$\"\n| table _time host audit_id audit_user effective_uid audit_session process pid parent_pid success\n| sort 0 -_time"
+            },
+            "type": "ds.search"
+        },
         "ds_correlation": {
             "name": "SSH Session Correlation",
             "options": {
@@ -421,7 +454,7 @@
                 "options": {
                     "display": "auto",
                     "gutterSize": 8,
-                    "height": 1395,
+                    "height": 1490,
                     "width": 1200
                 },
                 "structure": [
@@ -436,12 +469,22 @@
                         "type": "block"
                     },
                     {
+                        "item": "input_investigation_session",
+                        "position": {
+                            "h": 95,
+                            "w": 1200,
+                            "x": 0,
+                            "y": 115
+                        },
+                        "type": "input"
+                    },
+                    {
                         "item": "viz_session_correlation",
                         "position": {
                             "h": 365,
                             "w": 1200,
                             "x": 0,
-                            "y": 115
+                            "y": 210
                         },
                         "type": "block"
                     },
@@ -451,7 +494,7 @@
                             "h": 495,
                             "w": 1200,
                             "x": 0,
-                            "y": 480
+                            "y": 575
                         },
                         "type": "block"
                     },
@@ -461,7 +504,7 @@
                             "h": 420,
                             "w": 600,
                             "x": 0,
-                            "y": 975
+                            "y": 1070
                         },
                         "type": "block"
                     },
@@ -471,7 +514,7 @@
                             "h": 420,
                             "w": 600,
                             "x": 600,
-                            "y": 975
+                            "y": 1070
                         },
                         "type": "block"
                     }
