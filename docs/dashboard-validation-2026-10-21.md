@@ -83,6 +83,20 @@ The operator provided four new Splunk Cloud screenshots after following the HTTP
 
 These are operator-supplied screenshots of a controlled lab, not confirmed enterprise incident evidence. Publication screenshots still need browser/account chrome cropped and review for sensitive details.
 
+## Selected-session evidence tables validated — 2026-10-21
+
+Three operator screenshots validated the revised *Investigation Workspace* with a case-specific **Audit session** input.
+
+- **Session 33, selected file evidence:** monitored operations involving `/opt/soc-lab-test/det003-validation.txt`; every visible `sessions` field equals **33**. The displayed `processes` include `bash` and `chmod`; the records show successful operations.
+- **Session 33, selected process evidence:** `chmod`, `cat`, `dircolors`, and `dirname` shown with `audit_session=33`, including process identifiers and user identity fields. Additional records may be paginated.
+- **Session 6, selected file evidence:** previously observed operations on `/opt/soc-lab-test/third-test.txt` and `/opt/soc-lab-test/evidence.txt`, each with `sessions=6`. **No session 33 rows** are visible in these filtered tables.
+- **Session 6, selected process evidence:** `auditctl`, `grep`, `sudo`, and `ls` are visible with `audit_session=6`. Different effective user IDs are present; do not equate an effective root context automatically with unauthorized activity.
+- **Session 33 overview:** the selected correlation table still shows source `172.16.110.128`, SSH PID **5124**, Auditd session **33**, with candidate counts of **73** audited `SYSCALL` executions and **3** monitored file-operation `SYSCALL` records. These still require separate source-level attribution/count review.
+- **Timeline distinction:** `Recent activity timeline — all sessions` remains visible for broad chronological context and explicitly states it is *not* filtered by the selected Audit session. Do not attribute every background row to the selected connection.
+- **Presentation:** the third screenshot shows a full Investigation Workspace in View mode (green **Edit** button), including the session input, correlation, all-session timeline, and both case-filtered evidence tables. Save/reopen persistence and exact final source export are not yet independently captured.
+
+**Result:** The requested 33-versus-6 filter test passed on visible file/process rows. The dashboard candidate is **not** yet synced to the repository's canonical production JSON; obtain the post-save Dashboard Studio Source export and compare before updating GitHub. Genuine sanitized images still need to be included in the repository to replace evidence placeholders.
+
 ## Remaining validation and deliverables
 
 - [x] Three tabs render without the previously reported grid or unresolved-report errors.
@@ -91,7 +105,8 @@ These are operator-supplied screenshots of a controlled lab, not confirmed enter
 - [x] Telemetry, sudo and process time-range behavior tested against short and longer windows.
 - [ ] Spot-check SSH, file changes, HTTP, session correlation and investigation timeline time-range behavior.
 - [ ] Validate HTTP parsing and distinguish diagnostic log lines from requests.
-- [ ] Independently validate correlation attribution and relevant process/file events.
+- [x] Visually confirm selected-session filter changes file/process evidence between session 33 and 6.
+- [ ] Independently validate the underlying SSH PID/Auditd LOGIN attribution and count semantics.
 - [ ] Save/reopen and confirm the latest state persists after edits.
 - [ ] Compare the actual saved Splunk reports with the canonical SPL and document detection positive/negative tests.
 - [ ] Capture and commit sanitized evidence screenshots.
