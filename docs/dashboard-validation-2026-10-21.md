@@ -36,9 +36,30 @@ The visible **file-evidence table** shows earlier file operations under Auditd s
 
 Tables are comprehensive but some columns (`_raw`, multivalue `executed_processes`, UTC timestamps) crowd the full-screen view, particularly in the correlation and process evidence panels. Prefer a concise summary plus a clear raw-event drilldown, and explicitly label timezone and report time scope before final portfolio capture.
 
+## Time picker A/B test — operator screenshots, 2026-10-21
+
+**Executed.** The operator changed the global time picker from **Last 24 hours** to **Last 15 minutes** and shared screenshots of all three tabs.
+
+- **Inline KPIs:** indexed event count fell from **8,834** to **36**; observed hosts remained at 1, and the event-volume chart updated to the short period. The inline search token wiring is functioning.
+- **Saved-report panels:** the Endpoint Activity sudo table still displayed older `auditctl -l` and forwarder restart commands; the web table retained early-day GET and diagnostic entries; the file-change table still displayed earlier session 6 operations. Investigation Workspace still displayed the previous correlation (`ssh_pid=5124`, `ses=33`) and earlier timeline rows. This demonstrates the current saved-report panels **do not respond to the global time picker** despite the input visibly changing.
+- **Scope:** this establishes a functional dashboard issue, not lost telemetry or broken report references.
+
+### Recommended low-risk remediation test
+
+Splunk's 2026 Dashboard Studio [Call saved searches](https://help.splunk.com/en/splunk-enterprise/create-dashboards-and-reports/dashboard-studio/10.6/use-data-sources/call-saved-searches) documentation specifically describes a **saved-search time range** selection in the UI with three modes: *Inherit the time range from the saved search*, *Any time range input on the page*, or *static time range*. Because we have not inspected the installed version's **generated source representation** for this setting, **do not invent undocumented `ds.savedSearch` JSON properties yet**. Splunk's source documentation lists `ref`, `app`, and unscheduled refresh properties for this source type.
+
+First test the setting on the separately created **SOC Lab | Dashboard Studio Diagnostic (Temporary)** dashboard:
+1. Open in Edit, select the saved file-change report table on the right and edit its data source (or use Data source overview).
+2. Choose `Any time range input on the page` and bind to its existing `Diagnostic time range` input if the UI offers it.
+3. Apply and test **Last 15 minutes** (historical rows should disappear) versus **Last 24 hours** (historical rows return). Screenshot the UI source setting and resulting tables.
+4. Inspect the dashboard Source editor **after UI Apply** to learn the actual schema supported by this Splunk Cloud instance.
+5. If successful, update the eight production saved sources consistently using the native UI and export the working production source to GitHub. If the option is missing or still ignored, compare a bounded `ds.search`-based diagnostic using the canonical saved SPL before changing production.
+
+The production dashboard is already working except for global saved-report time filtering and the other separately documented data-quality/attribution issues. **Avoid replacing it with an untested conversion.**
+
 ## Next validation steps
 
-1. **Time picker A/B test**: screenshot Last 24 hours total and SSH / file evidence baseline, switch to Last 15 minutes, wait for searches to settle, record whether indexed-event total changes and whether historical report rows disappear. Do not infer a saved report is filtered just because the inline KPI changed.
+1. **Saved report time control pilot**: test the native time-range selection in the temporary diagnostic dashboard before applying it to the eight live production report sources. The global time picker A/B test has confirmed saved sources currently ignore it.
 2. **Validate source reports in Search & Reporting**: inspect exact SPL/time setting for each of the eight named saved searches; compare with the repository. Check sudo, process and HTTP fields and the five-event access-log content.
 3. **Verify session 33 attribution**: compare the accepted SSH authentication PID and Auditd LOGIN PID/session/time, inspect audited execution/file `SYSCALL` records with `ses=33`, and compare the counts with `LINUX-COR-001`. Verify why the unfiltered evidence panels show `ses=6`.
 4. **Resolve HTTP data-quality row**: edit and re-run candidate SPL to separate request entries from web-server diagnostics, then update the actual report and export aligned SPL.
