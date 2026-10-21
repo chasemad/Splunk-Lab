@@ -1,26 +1,59 @@
-# Evidence gallery and validation checklist
+# Evidence gallery — Splunk SOC Lab
 
-Only upload genuine, reviewed, redacted evidence. Do not fabricate screenshots or expose credentials, tokens, sensitive logs, or private network details unnecessarily.
+This page highlights **real screenshots from the live Linux monitoring lab**. Start with the SOC-003 investigation if you want to see how authentication, process activity and a file operation were connected into one evidence-supported case.
 
-- [ ] Splunk Cloud active forwarder / destination (redacted)
-- [x] Live source breakdown (`soc-live`) — [dashboard screenshot](../dashboards/screenshots/01-soc-operations-overview.png)
-- [x] SSH accepted authentication from controlled Kali VM — [SOC-003 exhibit](../investigations/SOC-003/screenshots/01-kali-ssh-authentication.png)
-- [x] Auditd file-change event and grouped audit ID — [five raw records](../investigations/SOC-003/screenshots/06-raw-file-creation-audit-id.png)
-- [x] Auditd process execution summary — [session 54](../investigations/SOC-003/screenshots/05-session54-process-and-file-evidence.png)
-- [x] HTTP 200/404 request results — [request table](../dashboards/screenshots/05-clean-http-request-view.png)
-- [ ] Five historical saved reports
-- [ ] COR-001 ordered event sequence
-- [ ] SOC-001 timeline
-- [ ] SOC-002 case is documented; dedicated sanitized screenshots not yet published
-- [ ] LINUX-DET-003 exploratory grouping: 25 raw events to 7 audit operations; screenshot sanitized/upload pending
-- [ ] Linux detections validation (positive/negative tests and tuning still pending)
-- [x] Dashboard Studio gallery published — [five screenshots](../dashboards/README.md#screenshot-gallery)
+## Featured evidence
 
-Record query, time range, UTC/local time basis, source and what each screenshot actually proves.
+### SOC-003 — Trace an SSH login to endpoint activity
 
-## Published evidence collections
+![SOC-003 SSH authentication from Kali](../investigations/SOC-003/screenshots/01-kali-ssh-authentication.png)
 
-- [SOC-003 analyst evidence gallery](../investigations/SOC-003/case-report.md#evidence-gallery--real-screenshots) — nine authentic screenshots, six core exhibits and three context/preflight images.
-- [Dashboard Studio image gallery](../dashboards/README.md#screenshot-gallery) — five dashboard, session-filter and HTTP data-quality images.
+*The authentication event identifies the authorized Kali source and the SSH connection.*
 
-Edits are limited to cropping, framing, and external explanatory captions. The Splunk interface and evidence values have not been recreated. Case session 53 is not attributed to Kali session 54.
+![SOC-003 SSH-to-Auditd session correlation](../investigations/SOC-003/screenshots/04-session54-correlation.png)
+
+*Matching SSH and Auditd LOGIN evidence links the connection to audit session 54.*
+
+![SOC-003 raw Auditd file-creation evidence](../investigations/SOC-003/screenshots/06-raw-file-creation-audit-id.png)
+
+*Five related Auditd records describe one successful file-creation event.*
+
+**[Read the complete SOC-003 case report and all nine screenshots](../investigations/SOC-003/case-report.md#evidence-gallery--real-screenshots)**
+
+### Splunk Dashboard Studio — Monitoring and investigation
+
+![SOC Overview dashboard](../dashboards/screenshots/01-soc-operations-overview.png)
+
+*Live source inventory, SSH sessions and grouped file operations.*
+
+![Endpoint Activity dashboard](../dashboards/screenshots/02-endpoint-telemetry.png)
+
+*Saved-report views for endpoint behavior.*
+
+![HTTP request parsing results](../dashboards/screenshots/05-clean-http-request-view.png)
+
+*The corrected request table separates HTTP requests from a server diagnostic record.*
+
+**[See the full five-image dashboard gallery](../dashboards/README.md#screenshot-gallery)**
+
+## Other documented investigations
+
+- [SOC-002 — Live Linux endpoint investigation](../investigations/SOC-002/README.md): completed SSH-to-Auditd investigation; dedicated screenshots have not been published.
+- [SOC-001 — Synthetic multi-source investigation](../investigations/SOC-001/README.md): completed case analysis; dedicated timeline and correlation screenshots have not been published.
+
+## Evidence collection and review backlog
+
+These items are documentation or validation follow-ups, **not missing portions of the completed SOC-003 case**.
+
+- [ ] Publish a suitably redacted forwarder/destination configuration screenshot.
+- [ ] Publish dedicated SOC-002 screenshots if they add value beyond SOC-003.
+- [ ] Publish SOC-001 timeline, correlation and historical report screenshots if available.
+- [ ] Publish the LINUX-DET-003 exploratory file-event grouping screenshot (25 raw records / 7 audit operations).
+- [ ] Record remaining Linux detection positive/negative tests and saved-SPL reconciliation.
+- [ ] Visually inspect each published screenshot for legibility and unintended sensitive information.
+
+## Evidence integrity
+
+The published images are described as captures from the actual Splunk environment. Editorial cropping, framing and captions are acceptable; data values and Splunk interface contents should not be fabricated or altered. The screenshots are not independent forensic acquisitions. The earlier Ubuntu-originated session 53 is not attributed to the Kali-originated session 54.
+
+Record the query, time range, UTC/local-time basis and evidence limitations when adding exhibits. Never publish credentials, tokens, sensitive logs or private deployment packages.
