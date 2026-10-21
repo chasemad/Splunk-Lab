@@ -1,6 +1,6 @@
 # SOC-003 — Controlled Kali-to-Ubuntu Investigation
 
-**State:** SOC-003 underway. SSH authentication and matching Auditd LOGIN confirmed for a Kali-originated session; session-scoped process and file evidence, final timeline, and disposition are still pending.
+**State:** SOC-003 core SSH/Auditd session attribution and session-filtered file/process evidence captured. Raw companion-record verification and the final case report remain pending.
 **System:** Kali test workstation `172.16.110.128` → Ubuntu `172.16.110.130` (`soc-ubuntu-01`) → Splunk Cloud `index="soc-live"`.
 **Purpose:** Demonstrate authorized SSH access, audited identity commands, controlled file changes, cross-source correlation, and an evidence-backed analyst disposition.
 
@@ -45,6 +45,35 @@ Screenshots from **Search & Reporting** document a controlled test on 2026-10-21
 5. **Next case-evidence gate:** Set Investigation Workspace's **Audit session (case filter)** to **54** and choose a time window covering 14:32 UTC. Check candidate correlation, filtered audited process evidence and filtered monitored-file evidence. Look for `soc003-kali-validation.txt` **only if the file commands were actually executed during this separate Kali-originated session**. If a panel is empty, inspect raw records instead of assuming the event occurred.
 
 **Do not combine** session 53's two failures and accepted login with session 54's Kali login as though they were a single remote session. Both are valid controlled lab observations with different originating hosts. Correlation here establishes a plausible session linkage; final analyst disposition still requires checking the process/file audit IDs and observed command sequence.
+
+## SOC-003 session 54 evidence checkpoint
+
+Operator screenshots captured from the working Dashboard Studio on 2026-10-21:
+
+- SSH authentication: Accepted password for `socadmin` from Kali `172.16.110.128` to Ubuntu `172.16.110.130` at 14:32:20.566 UTC, `sshd[5613]`, source port `54272`.
+- Auditd LOGIN: same PID `5613`, same timestamp, `auid=1000`, assigned `ses=54`, audit ID `1792593140.566:1414`.
+- Investigation Workspace with Last 60 minutes and Audit session 54: candidate SSH/Auditd correlation displayed `audited_execs=77` and `monitored_file_ops=3`. These are aggregate result counts, not distinct typed-command counts.
+- Selected session 54 file evidence: `/opt/soc-lab-test/soc003-kali-validation.txt` visible with successful monitored operations; first displayed audit ID `1792593148.187:1492`, original user 1000, session 54.
+- Selected session 54 process evidence: `stat`, `chmod`, `id`, and `whoami`, user ID 1000, effective user ID 1000, audit session 54.
+- SOC Overview also shows prior `soc003-validation.txt` file activity in session 53 and two failures followed by a success from `172.16.110.130`. This is separate local/self-SSH evidence and must not be attributed to the Kali session.
+- Recent activity timeline is explicitly all sessions; nearby timeline events are not automatically session 54 evidence.
+
+### Raw-event validation still required
+
+Check all Auditd records sharing the same event ID before concluding the exact file operation:
+
+```spl
+index="soc-live" host="soc-ubuntu-01" source="/var/log/audit/audit.log"
+| rex field=_raw "msg=audit\((?<audit_id>[^)]+)\)"
+| search audit_id="1792593148.187:1492"
+| rex field=_raw "type=(?<record_type>[A-Z_]+)"
+| table _time audit_id record_type _raw
+| sort 0 _time
+```
+
+Confirm the PATH filename and companion SYSCALL attributes `ses=54`, `auid=1000` and `success=yes`. Check additional audit IDs for later changes separately. The distinct event ID groups represent actions; several PATH/SYSCALL records for one ID are not several independent user operations.
+
+After validation, write the final analyst case chronology, detection outcomes, attribution limits, and reasoned authorized-training disposition. Store sanitized screenshots in the repository.
 
 ## Stage 2 — trace the event across Splunk reports
 
@@ -96,10 +125,10 @@ To see companion records with the same `audit_id`, run a second search for that 
 ## Expected deliverables (complete only after actual test)
 
 - [ ] Timestamped Kali start / Ubuntu session.
-- [ ] Successful SSH log with source IP and PID.
-- [ ] Auditd LOGIN same PID and assigned session ID.
-- [ ] Process commands and original/effective user IDs from that session.
-- [ ] File create and modify operations and audit event IDs.
+- [x] Successful SSH log with source IP and PID.
+- [x] Auditd LOGIN same PID and assigned session ID.
+- [x] Session 54 process commands and original/effective user IDs recorded from dashboard.
+- [ ] Verify raw grouped PATH/SYSCALL records for session 54 file events; dashboard file evidence and audit IDs captured.
 - [ ] Optional lab HTTP test and response code.
 - [ ] Screenshots of all three dashboard tabs with data and readable labels.
 - [ ] Investigation timeline, conclusion, limitations, and analyst disposition.
