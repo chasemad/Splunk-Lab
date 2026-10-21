@@ -14,7 +14,7 @@ The lab has three documented investigations, eight saved live Linux reports, a t
 
 - [ ] Export exact SPL for all eight saved Linux reports and compare it to repository versions.
 - [ ] Reconcile the updated live HTTP parsing query with the canonical GitHub SPL.
-- [ ] Record a validation matrix: input data, expected positive and negative behavior, observed output, and limitations.
+- [x] Prepare a [validation matrix](linux-report-validation-matrix.md) and [test plan](detection-test-plan.md); runtime outcomes still need to be recorded.
 - [ ] Revisit SSH failed-login threshold and cross-connection coverage using controlled fixtures.
 - [ ] Review the two additional SOC-003 file-operation record groups if useful for deeper evidence completeness.
 - [ ] Decide whether scheduled alerting is supported and warranted; validate before claiming alert coverage.
@@ -28,7 +28,8 @@ The lab has three documented investigations, eight saved live Linux reports, a t
 - [x] Give the dashboard documentation a reader-focused introduction.
 - [ ] Visually review every published PNG for readability, captions, redaction, and evidence integrity.
 - [ ] Check remaining documentation links and claims; retain unresolved evidence gaps transparently.
-- [ ] Refine the architecture diagram and record a short investigation walkthrough.
+- [x] Refine the [architecture diagram](../architecture/lab-setup.md) and prepare a [short walkthrough storyboard](recruiter-demo-script.md).
+- [ ] Record and publish the actual demonstration video.
 
 ## Optional extensions
 
