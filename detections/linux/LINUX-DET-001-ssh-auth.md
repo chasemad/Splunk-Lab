@@ -16,14 +16,14 @@ All eight extracted events referenced `socadmin` using password authentication. 
 
 ## Files
 
-- [LINUX-DET-001-ssh-session-summary.spl](LINUX-DET-001-ssh-session-summary.spl) — manually review failed/successful SSH events grouped by connection identifiers. **New improved query; run it before claiming its returned output was validated.**
+- [LINUX-DET-001-ssh-session-summary.spl](LINUX-DET-001-ssh-session-summary.spl) — manually review failed/successful SSH events grouped by connection identifiers. The grouped session summary was tested against the eight-event baseline; saved SPL parity remains pending.
 - [LINUX-DET-001-ssh-failure-followed-success.spl](LINUX-DET-001-ssh-failure-followed-success.spl) — **candidate** threshold requiring three or more failures followed by success within one SSH connection. Current known eight-event sample should **not** satisfy this threshold (only one failure). This is not yet a tested alert.
 
 ## Confirmed session-summary validation (2026-10-21)
 
 The grouped [session summary SPL](LINUX-DET-001-ssh-session-summary.spl) was run in Splunk Search & Reporting. Eight matching authentication records were reduced to seven connections in the results table. Six connections had one successful login and no failures; connection `sshd[5124]`, source `172.16.110.128:52796`, recorded one failure then one successful authentication. The query calculated `time_between=13.55` seconds. This corroborates the individual records, but does not establish malicious activity.
 
-**Still pending:** Qualifying live-event and cross-connection validation, threshold tuning, saved-report confirmation, and alert scheduling decision. A separate in-memory synthetic positive test passed on 2026-10-21.
+**Still pending:** Qualifying live-event and cross-connection validation, threshold tuning, saved-SPL parity, and alert scheduling decision. A separate in-memory synthetic positive test passed on 2026-10-21.
 
 ## Candidate threshold negative test — 2026-10-21
 
@@ -56,5 +56,5 @@ A controlled in-memory `makeresults` search generated four **synthetic**, non-in
 
 - [ ] Sanitized screenshot: eight auth events and extracted fields.
 - [ ] Sanitized screenshot: per-connection SSH session summary.
-- [ ] Validated candidate query positive/negative test results.
+- [x] Candidate query positive/negative outcomes described in this document (synthetic positive and known-data negative); screenshots not yet published.
 - [ ] Full saved Splunk Report settings and SPL after review.
