@@ -1,5 +1,15 @@
 # SOC-002 — Live Linux Endpoint Investigation
 
+## At a glance
+
+**Investigation question:** Can I connect a remote login to the processes and file creation that followed, using real Linux logs?
+
+**What I did:** Traced an authorized Kali SSH login to Auditd session **27**, identified `whoami`, `id` and `touch` execution, and examined the audit records confirming a file was created in the test directory.
+
+**What it demonstrates:** Security monitoring, cross-source event correlation, audit-log interpretation, timeline reconstruction, and evidence-based case closure.
+
+**Outcome:** The events were consistent with the controlled exercise and the case was closed as **authorized lab activity**. Unlike SOC-001, this case uses **real logs collected from the lab VMs**. For a screenshot-backed walkthrough of the same investigation method, see [SOC-003](../SOC-003/case-report.md).
+
 **Investigation type:** Controlled lab-generated security investigation  
 **Status:** Closed — authorized test activity  
 **Investigation date:** 2026-10-21 (UTC)  
