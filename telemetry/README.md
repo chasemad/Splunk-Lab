@@ -21,6 +21,6 @@ index="soc-live" host="soc-ubuntu-01"
 
 Process summary previously showed 167 matching syscall records and 58 distinct process names. These are not necessarily 167 unique actions.
 
-**[PLACEHOLDER: Splunk data source screenshot]**
+See the [published SOC Overview screenshot](../dashboards/screenshots/01-soc-operations-overview.png) for the live source inventory.
 
-**[PLACEHOLDER: sample redacted auth, audit, and web events]**
+See [SOC-003 evidence](../investigations/SOC-003/case-report.md#evidence-gallery--real-screenshots) for authentication and Auditd records, and the [dashboard HTTP gallery](../dashboards/README.md#screenshot-gallery) for web-request parsing.
