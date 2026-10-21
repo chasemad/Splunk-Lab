@@ -1,8 +1,27 @@
 # Splunk SOC Detection Engineering Lab
 
-A hands-on security operations lab focused on **SIEM administration, security telemetry, incident investigation, SPL detection engineering, and analyst workflows**.
+A hands-on security operations portfolio project combining **live Linux telemetry, Splunk detection searches, a three-tab analyst dashboard, and evidence-based incident investigations**.
 
-Built with Splunk Cloud, Ubuntu Server, Kali Linux, VMware Fusion, and Linux Auditd. The project combines a structured historical investigation dataset with live endpoint activity generated in a controlled virtual lab.
+Built with Splunk Cloud, Ubuntu Server, Kali Linux, Auditd, and VMware Fusion. The lab follows the workflow from log collection through investigation and analyst disposition.
+
+## Start here
+
+- **[SOC-003 — SSH-to-Auditd investigation](investigations/SOC-003/case-report.md)** — Follow a Kali SSH login to its matching Auditd session, process evidence, and verified file creation, with nine real screenshots.
+- **[SOC dashboard](dashboards/README.md)** — Three operational tabs covering telemetry, endpoint activity, and session-scoped investigation, with five screenshots.
+- **[SOC-002 — Earlier Linux investigation](investigations/SOC-002/README.md)** — Authentication-to-process/file correlation in the live lab.
+- **[SOC-001 — Historical investigation](investigations/SOC-001/README.md)** — Multi-source investigation using a synthetic security dataset.
+- **[Evidence index](evidence/README.md)** — Published exhibits and remaining evidence checks.
+
+## What this demonstrates
+
+- Collecting SSH, syslog, Auditd, and HTTP telemetry from a monitored Ubuntu VM into Splunk Cloud.
+- Writing SPL to summarize authentication, process execution, file operations, and web requests.
+- Linking SSH authentication to Auditd LOGIN using host, process ID, timestamp, and session context.
+- Interpreting multiple Auditd records as one underlying audited event where appropriate.
+- Building a three-tab Dashboard Studio workspace with a global time picker and session-scoped evidence.
+- Writing reproducible investigations with limitations and justified dispositions.
+
+**Current scope:** The dashboard and three case studies are documented; eight live Linux reports are saved. Broader detection validation, scheduled alerting, and infrastructure hardening remain separate work. This is a controlled personal lab, not a production SOC.
 
 ## Lab architecture
 
@@ -20,7 +39,6 @@ flowchart TD
   L --> I[SOC-001 / detection reports / correlation]
 ```
 
-<!-- SCREENSHOT: Replace with final architecture diagram -->
 
 ## Technology stack
 
@@ -63,7 +81,6 @@ The timeline includes repeated failed VPN authentication followed by success, ac
 
 [Read the SOC-001 case study](investigations/SOC-001/README.md)
 
-<!-- SCREENSHOT: SOC-001 timeline and supporting evidence -->
 
 ### SOC-002 — Linux endpoint activity
 
@@ -71,8 +88,6 @@ A completed, controlled Linux investigation correlating Kali SSH authentication 
 
 [Read the SOC-002 case study](investigations/SOC-002/README.md)
 
-<!-- SCREENSHOT: SOC-002 cross-source timeline -->
-<!-- SCREENSHOT: SSH session attribution and grouped Auditd records -->
 
 ### SOC-003 — Kali-to-Ubuntu SSH and Auditd correlation
 
@@ -100,9 +115,6 @@ The searches incorporate filtering, aggregation, chronological ordering and tuni
 
 The Linux detection track covers SSH authentication, sudo activity, monitored file changes, selected process execution, web requests and cross-source correlation. The [file-change pilot and its SPL](detections/linux/LINUX-DET-003-file-change.md) are documented, but Linux scheduled alerts have not yet been deployed. See the [detection-to-dashboard implementation plan](docs/detection-to-dashboard-plan.md) for validation, tuning, saved reports and dashboard sequencing.
 
-<!-- SCREENSHOT: Saved detection reports -->
-<!-- SCREENSHOT: Correlation results -->
-<!-- SCREENSHOT: Linux detection examples -->
 
 ### Live reporting pack and end-to-end investigation
 
@@ -134,4 +146,3 @@ The [dashboard section](dashboards/README.md) contains the **actual exported thr
 
 This project is a personal lab, not a production SOC deployment. Historical SOC-001 events are synthetic; Linux endpoint telemetry is generated through controlled testing. Correlation results are evaluated against available session context, and suspicious patterns are not treated as proof of compromise. Secrets, credential packages and sensitive raw logs are excluded from the repository.
 
-<!-- VIDEO: Insert final recruiter-friendly walkthrough -->
