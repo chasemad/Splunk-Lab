@@ -23,7 +23,13 @@ All eight extracted events referenced `socadmin` using password authentication. 
 
 The grouped [session summary SPL](LINUX-DET-001-ssh-session-summary.spl) was run in Splunk Search & Reporting. Eight matching authentication records were reduced to seven connections in the results table. Six connections had one successful login and no failures; connection `sshd[5124]`, source `172.16.110.128:52796`, recorded one failure then one successful authentication. The query calculated `time_between=13.55` seconds. This corroborates the individual records, but does not establish malicious activity.
 
-**Still pending:** Results of the separate [three-failure candidate](LINUX-DET-001-ssh-failure-followed-success.spl); positive-case validation; threshold tuning; saved-report confirmation; alert scheduling decision.
+**Still pending:** Positive-case validation for the [three-failure candidate](LINUX-DET-001-ssh-failure-followed-success.spl); threshold and cross-connection tuning; saved-report confirmation; alert scheduling decision.
+
+## Candidate threshold negative test — 2026-10-21
+
+The three-or-more-failures-before-success [candidate SPL](LINUX-DET-001-ssh-failure-followed-success.spl) was run in Splunk Search & Reporting with a time range containing the eight known SSH authentication records. Splunk displayed **8 matching input events** and **Statistics (0)** after aggregation and the threshold filter. This is consistent with the known single-failure-then-success connection (`sshd[5124]`) and six single-success connections.
+
+**Interpretation:** The known one-failure sequence is correctly excluded by the three-failure threshold. This is negative-case behavior only: a qualifying positive case, broader cross-connection detection, threshold assessment, and report/alert setup remain untested. The 8 input log events are not eight detections.
 
 ## Validation and tuning checklist
 
