@@ -94,6 +94,10 @@ The Linux detection track covers SSH authentication, sudo activity, monitored fi
 <!-- SCREENSHOT: Correlation results -->
 <!-- SCREENSHOT: Linux detection examples -->
 
+### Live reporting pack and end-to-end investigation
+
+The [one-pass report save runbook](docs/report-save-runbook.md) collects eight live SIEM reporting searches, including the already-saved LINUX-DET-003 file-change report, six additional operational and analytic report candidates, and the SOC-003 investigation timeline. The unsaved report queries are prepared in GitHub and must be run and saved in Splunk Cloud; GitHub commits do not create Cloud reports. The [SOC-003 case outline](investigations/SOC-003/README.md) specifies the controlled Kali-to-Ubuntu investigation to perform after the dashboard is ready.
+
 ## SOC dashboard
 
 The [dashboard section](dashboards/README.md) houses the Splunk Dashboard Studio design and exports, with views for ingestion trends, SSH authentication, process and file auditing, HTTP activity, detection findings, and investigation timelines.
