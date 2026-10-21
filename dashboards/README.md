@@ -33,37 +33,37 @@ The [diagnostic dashboard JSON](diagnostic-dashboard-studio.json) is retained as
 
 ## Screenshot gallery
 
-These are curated captures from the real Splunk environment. Cropping and captions improve readability without replacing Splunk data.
+These are annotated presentation copies of curated captures from the real Splunk environment. Editorial outlines guide the reader without changing the captured log values. Each exhibit links to its original PNG.
 
 ### 01 — SOC Overview
 
-![SOC Overview: telemetry sources, SSH sessions and file operations](screenshots/01-soc-operations-overview.png)
+![SOC Overview: telemetry sources, SSH sessions and file operations](screenshots/01-soc-operations-overview-annotated.svg)
 
-*Live source inventory, SSH activity, and grouped file operations.*
+*The SOC Overview presents indexed-event volume, monitored sources, SSH sessions, and grouped file operations for the selected time range. Counts are time-window snapshots, not an uptime guarantee.* · [Original PNG](screenshots/01-soc-operations-overview.png)
 
 ### 02 — Endpoint Activity
 
-![Endpoint Activity: sudo, process, file and HTTP panels](screenshots/02-endpoint-telemetry.png)
+![Endpoint Activity: sudo, process, file and HTTP panels](screenshots/02-endpoint-telemetry-annotated.svg)
 
-*Endpoint investigation panels backed by saved reports.*
+*Endpoint Activity combines sudo, audited process execution, and HTTP tables. This earlier capture includes a diagnostic line classified as unparsed; the cleaned HTTP evidence appears in Exhibit 05.* · [Original PNG](screenshots/02-endpoint-telemetry.png)
 
 ### 03 — Investigation Workspace
 
-![Session-scoped process and file evidence](screenshots/03-session-scoped-evidence.png)
+![Session-scoped process and file evidence](screenshots/03-session-scoped-evidence-annotated.svg)
 
-*Selected-session evidence is separate from the broader all-session timeline.*
+*Earlier audit session `6` demonstrates session-filtered file and process tables. This is a separate dashboard example, not SOC-003's session `54`.* · [Original PNG](screenshots/03-session-scoped-evidence.png)
 
 ### 04 — HTTP classification test
 
-![HTTP request and diagnostic record classification](screenshots/04-http-request-classification.png)
+![HTTP request and diagnostic record classification](screenshots/04-http-request-classification-annotated.svg)
 
-*Four request records and one diagnostic/unparsed record were distinguished during parser validation.*
+*Parser validation distinguished four HTTP request records from one diagnostic/unparsed record among five indexed log lines.* · [Original PNG](screenshots/04-http-request-classification.png)
 
 ### 05 — Corrected HTTP request view
 
-![Parsed HTTP requests and response codes](screenshots/05-clean-http-request-view.png)
+![Parsed HTTP requests and response codes](screenshots/05-clean-http-request-view-annotated.svg)
 
-*The dashboard shows recognized HTTP requests without presenting the server diagnostic as an additional request.*
+*The refined HTTP request table shows parsed methods, paths, and response codes (including `404` and `200`) without treating the diagnostic line as an HTTP request.* · [Original PNG](screenshots/05-clean-http-request-view.png)
 
 ## Remaining operational checks
 
