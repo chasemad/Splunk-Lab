@@ -1,0 +1,123 @@
+{
+  "title": "SOC Lab | Dashboard Studio Diagnostic (Temporary)",
+  "description": "Minimal controlled test of grid geometry, inline SPL, and saved report resolution. Do not replace the production dashboard.",
+  "inputs": {
+    "input_global_trp": {
+      "type": "input.timerange",
+      "title": "Diagnostic time range",
+      "options": {
+        "token": "global_time",
+        "defaultValue": "-24h@h,now"
+      }
+    }
+  },
+  "defaults": {
+    "dataSources": {
+      "ds.search": {
+        "options": {
+          "queryParameters": {
+            "earliest": "$global_time.earliest$",
+            "latest": "$global_time.latest$"
+          }
+        }
+      }
+    }
+  },
+  "visualizations": {
+    "viz_diagnostic_intro": {
+      "type": "splunk.markdown",
+      "options": {
+        "markdown": "## Dashboard Studio diagnostic\n**Left:** inline search, **right:** previously saved LINUX-DET-003 report. This dashboard is a temporary test, not the production SOC view."
+      }
+    },
+    "viz_inline": {
+      "type": "splunk.table",
+      "title": "A · Inline telemetry search",
+      "dataSources": {
+        "primary": "ds_inline"
+      }
+    },
+    "viz_saved": {
+      "type": "splunk.table",
+      "title": "B · Saved file-change report",
+      "dataSources": {
+        "primary": "ds_saved_files"
+      }
+    }
+  },
+  "dataSources": {
+    "ds_inline": {
+      "type": "ds.search",
+      "name": "Diagnostic live telemetry",
+      "options": {
+        "query": "index=\"soc-live\" host=\"soc-ubuntu-01\" | stats count as events by sourcetype | sort - events"
+      }
+    },
+    "ds_saved_files": {
+      "type": "ds.savedSearch",
+      "options": {
+        "ref": "LINUX-DET-003 - Monitored File Changes",
+        "app": "search"
+      }
+    }
+  },
+  "layout": {
+    "globalInputs": [
+      "input_global_trp"
+    ],
+    "layoutDefinitions": {
+      "diagnostic": {
+        "type": "grid",
+        "options": {
+          "display": "auto",
+          "width": 1200,
+          "height": 490,
+          "gutterSize": 8
+        },
+        "structure": [
+          {
+            "item": "viz_diagnostic_intro",
+            "type": "block",
+            "position": {
+              "x": 0,
+              "y": 0,
+              "w": 1200,
+              "h": 90
+            }
+          },
+          {
+            "item": "viz_inline",
+            "type": "block",
+            "position": {
+              "x": 0,
+              "y": 90,
+              "w": 600,
+              "h": 400
+            }
+          },
+          {
+            "item": "viz_saved",
+            "type": "block",
+            "position": {
+              "x": 600,
+              "y": 90,
+              "w": 600,
+              "h": 400
+            }
+          }
+        ]
+      }
+    },
+    "tabs": {
+      "items": [
+        {
+          "layoutId": "diagnostic",
+          "label": "Diagnostic"
+        }
+      ]
+    },
+    "options": {
+      "showTitleAndDescription": false
+    }
+  }
+}
