@@ -137,7 +137,7 @@ The dashboard's `monitored_file_ops=3` is consistent with these **three audit ev
 3. A numeric Auditd session ID such as **54** is not globally unique over all hosts/reboots. The session linkage here depends on host, event time, SSH PID and LOGIN evidence.
 4. Source data is visible in supplied operator screenshots; raw files were not acquired as independent forensic images, and report/dashboard access remains private in Splunk Cloud.
 5. These are laboratory observations rather than production alert firing, active incident response, or proof of an external intrusion.
-6. The case's screenshot set still needs **sanitization and publication into GitHub**. Avoid screenshots that expose unrelated account/session information.
+6. The case's nine original-data screenshots are now published in GitHub with surrounding browser clutter cropped and editorial context outside the screenshot image. They are not independent disk/log acquisitions.
 
 ## Reproducible searches
 
@@ -173,20 +173,66 @@ index="soc-live" host="soc-ubuntu-01" source="/var/log/audit/audit.log"
 | sort 0 _time
 ```
 
-## Evidence catalog — images to publish
+## Evidence gallery — real screenshots
 
-Capture original screenshots with relevant time picker, source, fields, PID, Auditd session and event IDs visible. Crop unrelated browser tabs and account controls. These images were viewed during the investigation but **are not yet committed to GitHub**.
+These **nine genuine screenshots** were captured during the controlled exercise, cropped for clarity, and framed consistently. The actual Splunk results, numbers, timestamps, and raw records were not reconstructed. The first six are the core case exhibits; three additional images document the lab and unrelated local SSH test.
 
-| Planned sanitized image | Purpose |
-|---|---|
-| `01-kali-ssh-authentication.png` | Successful auth from 172.16.110.128, SSH PID 5613 |
-| `02-auditd-login-session54.png` | PID 5613 → Auditd session 54 |
-| `03-ssh-session-summary.png` | Compare separate local failed-then-successful session 53 to Kali session 54 |
-| `04-session54-correlation.png` | Dashboard session 54, PID/source and candidate correlation |
-| `05-session54-process-and-file-evidence.png` | Selected session 54 file and process results |
-| `06-raw-file-creation-audit-id.png` | Five companion Auditd records proving CREATE and successful openat |
+### 01 — Kali SSH authentication
 
-Files should be stored in an appropriate dedicated `investigations/SOC-003/screenshots/` directory after review. Do not fabricate evidence imagery.
+![Accepted SSH authentication from Kali, PID 5613](screenshots/01-kali-ssh-authentication.png)
+
+*Source `172.16.110.128`, username `socadmin`, SSH PID `5613`.*
+
+### 02 — Matching Auditd LOGIN
+
+![Auditd LOGIN mapped PID 5613 to session 54](screenshots/02-auditd-login-session54.png)
+
+*Auditd LOGIN: matching SSH PID `5613`, assigned session `54`.*
+
+### 03 — Authentication session summary
+
+![SSH session summary with separate source IPs](screenshots/03-ssh-session-summary.png)
+
+*The two failures occurred in the **separate Ubuntu-originated** session, not Kali session 54.*
+
+### 04 — Selected-session correlation
+
+![Selected Auditd session 54 correlation](screenshots/04-session54-correlation.png)
+
+*Investigation Workspace scoped to session `54`, showing source IP `172.16.110.128` and PID `5613`.*
+
+### 05 — Process and file evidence
+
+![Session 54 process and file evidence tables](screenshots/05-session54-process-and-file-evidence.png)
+
+*Both evidence tables are filtered to session `54`; the broader context timeline is explicitly not filtered.*
+
+### 06 — Raw file-creation audit group
+
+![Five raw Auditd records for successful file creation](screenshots/06-raw-file-creation-audit-id.png)
+
+*Five companion records share event ID `1792593148.187:1492`: two `PATH` records, `CWD`, a successful `SYSCALL`, and `PROCTITLE`.*
+
+<details>
+<summary>Additional context — separate local SSH test and VM verification</summary>
+
+### 07 — Separate local failed-then-successful login
+
+![Local SSH authentication example from Ubuntu](screenshots/07-prior-local-auth-sequence.png)
+
+*This is background activity associated with Ubuntu-originated session `53`, not the Kali-originated session `54`.*
+
+### 08 — Kali source host verification
+
+![Kali host identity and IP confirmation](screenshots/08-kali-host-verification.png)
+
+### 09 — Ubuntu monitoring preflight
+
+![SSH, Auditd rules and Splunk forwarder preflight](screenshots/09-ubuntu-preflight.png)
+
+</details>
+
+**Presentation scope:** these are actual operator screenshots with external title bars and editorial captions. They are not full forensic acquisitions. The selected frame may omit data outside the photographed panel.
 
 ## Skills demonstrated
 
