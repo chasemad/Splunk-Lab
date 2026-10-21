@@ -42,3 +42,11 @@ The [Dashboard Studio JSON](soc-lab-dashboard-studio.json) is a **prepared defin
 - [ ] All three tabs and relevant raw-data drilldowns reviewed.
 - [ ] Current Studio JSON exported and stored in GitHub.
 - [ ] SOC-003 performed with one authorized Kali-to-Ubuntu login and labeled test file. See [SOC-003 investigation guide](../investigations/SOC-003/README.md).
+
+## Grid adjacency fix — 2026-10-21
+
+If Dashboard Studio displays **“Viz panel incorrectly configured”** and **“expected a viz or canvas edge directly below/above/left”**, the original Dashboard Studio JSON had blank coordinate gaps between grid panels (for example, a header ended at `y=130` but KPI panels started at `y=135`). Grid layout applies its own gutter spacing and requires each panel to touch another visualization or the canvas boundary in its positioning structure.
+
+The checked-in JSON was repaired to use **continuous, edge-aligned rectangles** on all three tabs. The `gutterSize=8` layout option creates visible spacing *without coordinate gaps*. The positions were checked programmatically for overlaps/gaps and all eight saved-report references are preserved. This does not replace the need to re-import and confirm it in Splunk Cloud.
+
+**Fix for a dashboard already in edit mode:** select **Source code**, replace the *entire* JSON with the latest [dashboard definition](soc-lab-dashboard-studio.json), then **Apply**. Do **not** alter the layout from Grid to Absolute to hide the warning. Check each tab for no red layout banners, and **Save** only after the editor accepts the revised definition. If other errors remain, capture the precise panel ID and message.
