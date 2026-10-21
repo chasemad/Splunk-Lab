@@ -185,7 +185,7 @@ index="soc-live" host="soc-ubuntu-01" source="/var/log/audit/audit.log"
 
 ## Evidence gallery — real screenshots
 
-These **nine genuine screenshots** were captured during the controlled exercise, cropped for clarity, and framed consistently. The actual Splunk results, numbers, timestamps, and raw records were not reconstructed. The first six are the core case exhibits; three additional images document the lab and unrelated local SSH test.
+These **nine genuine screenshots** were captured during the controlled exercise, cropped for clarity, and framed consistently. The gallery displays annotated presentation copies with editorial highlights; each original, unannotated PNG remains available through its exhibit link. Actual Splunk results, numbers, timestamps, and raw records were not reconstructed. The first six are the core case exhibits; three additional images document the lab and unrelated local SSH test.
 
 ### 01 — Kali SSH authentication
 
@@ -201,44 +201,48 @@ These **nine genuine screenshots** were captured during the controlled exercise,
 
 ### 03 — Authentication session summary
 
-![SSH session summary with separate source IPs](screenshots/03-ssh-session-summary.png)
+![SSH session summary with separate source IPs](screenshots/03-ssh-session-summary-annotated.svg)
 
-*The two failures occurred in the **separate Ubuntu-originated** session, not Kali session 54.*
+*Ubuntu-originated PID `5463` (session `53`) had two failures and one success; the separate Kali-originated PID `5613` (session `54`) had one success and no observed failures in that connection.* · [Original PNG](screenshots/03-ssh-session-summary.png)
 
 ### 04 — Selected-session correlation
 
-![Selected Auditd session 54 correlation](screenshots/04-session54-correlation.png)
+![Selected Auditd session 54 correlation](screenshots/04-session54-correlation-annotated.svg)
 
-*Investigation Workspace scoped to session `54`, showing source IP `172.16.110.128` and PID `5613`.*
+*The workspace is filtered to session `54` and identifies Kali source `172.16.110.128` and SSH PID `5613`. The 77 audited executions are aggregated Auditd events, not 77 individually verified human-entered commands.* · [Original PNG](screenshots/04-session54-correlation.png)
 
 ### 05 — Process and file evidence
 
-![Session 54 process and file evidence tables](screenshots/05-session54-process-and-file-evidence.png)
+![Session 54 process and file evidence tables](screenshots/05-session54-process-and-file-evidence-annotated.svg)
 
-*Both evidence tables are filtered to session `54`; the broader context timeline is explicitly not filtered.*
+*The file and process tables are scoped to audit session `54`. Grouped file records should be confirmed in raw Auditd logs; the broader investigation timeline is not session-filtered.* · [Original PNG](screenshots/05-session54-process-and-file-evidence.png)
 
 ### 06 — Raw file-creation audit group
 
-![Five raw Auditd records for successful file creation](screenshots/06-raw-file-creation-audit-id.png)
+![Five raw Auditd records for successful file creation](screenshots/06-raw-file-creation-audit-id-annotated.svg)
 
-*Five companion records share event ID `1792593148.187:1492`: two `PATH` records, `CWD`, a successful `SYSCALL`, and `PROCTITLE`.*
+*Five companion Auditd records share ID `1792593148.187:1492`: two `PATH` entries, `CWD`, a successful `SYSCALL`, and `PROCTITLE`—evidence of one successful file-creation event, not five separate operations.* · [Original PNG](screenshots/06-raw-file-creation-audit-id.png)
 
 <details>
 <summary>Additional context — separate local SSH test and VM verification</summary>
 
 ### 07 — Separate local failed-then-successful login
 
-![Local SSH authentication example from Ubuntu](screenshots/07-prior-local-auth-sequence.png)
+![Local SSH authentication example from Ubuntu](screenshots/07-prior-local-auth-sequence-annotated.svg)
 
-*This is background activity associated with Ubuntu-originated session `53`, not the Kali-originated session `54`.*
+*A visible failed-login event belongs to an earlier Ubuntu-originated SSH test (PID `5463`, audit session `53`); the full two-failure, one-success sequence is documented in the case timeline and is unrelated to the Kali-originated session `54`.* · [Original PNG](screenshots/07-prior-local-auth-sequence.png)
 
 ### 08 — Kali source host verification
 
-![Kali host identity and IP confirmation](screenshots/08-kali-host-verification.png)
+![Kali host identity and IP confirmation](screenshots/08-kali-host-verification-annotated.svg)
+
+*After leaving the Ubuntu SSH connection, the local Kali shell reports hostname `luxieum` and IP `172.16.110.128`; the root prompt shown here belongs to Kali, not the monitored Ubuntu endpoint.* · [Original PNG](screenshots/08-kali-host-verification.png)
 
 ### 09 — Ubuntu monitoring preflight
 
-![SSH, Auditd rules and Splunk forwarder preflight](screenshots/09-ubuntu-preflight.png)
+![SSH, Auditd rules and Splunk forwarder preflight](screenshots/09-ubuntu-preflight-annotated.svg)
+
+*Point-in-time preflight shows active SSH and Auditd services, Auditd `lost=0`, monitored file/process rules present, and a running Splunk forwarder. This does not establish long-term uptime or persistence across restarts.* · [Original PNG](screenshots/09-ubuntu-preflight.png)
 
 </details>
 
