@@ -2,7 +2,7 @@
 
 ## Purpose and limitations
 
-These SPL files are prepared for `index="soc-live"`, `host="soc-ubuntu-01"`. **All eight searches are user-confirmed saved in Splunk Cloud (2026-10-21), and their titles, owner, app, sharing and status have been inspected from an operator-supplied Splunk Reports screenshot. The actual saved SPL contents have not been independently compared with the GitHub source files.** LINUX-DET-001 SSH session summary was tested against real data, and a separate synthetic threshold test returned 3 failures/1 success. Other new report SPL is **draft, not run in Splunk yet**. Saving a report makes a search reusable; it does not mean that every intended field parsed correctly or that it is a validated alert.
+These SPL files are prepared for `index="soc-live"`, `host="soc-ubuntu-01"`. **All eight searches are user-confirmed saved in Splunk Cloud (2026-10-21), and their titles, owner, app, sharing and status have been inspected from an operator-supplied Splunk Reports screenshot. The actual saved SPL contents have not been independently compared with the GitHub source files.** LINUX-DET-001 SSH session summary was tested against real data, and a separate synthetic threshold test returned 3 failures/1 success. Other saved report outputs have been observed in dashboard panels, but exact saved SPL and comprehensive positive/negative validation remain to be reconciled. Saving a report makes a search reusable; it does not mean that every intended field parsed correctly or that it is a validated alert.
 
 A Splunk Cloud **free trial cannot use the management REST API**. Do these steps in **Search & Reporting** for each unsaved report: click file below, copy raw SPL, paste into Search, choose **Last 24 hours** (or a range containing known events), **Run**, examine fields, select **Save As > Report**, enter the exact report name, **Save**. Keep scheduling disabled; enable time-range picker when offered. If a report yields 0 events, save it only as an exploratory or baseline report and record why it is empty.
 
@@ -33,7 +33,7 @@ The list below uses the **actual Splunk saved-report titles** from the Reports p
 
 **LINUX-DET-004 — Process Execution:** Auditd process execution events with original/effective IDs and session context; execve success does not prove command intent or subsequent filesystem success.
 
-**LINUX-DET-005 — HTTP Requests:** Web request investigation view; parser handles common log style and some key=value variants, and visibly flags unparsed formats.
+**LINUX-DET-005 — HTTP Requests:** The live saved report was updated to show recognized requests while excluding a server diagnostic line. Its exact revised SPL still needs to be exported and reconciled with GitHub.
 
 **LINUX-COR-001 — Session Correlation:** Candidate correlation linking SSH pid from auth.log with Auditd LOGIN pid and audit session; tests needed for real output and join limits.
 
@@ -51,7 +51,7 @@ The list below uses the **actual Splunk saved-report titles** from the Reports p
 - [ ] LINUX-INV-001 timeline sorts across auth, process, watched file operations and HTTP data.
 - [x] Saved report names, app context (`search`), owner (`sc_admin`), sharing (`Private`) and enabled status recorded from the Reports page; individual report time-range behavior still needs testing.
 
-## Dashboard plan — next phase
+## Dashboard construction procedure (historical reference)
 
 Open **Dashboards > Create New Dashboard > Dashboard Studio**, use Grid layout, and set a time picker. Add panels in stages:
 
