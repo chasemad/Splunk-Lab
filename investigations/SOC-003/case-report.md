@@ -146,7 +146,7 @@ The dashboard's `monitored_file_ops=3` is consistent with these **three audit ev
 ```spl
 index="soc-live" host="soc-ubuntu-01" source="/var/log/auth.log"
 "Accepted password" "172.16.110.128"
-| rex field=_raw "sshd\\[(?<ssh_pid>\\d+)\\]"
+| rex field=_raw "sshd\[(?<ssh_pid>\d+)\]"
 | table _time ssh_pid _raw
 | sort 0 -_time
 ```
@@ -156,8 +156,8 @@ index="soc-live" host="soc-ubuntu-01" source="/var/log/auth.log"
 ```spl
 index="soc-live" host="soc-ubuntu-01" source="/var/log/audit/audit.log"
 "type=LOGIN"
-| rex field=_raw "(?:^|\\s)pid=(?<ssh_pid>\\d+)"
-| rex field=_raw "(?:^|\\s)ses=(?<audit_session>\\d+)"
+| rex field=_raw "(?:^|\s)pid=(?<ssh_pid>\d+)"
+| rex field=_raw "(?:^|\s)ses=(?<audit_session>\d+)"
 | search ssh_pid="5613"
 | table _time ssh_pid audit_session _raw
 | sort 0 -_time
