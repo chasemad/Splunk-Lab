@@ -198,3 +198,14 @@ The production dashboard is already working except for global saved-report time 
 ## Notes
 
 These checks use observed screenshots and GitHub's *prepared* SPL. The saved report definitions currently in Splunk Cloud have **not yet been independently exported for byte-for-byte comparison**. The SOC-003 runbook remains unexecuted as a distinct case.
+
+## Bidirectional saved-report filter test — 2026-10-21
+
+The operator shared two successive **Endpoint Activity** screenshots after configuring the saved-report time inputs.
+
+- **Last 15 minutes:** the Sudo Activity table and Selected Process Executions table display `No search results returned`. Hovering over the yellow indicator on the process panel confirms the message is `No search results returned`, not a query syntax error.
+- **Last 24 hours:** historical sudo `auditctl -l` activity reappears; a previously observed `chmod` process event associated with Auditd session `33` reappears. This verifies those two saved-report sources respond in both directions to the dashboard picker, in addition to the already-validated telemetry source.
+- **Remaining work:** Spot-check the other five saved-report sources, inspect any data-quality warnings, separate web request rows from server diagnostic lines, check SSH-to-Auditd session attribution, and export the final live Dashboard Studio source after all UI edits.
+
+This is **functional time-picker validation**, not a claim that all saved searches are accurate or that SOC-003 has already been performed.
+
