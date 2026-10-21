@@ -1,537 +1,593 @@
 {
-  "title": "Splunk SOC Lab | Live Security Operations",
-  "description": "Controlled Linux SIEM laboratory. Three-tab monitoring and investigation workspace backed by saved Splunk reports. Reviewed evidence is lab-generated, not enterprise incident traffic.",
-  "inputs": {
-    "input_global_trp": {
-      "type": "input.timerange",
-      "title": "Investigation time range",
-      "options": {
-        "token": "global_time",
-        "defaultValue": "-24h@h,now"
-      }
-    }
-  },
-  "defaults": {
+    "title": "Splunk SOC Lab | Live Security Operations",
+    "description": "Controlled Linux SIEM laboratory. Three-tab monitoring and investigation workspace backed by saved Splunk reports. Reviewed evidence is lab-generated, not enterprise incident traffic.",
+    "inputs": {
+        "input_global_trp": {
+            "options": {
+                "defaultValue": "-24h@h,now",
+                "token": "global_time"
+            },
+            "title": "Investigation time range",
+            "type": "input.timerange"
+        }
+    },
+    "defaults": {
+        "dataSources": {
+            "ds.search": {
+                "options": {
+                    "queryParameters": {
+                        "earliest": "$global_time.earliest$",
+                        "latest": "$global_time.latest$"
+                    }
+                }
+            },
+            "ds.spl2": {
+                "options": {
+                    "queryParameters": {
+                        "earliest": "$global_time.earliest$",
+                        "latest": "$global_time.latest$"
+                    }
+                }
+            }
+        }
+    },
+    "visualizations": {
+        "viz_changes": {
+            "dataSources": {
+                "primary": "ds_files"
+            },
+            "options": {
+                "backgroundColor": "transparent"
+            },
+            "title": "File operations · grouped Auditd records",
+            "type": "splunk.table"
+        },
+        "viz_endpoint_intro": {
+            "options": {
+                "markdown": "## ENDPOINT TELEMETRY\nReview identity and privilege context. Root processes during login initialization do **not** automatically indicate suspicious `sudo` activity."
+            },
+            "type": "splunk.markdown"
+        },
+        "viz_file_detail": {
+            "dataSources": {
+                "primary": "ds_files"
+            },
+            "options": {
+                "backgroundColor": "transparent"
+            },
+            "title": "Monitored file-change operations",
+            "type": "splunk.table"
+        },
+        "viz_file_evidence": {
+            "dataSources": {
+                "primary": "ds_files"
+            },
+            "options": {
+                "backgroundColor": "transparent"
+            },
+            "title": "Auditd file evidence",
+            "type": "splunk.table"
+        },
+        "viz_host_count": {
+            "dataSources": {
+                "primary": "ds_kpi_hosts_seen"
+            },
+            "options": {
+                "backgroundColor": "transparent"
+            },
+            "title": "Hosts observed in range",
+            "type": "splunk.singlevalue"
+        },
+        "viz_investigation_intro": {
+            "options": {
+                "markdown": "## INVESTIGATION WORKSPACE  ·  SOC-003\nCorrelate SSH authentication to Auditd LOGIN by PID **and** time, then review the resulting audit session.\nOnly an analyst review determines whether observed events were authorized."
+            },
+            "type": "splunk.markdown"
+        },
+        "viz_last_event": {
+            "dataSources": {
+                "primary": "ds_kpi_minutes_since_last"
+            },
+            "description": "A freshness indicator, not an uptime or heartbeat guarantee",
+            "options": {
+                "backgroundColor": "transparent"
+            },
+            "title": "Minutes since newest indexed event",
+            "type": "splunk.singlevalue"
+        },
+        "viz_live_timeline": {
+            "dataSources": {
+                "primary": "ds_timeline"
+            },
+            "description": "A chronological view is not proof that nearby events share the same initiating connection.",
+            "options": {
+                "backgroundColor": "transparent"
+            },
+            "title": "Cross-source activity timeline",
+            "type": "splunk.table"
+        },
+        "viz_overview_intro": {
+            "options": {
+                "markdown": "## SOC OPERATIONS  ·  LIVE LINUX\nMonitored endpoint: `soc-ubuntu-01`  ·  Index: `soc-live`  ·  Lab traffic only\n\nUse the time picker for inline KPIs/trends; saved report time selection should be checked in Studio."
+            },
+            "type": "splunk.markdown"
+        },
+        "viz_proc": {
+            "dataSources": {
+                "primary": "ds_process"
+            },
+            "description": "Auditd execve records; original login ID and effective user context.",
+            "options": {
+                "backgroundColor": "transparent"
+            },
+            "title": "Selected process executions",
+            "type": "splunk.table"
+        },
+        "viz_process_evidence": {
+            "dataSources": {
+                "primary": "ds_process"
+            },
+            "options": {
+                "backgroundColor": "transparent"
+            },
+            "title": "Process and session evidence",
+            "type": "splunk.table"
+        },
+        "viz_session_correlation": {
+            "dataSources": {
+                "primary": "ds_correlation"
+            },
+            "description": "Review joins and time bounds before relying on this panel.",
+            "options": {
+                "backgroundColor": "transparent"
+            },
+            "title": "SSH ↔ Auditd session correlation (candidate)",
+            "type": "splunk.table"
+        },
+        "viz_ssh": {
+            "dataSources": {
+                "primary": "ds_ssh"
+            },
+            "options": {
+                "backgroundColor": "transparent"
+            },
+            "title": "SSH authentication sessions",
+            "type": "splunk.table"
+        },
+        "viz_sudo": {
+            "dataSources": {
+                "primary": "ds_sudo"
+            },
+            "description": "Shows sudo COMMAND records from auth.log where present.",
+            "options": {
+                "backgroundColor": "transparent"
+            },
+            "title": "Sudo command records",
+            "type": "splunk.table"
+        },
+        "viz_telemetry": {
+            "dataSources": {
+                "primary": "ds_telemetry"
+            },
+            "options": {
+                "backgroundColor": "transparent"
+            },
+            "title": "Telemetry source inventory",
+            "type": "splunk.table"
+        },
+        "viz_total_events": {
+            "dataSources": {
+                "primary": "ds_kpi_total_events"
+            },
+            "options": {
+                "backgroundColor": "transparent"
+            },
+            "title": "Indexed events in range",
+            "type": "splunk.singlevalue"
+        },
+        "viz_volume_trend": {
+            "dataSources": {
+                "primary": "ds_event_trend"
+            },
+            "options": {
+                "backgroundColor": "transparent"
+            },
+            "title": "Event volume by sourcetype · 15 min",
+            "type": "splunk.line"
+        },
+        "viz_web": {
+            "dataSources": {
+                "primary": "ds_web"
+            },
+            "description": "Verify URI, method and response-code extraction before treating this as a detection.",
+            "options": {
+                "backgroundColor": "transparent"
+            },
+            "title": "Web request activity",
+            "type": "splunk.table"
+        }
+    },
     "dataSources": {
-      "ds.search": {
-        "options": {
-          "queryParameters": {
-            "earliest": "$global_time.earliest$",
-            "latest": "$global_time.latest$"
-          }
-        }
-      }
-    }
-  },
-  "visualizations": {
-    "viz_overview_intro": {
-      "type": "splunk.markdown",
-      "options": {
-        "markdown": "## SOC OPERATIONS  ·  LIVE LINUX\nMonitored endpoint: `soc-ubuntu-01`  ·  Index: `soc-live`  ·  Lab traffic only\n\nUse the time picker for inline KPIs/trends; saved report time selection should be checked in Studio."
-      }
-    },
-    "viz_total_events": {
-      "type": "splunk.singlevalue",
-      "title": "Indexed events in range",
-      "options": {
-        "backgroundColor": "transparent"
-      },
-      "dataSources": {
-        "primary": "ds_kpi_total_events"
-      }
-    },
-    "viz_host_count": {
-      "type": "splunk.singlevalue",
-      "title": "Hosts observed in range",
-      "options": {
-        "backgroundColor": "transparent"
-      },
-      "dataSources": {
-        "primary": "ds_kpi_hosts_seen"
-      }
-    },
-    "viz_last_event": {
-      "type": "splunk.singlevalue",
-      "title": "Minutes since newest indexed event",
-      "options": {
-        "backgroundColor": "transparent"
-      },
-      "dataSources": {
-        "primary": "ds_kpi_minutes_since_last"
-      },
-      "description": "A freshness indicator, not an uptime or heartbeat guarantee"
-    },
-    "viz_volume_trend": {
-      "type": "splunk.line",
-      "title": "Event volume by sourcetype · 15 min",
-      "options": {
-        "backgroundColor": "transparent"
-      },
-      "dataSources": {
-        "primary": "ds_event_trend"
-      }
-    },
-    "viz_telemetry": {
-      "type": "splunk.table",
-      "title": "Telemetry source inventory",
-      "options": {
-        "backgroundColor": "transparent"
-      },
-      "dataSources": {
-        "primary": "ds_telemetry"
-      }
-    },
-    "viz_ssh": {
-      "type": "splunk.table",
-      "title": "SSH authentication sessions",
-      "options": {
-        "backgroundColor": "transparent"
-      },
-      "dataSources": {
-        "primary": "ds_ssh"
-      }
-    },
-    "viz_changes": {
-      "type": "splunk.table",
-      "title": "File operations · grouped Auditd records",
-      "options": {
-        "backgroundColor": "transparent"
-      },
-      "dataSources": {
-        "primary": "ds_files"
-      }
-    },
-    "viz_endpoint_intro": {
-      "type": "splunk.markdown",
-      "options": {
-        "markdown": "## ENDPOINT TELEMETRY\nReview identity and privilege context. Root processes during login initialization do **not** automatically indicate suspicious `sudo` activity."
-      }
-    },
-    "viz_sudo": {
-      "type": "splunk.table",
-      "title": "Sudo command records",
-      "options": {
-        "backgroundColor": "transparent"
-      },
-      "dataSources": {
-        "primary": "ds_sudo"
-      },
-      "description": "Shows sudo COMMAND records from auth.log where present."
-    },
-    "viz_proc": {
-      "type": "splunk.table",
-      "title": "Selected process executions",
-      "options": {
-        "backgroundColor": "transparent"
-      },
-      "dataSources": {
-        "primary": "ds_process"
-      },
-      "description": "Auditd execve records; original login ID and effective user context."
-    },
-    "viz_web": {
-      "type": "splunk.table",
-      "title": "Web request activity",
-      "options": {
-        "backgroundColor": "transparent"
-      },
-      "dataSources": {
-        "primary": "ds_web"
-      },
-      "description": "Verify URI, method and response-code extraction before treating this as a detection."
-    },
-    "viz_file_detail": {
-      "type": "splunk.table",
-      "title": "Monitored file-change operations",
-      "options": {
-        "backgroundColor": "transparent"
-      },
-      "dataSources": {
-        "primary": "ds_files"
-      }
-    },
-    "viz_investigation_intro": {
-      "type": "splunk.markdown",
-      "options": {
-        "markdown": "## INVESTIGATION WORKSPACE  ·  SOC-003\nCorrelate SSH authentication to Auditd LOGIN by PID **and** time, then review the resulting audit session.\nOnly an analyst review determines whether observed events were authorized."
-      }
-    },
-    "viz_session_correlation": {
-      "type": "splunk.table",
-      "title": "SSH ↔ Auditd session correlation (candidate)",
-      "options": {
-        "backgroundColor": "transparent"
-      },
-      "dataSources": {
-        "primary": "ds_correlation"
-      },
-      "description": "Review joins and time bounds before relying on this panel."
-    },
-    "viz_live_timeline": {
-      "type": "splunk.table",
-      "title": "Cross-source activity timeline",
-      "options": {
-        "backgroundColor": "transparent"
-      },
-      "dataSources": {
-        "primary": "ds_timeline"
-      },
-      "description": "A chronological view is not proof that nearby events share the same initiating connection."
-    },
-    "viz_file_evidence": {
-      "type": "splunk.table",
-      "title": "Auditd file evidence",
-      "options": {
-        "backgroundColor": "transparent"
-      },
-      "dataSources": {
-        "primary": "ds_files"
-      }
-    },
-    "viz_process_evidence": {
-      "type": "splunk.table",
-      "title": "Process and session evidence",
-      "options": {
-        "backgroundColor": "transparent"
-      },
-      "dataSources": {
-        "primary": "ds_process"
-      }
-    }
-  },
-  "dataSources": {
-    "ds_telemetry": {
-      "type": "ds.savedSearch",
-      "options": {
-        "ref": "LINUX-MON-001 — Telemetry Health",
-        "app": "search"
-      }
-    },
-    "ds_ssh": {
-      "type": "ds.savedSearch",
-      "options": {
-        "ref": "LINUX-DET-001 - SSH Authentication Sessions",
-        "app": "search"
-      }
-    },
-    "ds_sudo": {
-      "type": "ds.savedSearch",
-      "options": {
-        "ref": "LINUX-DET-002 — Sudo Activity",
-        "app": "search"
-      }
-    },
-    "ds_files": {
-      "type": "ds.savedSearch",
-      "options": {
-        "ref": "LINUX-DET-003 - Monitored File Changes",
-        "app": "search"
-      }
-    },
-    "ds_process": {
-      "type": "ds.savedSearch",
-      "options": {
-        "ref": "LINUX-DET-004 — Process Execution",
-        "app": "search"
-      }
-    },
-    "ds_web": {
-      "type": "ds.savedSearch",
-      "options": {
-        "ref": "LINUX-DET-005 — HTTP Requests",
-        "app": "search"
-      }
-    },
-    "ds_correlation": {
-      "type": "ds.savedSearch",
-      "options": {
-        "ref": "LINUX-COR-001 — Session Correlation",
-        "app": "search"
-      }
-    },
-    "ds_timeline": {
-      "type": "ds.savedSearch",
-      "options": {
-        "ref": "LINUX-INV-001 — Investigation Timeline",
-        "app": "search"
-      }
-    },
-    "ds_kpi_base": {
-      "type": "ds.search",
-      "name": "SOC overview metrics",
-      "options": {
-        "query": "index=\"soc-live\" host=\"soc-ubuntu-01\" | stats count as total_events dc(host) as hosts_seen latest(_time) as last_event | eval minutes_since_last=if(isnotnull(last_event),round((now()-last_event)/60,1),null())"
-      }
-    },
-    "ds_kpi_total_events": {
-      "type": "ds.chain",
-      "name": "Total events",
-      "options": {
-        "extend": "ds_kpi_base",
-        "query": "| table total_events"
-      }
-    },
-    "ds_kpi_hosts_seen": {
-      "type": "ds.chain",
-      "name": "Hosts represented",
-      "options": {
-        "extend": "ds_kpi_base",
-        "query": "| table hosts_seen"
-      }
-    },
-    "ds_kpi_minutes_since_last": {
-      "type": "ds.chain",
-      "name": "Minutes since last event",
-      "options": {
-        "extend": "ds_kpi_base",
-        "query": "| table minutes_since_last"
-      }
-    },
-    "ds_event_trend": {
-      "type": "ds.search",
-      "name": "Event volume (15 minute bins)",
-      "options": {
-        "query": "index=\"soc-live\" host=\"soc-ubuntu-01\" | timechart span=15m count by sourcetype limit=6 useother=f"
-      }
-    }
-  },
-  "layout": {
-    "globalInputs": [
-      "input_global_trp"
-    ],
-    "layoutDefinitions": {
-      "overview": {
-        "type": "grid",
-        "structure": [
-          {
-            "item": "viz_overview_intro",
-            "type": "block",
-            "position": {
-              "x": 0,
-              "y": 0,
-              "w": 1200,
-              "h": 130
-            }
-          },
-          {
-            "item": "viz_total_events",
-            "type": "block",
-            "position": {
-              "x": 0,
-              "y": 130,
-              "w": 400,
-              "h": 160
-            }
-          },
-          {
-            "item": "viz_host_count",
-            "type": "block",
-            "position": {
-              "x": 400,
-              "y": 130,
-              "w": 400,
-              "h": 160
-            }
-          },
-          {
-            "item": "viz_last_event",
-            "type": "block",
-            "position": {
-              "x": 800,
-              "y": 130,
-              "w": 400,
-              "h": 160
-            }
-          },
-          {
-            "item": "viz_volume_trend",
-            "type": "block",
-            "position": {
-              "x": 0,
-              "y": 290,
-              "w": 1200,
-              "h": 320
-            }
-          },
-          {
-            "item": "viz_telemetry",
-            "type": "block",
-            "position": {
-              "x": 0,
-              "y": 610,
-              "w": 600,
-              "h": 380
-            }
-          },
-          {
-            "item": "viz_ssh",
-            "type": "block",
-            "position": {
-              "x": 600,
-              "y": 610,
-              "w": 600,
-              "h": 380
-            }
-          },
-          {
-            "item": "viz_changes",
-            "type": "block",
-            "position": {
-              "x": 0,
-              "y": 990,
-              "w": 1200,
-              "h": 400
-            }
-          }
-        ],
-        "options": {
-          "display": "auto",
-          "width": 1200,
-          "height": 1390,
-          "gutterSize": 8
-        }
-      },
-      "endpoint": {
-        "type": "grid",
-        "structure": [
-          {
-            "item": "viz_endpoint_intro",
-            "type": "block",
-            "position": {
-              "x": 0,
-              "y": 0,
-              "w": 1200,
-              "h": 100
-            }
-          },
-          {
-            "item": "viz_sudo",
-            "type": "block",
-            "position": {
-              "x": 0,
-              "y": 100,
-              "w": 1200,
-              "h": 345
-            }
-          },
-          {
-            "item": "viz_proc",
-            "type": "block",
-            "position": {
-              "x": 0,
-              "y": 445,
-              "w": 1200,
-              "h": 400
-            }
-          },
-          {
-            "item": "viz_web",
-            "type": "block",
-            "position": {
-              "x": 0,
-              "y": 845,
-              "w": 1200,
-              "h": 355
-            }
-          },
-          {
-            "item": "viz_file_detail",
-            "type": "block",
-            "position": {
-              "x": 0,
-              "y": 1200,
-              "w": 1200,
-              "h": 355
-            }
-          }
-        ],
-        "options": {
-          "display": "auto",
-          "width": 1200,
-          "height": 1555,
-          "gutterSize": 8
-        }
-      },
-      "investigation": {
-        "type": "grid",
-        "structure": [
-          {
-            "item": "viz_investigation_intro",
-            "type": "block",
-            "position": {
-              "x": 0,
-              "y": 0,
-              "w": 1200,
-              "h": 115
-            }
-          },
-          {
-            "item": "viz_session_correlation",
-            "type": "block",
-            "position": {
-              "x": 0,
-              "y": 115,
-              "w": 1200,
-              "h": 365
-            }
-          },
-          {
-            "item": "viz_live_timeline",
-            "type": "block",
-            "position": {
-              "x": 0,
-              "y": 480,
-              "w": 1200,
-              "h": 495
-            }
-          },
-          {
-            "item": "viz_file_evidence",
-            "type": "block",
-            "position": {
-              "x": 0,
-              "y": 975,
-              "w": 600,
-              "h": 420
-            }
-          },
-          {
-            "item": "viz_process_evidence",
-            "type": "block",
-            "position": {
-              "x": 600,
-              "y": 975,
-              "w": 600,
-              "h": 420
-            }
-          }
-        ],
-        "options": {
-          "display": "auto",
-          "width": 1200,
-          "height": 1395,
-          "gutterSize": 8
-        }
-      }
-    },
-    "tabs": {
-      "items": [
-        {
-          "layoutId": "overview",
-          "label": "SOC Overview"
+        "ds_correlation": {
+            "name": "SSH Session Correlation",
+            "options": {
+                "app": "search",
+                "queryParameters": {
+                    "earliest": "$global_time.earliest$",
+                    "latest": "$global_time.latest$"
+                },
+                "ref": "LINUX-COR-001 — Session Correlation",
+                "useSavedTimeRange": false
+            },
+            "type": "ds.savedSearch"
         },
-        {
-          "layoutId": "endpoint",
-          "label": "Endpoint Activity"
+        "ds_event_trend": {
+            "name": "Event volume (15 minute bins)",
+            "options": {
+                "query": "index=\"soc-live\" host=\"soc-ubuntu-01\" | timechart span=15m count by sourcetype limit=6 useother=f"
+            },
+            "type": "ds.search"
         },
-        {
-          "layoutId": "investigation",
-          "label": "Investigation Workspace"
+        "ds_files": {
+            "name": "Monitored File Changes",
+            "options": {
+                "app": "search",
+                "queryParameters": {
+                    "earliest": "$global_time.earliest$",
+                    "latest": "$global_time.latest$"
+                },
+                "ref": "LINUX-DET-003 - Monitored File Changes",
+                "useSavedTimeRange": false
+            },
+            "type": "ds.savedSearch"
+        },
+        "ds_kpi_base": {
+            "name": "SOC overview metrics",
+            "options": {
+                "query": "index=\"soc-live\" host=\"soc-ubuntu-01\" | stats count as total_events dc(host) as hosts_seen latest(_time) as last_event | eval minutes_since_last=if(isnotnull(last_event),round((now()-last_event)/60,1),null())"
+            },
+            "type": "ds.search"
+        },
+        "ds_kpi_hosts_seen": {
+            "name": "Hosts represented",
+            "options": {
+                "extend": "ds_kpi_base",
+                "query": "| table hosts_seen"
+            },
+            "type": "ds.chain"
+        },
+        "ds_kpi_minutes_since_last": {
+            "name": "Minutes since last event",
+            "options": {
+                "extend": "ds_kpi_base",
+                "query": "| table minutes_since_last"
+            },
+            "type": "ds.chain"
+        },
+        "ds_kpi_total_events": {
+            "name": "Total events",
+            "options": {
+                "extend": "ds_kpi_base",
+                "query": "| table total_events"
+            },
+            "type": "ds.chain"
+        },
+        "ds_process": {
+            "name": "Process Execution",
+            "options": {
+                "app": "search",
+                "queryParameters": {
+                    "earliest": "$global_time.earliest$",
+                    "latest": "$global_time.latest$"
+                },
+                "ref": "LINUX-DET-004 — Process Execution",
+                "useSavedTimeRange": false
+            },
+            "type": "ds.savedSearch"
+        },
+        "ds_ssh": {
+            "name": "SSH Authentication Sessions",
+            "options": {
+                "app": "search",
+                "queryParameters": {
+                    "earliest": "$global_time.earliest$",
+                    "latest": "$global_time.latest$"
+                },
+                "ref": "LINUX-DET-001 - SSH Authentication Sessions",
+                "useSavedTimeRange": false
+            },
+            "type": "ds.savedSearch"
+        },
+        "ds_sudo": {
+            "name": "Sudo Activity",
+            "options": {
+                "app": "search",
+                "queryParameters": {
+                    "earliest": "$global_time.earliest$",
+                    "latest": "$global_time.latest$"
+                },
+                "ref": "LINUX-DET-002 — Sudo Activity",
+                "useSavedTimeRange": false
+            },
+            "type": "ds.savedSearch"
+        },
+        "ds_telemetry": {
+            "name": "Telemetry Health",
+            "options": {
+                "app": "search",
+                "queryParameters": {
+                    "earliest": "$global_time.earliest$",
+                    "latest": "$global_time.latest$"
+                },
+                "ref": "LINUX-MON-001 — Telemetry Health",
+                "useSavedTimeRange": false
+            },
+            "type": "ds.savedSearch"
+        },
+        "ds_timeline": {
+            "name": "Investigation Timeline",
+            "options": {
+                "app": "search",
+                "queryParameters": {
+                    "earliest": "$global_time.earliest$",
+                    "latest": "$global_time.latest$"
+                },
+                "ref": "LINUX-INV-001 — Investigation Timeline",
+                "useSavedTimeRange": false
+            },
+            "type": "ds.savedSearch"
+        },
+        "ds_web": {
+            "name": "HTTP Requests",
+            "options": {
+                "app": "search",
+                "queryParameters": {
+                    "earliest": "$global_time.earliest$",
+                    "latest": "$global_time.latest$"
+                },
+                "ref": "LINUX-DET-005 — HTTP Requests",
+                "useSavedTimeRange": false
+            },
+            "type": "ds.savedSearch"
         }
-      ]
     },
-    "options": {
-      "showTitleAndDescription": false
+    "layout": {
+        "globalInputs": [
+            "input_global_trp"
+        ],
+        "layoutDefinitions": {
+            "endpoint": {
+                "options": {
+                    "display": "auto",
+                    "gutterSize": 8,
+                    "height": 1555,
+                    "width": 1200
+                },
+                "structure": [
+                    {
+                        "item": "viz_endpoint_intro",
+                        "position": {
+                            "h": 100,
+                            "w": 1200,
+                            "x": 0,
+                            "y": 0
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_sudo",
+                        "position": {
+                            "h": 345,
+                            "w": 1200,
+                            "x": 0,
+                            "y": 100
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_proc",
+                        "position": {
+                            "h": 400,
+                            "w": 1200,
+                            "x": 0,
+                            "y": 445
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_web",
+                        "position": {
+                            "h": 355,
+                            "w": 1200,
+                            "x": 0,
+                            "y": 845
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_file_detail",
+                        "position": {
+                            "h": 355,
+                            "w": 1200,
+                            "x": 0,
+                            "y": 1200
+                        },
+                        "type": "block"
+                    }
+                ],
+                "type": "grid"
+            },
+            "investigation": {
+                "options": {
+                    "display": "auto",
+                    "gutterSize": 8,
+                    "height": 1395,
+                    "width": 1200
+                },
+                "structure": [
+                    {
+                        "item": "viz_investigation_intro",
+                        "position": {
+                            "h": 115,
+                            "w": 1200,
+                            "x": 0,
+                            "y": 0
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_session_correlation",
+                        "position": {
+                            "h": 365,
+                            "w": 1200,
+                            "x": 0,
+                            "y": 115
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_live_timeline",
+                        "position": {
+                            "h": 495,
+                            "w": 1200,
+                            "x": 0,
+                            "y": 480
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_file_evidence",
+                        "position": {
+                            "h": 420,
+                            "w": 600,
+                            "x": 0,
+                            "y": 975
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_process_evidence",
+                        "position": {
+                            "h": 420,
+                            "w": 600,
+                            "x": 600,
+                            "y": 975
+                        },
+                        "type": "block"
+                    }
+                ],
+                "type": "grid"
+            },
+            "overview": {
+                "options": {
+                    "display": "auto",
+                    "gutterSize": 8,
+                    "height": 1390,
+                    "width": 1200
+                },
+                "structure": [
+                    {
+                        "item": "viz_overview_intro",
+                        "position": {
+                            "h": 130,
+                            "w": 1200,
+                            "x": 0,
+                            "y": 0
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_total_events",
+                        "position": {
+                            "h": 160,
+                            "w": 400,
+                            "x": 0,
+                            "y": 130
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_host_count",
+                        "position": {
+                            "h": 160,
+                            "w": 400,
+                            "x": 400,
+                            "y": 130
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_last_event",
+                        "position": {
+                            "h": 160,
+                            "w": 400,
+                            "x": 800,
+                            "y": 130
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_volume_trend",
+                        "position": {
+                            "h": 320,
+                            "w": 1200,
+                            "x": 0,
+                            "y": 290
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_telemetry",
+                        "position": {
+                            "h": 380,
+                            "w": 600,
+                            "x": 0,
+                            "y": 610
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_ssh",
+                        "position": {
+                            "h": 380,
+                            "w": 600,
+                            "x": 600,
+                            "y": 610
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_changes",
+                        "position": {
+                            "h": 400,
+                            "w": 1200,
+                            "x": 0,
+                            "y": 990
+                        },
+                        "type": "block"
+                    }
+                ],
+                "type": "grid"
+            }
+        },
+        "options": {
+            "showTitleAndDescription": false
+        },
+        "tabs": {
+            "items": [
+                {
+                    "label": "SOC Overview",
+                    "layoutId": "overview"
+                },
+                {
+                    "label": "Endpoint Activity",
+                    "layoutId": "endpoint"
+                },
+                {
+                    "label": "Investigation Workspace",
+                    "layoutId": "investigation"
+                }
+            ]
+        }
     }
-  }
 }
