@@ -1,6 +1,6 @@
 # LINUX-DET-001 — SSH authentication activity
 
-**Stage:** Exploratory baseline confirmed in Splunk; candidate multi-failure detection not yet validated or saved as a report.
+**Stage:** Authentication event extraction and per-connection session summary validated in Splunk; the three-failure detection remains a candidate and is not yet confirmed as a saved report.
 
 ## Observed activity (October 21, 2026)
 
@@ -18,6 +18,12 @@ All eight extracted events referenced `socadmin` using password authentication. 
 
 - [LINUX-DET-001-ssh-session-summary.spl](LINUX-DET-001-ssh-session-summary.spl) — manually review failed/successful SSH events grouped by connection identifiers. **New improved query; run it before claiming its returned output was validated.**
 - [LINUX-DET-001-ssh-failure-followed-success.spl](LINUX-DET-001-ssh-failure-followed-success.spl) — **candidate** threshold requiring three or more failures followed by success within one SSH connection. Current known eight-event sample should **not** satisfy this threshold (only one failure). This is not yet a tested alert.
+
+## Confirmed session-summary validation (2026-10-21)
+
+The grouped [session summary SPL](LINUX-DET-001-ssh-session-summary.spl) was run in Splunk Search & Reporting. Eight matching authentication records were reduced to seven connections in the results table. Six connections had one successful login and no failures; connection `sshd[5124]`, source `172.16.110.128:52796`, recorded one failure then one successful authentication. The query calculated `time_between=13.55` seconds. This corroborates the individual records, but does not establish malicious activity.
+
+**Still pending:** Results of the separate [three-failure candidate](LINUX-DET-001-ssh-failure-followed-success.spl); positive-case validation; threshold tuning; saved-report confirmation; alert scheduling decision.
 
 ## Validation and tuning checklist
 
