@@ -1,6 +1,6 @@
 # SOC-003 — Controlled Kali-to-Ubuntu Investigation
 
-**State:** Investigation playbook prepared; no SOC-003 activity or evidence claimed complete yet.
+**State:** SOC-003 underway. SSH authentication and matching Auditd LOGIN confirmed for a Kali-originated session; session-scoped process and file evidence, final timeline, and disposition are still pending.
 **System:** Kali test workstation `172.16.110.128` → Ubuntu `172.16.110.130` (`soc-ubuntu-01`) → Splunk Cloud `index="soc-live"`.
 **Purpose:** Demonstrate authorized SSH access, audited identity commands, controlled file changes, cross-source correlation, and an evidence-backed analyst disposition.
 
@@ -33,6 +33,18 @@ exit
 Do not target sensitive operating system files or other systems. The shell, not `printf`, may appear as the writing process in Auditd due to output redirection. Create/change/append should yield relevant audited operations if the temporary file watch remains loaded. `stat` is an inspection command; do not count it as another modification.
 
 If the existing local training web server is already running, a normal HTTP GET to its previously configured local address/port can be included; confirm the configured port instead of assuming one. Record its status code.
+
+## Evidence checkpoint — 2026-10-21 (operator screenshots)
+
+Screenshots from **Search & Reporting** document a controlled test on 2026-10-21:
+
+1. **Separate local/self-SSH example:** Two failed password logins followed by one accepted password for `socadmin` at 14:25:13, 14:25:18 and 14:25:26 UTC. The `/var/log/auth.log` events shared `sshd[5463]`, source `172.16.110.130` and source port `43388`. A matching Auditd `type=LOGIN` for PID `5463` assigned **session 53** at 14:25:26 UTC. Because the source equals Ubuntu's host IP, this is **not evidence of Kali-originated authentication**, even though the terminal application was accessed through the Kali desktop.
+2. **Kali identity:** The Kali shell separately displayed hostname `luxieum`, source address `172.16.110.128`, current user `root`; the Ubuntu target was `172.16.110.130`.
+3. **SOC-003 Kali-to-Ubuntu login:** `/var/log/auth.log` showed `Accepted password for socadmin from 172.16.110.128 port 54272`, recorded as `sshd[5613]` at **14:32:20.566 UTC**.
+4. **Cross-source match:** `/var/log/audit/audit.log` yielded one `type=LOGIN` row with `pid=5613`, `auid=1000`, **`ses=54`**, at **14:32:20.566 UTC**, and audit message ID **`1792593140.566:1414`**. This is the observed PID/time bridge from the Kali-authenticated connection to an Auditd login session. The `uid=0` on the LOGIN record belongs to the privileged daemon context and is not, by itself, proof that the interactive user ran commands as root.
+5. **Next case-evidence gate:** Set Investigation Workspace's **Audit session (case filter)** to **54** and choose a time window covering 14:32 UTC. Check candidate correlation, filtered audited process evidence and filtered monitored-file evidence. Look for `soc003-kali-validation.txt` **only if the file commands were actually executed during this separate Kali-originated session**. If a panel is empty, inspect raw records instead of assuming the event occurred.
+
+**Do not combine** session 53's two failures and accepted login with session 54's Kali login as though they were a single remote session. Both are valid controlled lab observations with different originating hosts. Correlation here establishes a plausible session linkage; final analyst disposition still requires checking the process/file audit IDs and observed command sequence.
 
 ## Stage 2 — trace the event across Splunk reports
 
