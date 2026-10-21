@@ -79,7 +79,7 @@ The operator provided four new Splunk Cloud screenshots after following the HTTP
 - **HTTP dashboard:** Endpoint Activity's **Web request activity** panel displayed parsed GET requests, including `/missing-page` with **404**, `/third-test.txt` with **200**, and `/` with **200**. The previously visible separate unparsed diagnostic row was not present in the shown portion of the panel. The saved report's precise SPL/export still requires confirmation before synchronizing the canonical GitHub SPL.
 - **Session input:** The revised Investigation Workspace was visible in Edit mode with an **Audit session (case filter)** number input set to **33**, and the selected correlation table returned SSH PID `5124`, Auditd session `33`, `audited_execs=73`, `monitored_file_ops=3`. This confirms the selected correlation renders for session 33; the counts and attribution still require raw-log examination.
 - **Session 6 comparison:** Changing the Audit session input to **6** displayed **No search results returned** in the selected SSH-to-Auditd correlation table. The independently labeled **Recent activity timeline — all sessions** continued to display background records. Empty correlation is an acceptable outcome if no qualified login/PID match exists; it is not evidence of missing session-6 file activity.
-- **Pending:** Capture the *bottom evidence tables* at session **33** and again at **6**, to show that their returned `audit_session`/`sessions` fields match the input. Verify no cross-session leakage and that the all-session timeline deliberately remains broader. Then save, reopen, and export Splunk's actual revised JSON to synchronize GitHub. The candidate file currently shown in Splunk is **not yet** the repository's canonical production JSON.
+- **Pending:** Capture the *bottom evidence tables* at session **33** and again at **6**, to show that their returned `audit_session`/`sessions` fields match the input. Verify no cross-session leakage and that the all-session timeline deliberately remains broader. Then save, reopen, and export Splunk's actual revised JSON to synchronize GitHub. The operator later exported the working dashboard and its complete JSON was committed to the repository on 2026-10-21. The candidate is no longer pending synchronization.
 
 These are operator-supplied screenshots of a controlled lab, not confirmed enterprise incident evidence. Publication screenshots still need browser/account chrome cropped and review for sensitive details.
 
@@ -93,9 +93,9 @@ Three operator screenshots validated the revised *Investigation Workspace* with 
 - **Session 6, selected process evidence:** `auditctl`, `grep`, `sudo`, and `ls` are visible with `audit_session=6`. Different effective user IDs are present; do not equate an effective root context automatically with unauthorized activity.
 - **Session 33 overview:** the selected correlation table still shows source `172.16.110.128`, SSH PID **5124**, Auditd session **33**, with candidate counts of **73** audited `SYSCALL` executions and **3** monitored file-operation `SYSCALL` records. These still require separate source-level attribution/count review.
 - **Timeline distinction:** `Recent activity timeline — all sessions` remains visible for broad chronological context and explicitly states it is *not* filtered by the selected Audit session. Do not attribute every background row to the selected connection.
-- **Presentation:** the third screenshot shows a full Investigation Workspace in View mode (green **Edit** button), including the session input, correlation, all-session timeline, and both case-filtered evidence tables. Save/reopen persistence and exact final source export are not yet independently captured.
+- **Presentation:** the third screenshot shows a full Investigation Workspace in View mode (green **Edit** button), including the session input, correlation, all-session timeline, and both case-filtered evidence tables. The post-change dashboard Source export was received and committed. The green **Edit** button in the View mode screenshot indicates a rendered saved view; a separate close/reopen persistence test has not been explicitly recorded.
 
-**Result:** The requested 33-versus-6 filter test passed on visible file/process rows. The dashboard candidate is **not** yet synced to the repository's canonical production JSON; obtain the post-save Dashboard Studio Source export and compare before updating GitHub. Genuine sanitized images still need to be included in the repository to replace evidence placeholders.
+**Result:** The requested 33-versus-6 filter test passed on visible file/process rows. The post-save Dashboard Studio Source export has now been compared with the previous canonical JSON and committed to GitHub. Existing eight saved-search references and Overview/Endpoint layouts were preserved. Genuine sanitized images still need to be included in the repository to replace evidence placeholders.
 
 ## Remaining validation and deliverables
 
@@ -104,12 +104,20 @@ Three operator screenshots validated the revised *Investigation Workspace* with 
 - [x] Global saved-report time bindings present for all eight sources in JSON.
 - [x] Telemetry, sudo and process time-range behavior tested against short and longer windows.
 - [ ] Spot-check SSH, file changes, HTTP, session correlation and investigation timeline time-range behavior.
-- [ ] Validate HTTP parsing and distinguish diagnostic log lines from requests.
+- [x] Validate HTTP parsing classification (four request lines and one diagnostic among five records) and visually confirm clean dashboard HTTP rows.
+- [ ] Export the exact updated saved HTTP report SPL from Splunk and reconcile the canonical GitHub SPL.
 - [x] Visually confirm selected-session filter changes file/process evidence between session 33 and 6.
 - [ ] Independently validate the underlying SSH PID/Auditd LOGIN attribution and count semantics.
-- [ ] Save/reopen and confirm the latest state persists after edits.
+- [x] Export the actual post-session-filter Dashboard Studio Source JSON and commit it as canonical.
+- [ ] Explicitly test closing/reopening the dashboard to confirm persistence.
 - [ ] Compare the actual saved Splunk reports with the canonical SPL and document detection positive/negative tests.
 - [ ] Capture and commit sanitized evidence screenshots.
 - [ ] Conduct distinct SOC-003 investigation on owned lab VMs and publish case findings.
 
 This is a controlled laboratory demonstration, not a production intrusion or claim of enterprise SOC experience.
+
+## Final session-filtered dashboard export synchronized — 2026-10-21
+
+The user uploaded the full 636-line Dashboard Studio Source definition after applying the two session-filtering changes and testing session 33 versus session 6. GitHub's [`dashboards/soc-lab-dashboard-studio.json`](../dashboards/soc-lab-dashboard-studio.json) was updated from that exported definition (commit `76dedc7`). Validation of the submitted definition found **no out-of-bounds panels, overlaps, uncovered Grid cells, missing visualization source IDs, or missing input IDs**. It preserves all eight saved-report sources and their global time inputs while adding a numeric case session selector (`investigation_session`, default `33`) plus three session-scoped inline searches (`ds_case_correlation`, `ds_case_files`, `ds_case_process`).
+
+The value `33` is a reproducible example from the recorded lab session, **not a permanent unique identifier** across host reboots or all future investigations. Analysts must confirm the host, time window, SSH PID and Auditd LOGIN before treating a session number as attributable to a connection. The all-session timeline intentionally remains wider than the case-filtered evidence.
