@@ -1,60 +1,48 @@
-# LINUX-DET-001 — SSH authentication activity
+# Project completion roadmap
 
-**Stage:** Authentication event extraction and per-connection session summary validated in Splunk; the three-failure detection remains a candidate and is not yet confirmed as a saved report.
+The lab has three documented investigations, eight saved live Linux reports, a three-tab Splunk Dashboard Studio export, and published screenshot galleries. The work below separates completed capabilities from operational and validation gaps.
 
-## Observed activity (October 21, 2026)
+## Essential security and reliability
 
-The live Splunk search over `index="soc-live"` and Ubuntu's `/var/log/auth.log` returned **8 matching authentication events** in the selected window:
+- [ ] Revoke or rotate the temporary HEC test token; document secure TLS certificate validation.
+- [ ] Review forwarder credentials, file permissions, and TLS peer-verification settings without committing secrets.
+- [ ] Make narrowly scoped Auditd rules persistent; verify them after a planned restart.
+- [ ] Verify Universal Forwarder restart behavior, log rotation, and ingestion recovery.
+- [ ] Check Ubuntu disk/LVM capacity, time synchronization, and Splunk retention constraints.
 
-| Remote source | Successful logins | Failed logins |
-|---|---:|---:|
-| `172.16.110.128` (Kali lab VM) | 4 | 1 |
-| `172.16.110.1` (VMware network address; originating system not yet established) | 3 | 0 |
-| **Total** | **7** | **1** |
+## Detection validation
 
-All eight extracted events referenced `socadmin` using password authentication. The failed attempt at **11:49:56.642 UTC** and successful attempt at **11:50:10.192 UTC** shared `sshd[5124]`, source IP `172.16.110.128`, and source port `52796` — a roughly **13.55-second** interval. A single failed password followed by a success is consistent with a possible mistyped password and **does not alone establish brute force or unauthorized access**.
+- [ ] Export exact SPL for all eight saved Linux reports and compare it to repository versions.
+- [ ] Reconcile the updated live HTTP parsing query with the canonical GitHub SPL.
+- [ ] Record a validation matrix: input data, expected positive and negative behavior, observed output, and limitations.
+- [ ] Revisit SSH failed-login threshold and cross-connection coverage using controlled fixtures.
+- [ ] Review the two additional SOC-003 file-operation record groups if useful for deeper evidence completeness.
+- [ ] Decide whether scheduled alerting is supported and warranted; validate before claiming alert coverage.
 
-## Files
+## Portfolio presentation
 
-- [LINUX-DET-001-ssh-session-summary.spl](LINUX-DET-001-ssh-session-summary.spl) — manually review failed/successful SSH events grouped by connection identifiers. **New improved query; run it before claiming its returned output was validated.**
-- [LINUX-DET-001-ssh-failure-followed-success.spl](LINUX-DET-001-ssh-failure-followed-success.spl) — **candidate** threshold requiring three or more failures followed by success within one SSH connection. Current known eight-event sample should **not** satisfy this threshold (only one failure). This is not yet a tested alert.
+- [x] Publish the SOC-003 nine-image case gallery.
+- [x] Publish the five-image Dashboard Studio gallery.
+- [x] Improve the main README with direct links to strongest evidence.
+- [x] Correct SOC-003 screenshot publication status.
+- [x] Give the dashboard documentation a reader-focused introduction.
+- [ ] Visually review every published PNG for readability, captions, redaction, and evidence integrity.
+- [ ] Check remaining documentation links and claims; retain unresolved evidence gaps transparently.
+- [ ] Refine the architecture diagram and record a short investigation walkthrough.
 
-## Confirmed session-summary validation (2026-10-21)
+## Optional extensions
 
-The grouped [session summary SPL](LINUX-DET-001-ssh-session-summary.spl) was run in Splunk Search & Reporting. Eight matching authentication records were reduced to seven connections in the results table. Six connections had one successful login and no failures; connection `sshd[5124]`, source `172.16.110.128:52796`, recorded one failure then one successful authentication. The query calculated `time_between=13.55` seconds. This corroborates the individual records, but does not establish malicious activity.
+- [ ] Create justified MITRE ATT&CK mappings and a coverage/gap table.
+- [ ] Add a small number of new, testable endpoint detections with analyst playbooks.
+- [ ] Consider additional automation only after collection, detection, and validation are reliable.
 
-**Still pending:** Qualifying live-event and cross-connection validation, threshold tuning, saved-report confirmation, and alert scheduling decision. A separate in-memory synthetic positive test passed on 2026-10-21.
+## Existing evidence and reference documents
 
-## Candidate threshold negative test — 2026-10-21
+- [SOC-003 case report](../investigations/SOC-003/case-report.md)
+- [Dashboard export and gallery](../dashboards/README.md)
+- [Dashboard validation](dashboard-validation-2026-10-21.md)
+- [Report inventory](report-save-runbook.md)
+- [Detection catalog](../detections/linux/README.md)
+- [Security limitations](limitations.md)
 
-The three-or-more-failures-before-success [candidate SPL](LINUX-DET-001-ssh-failure-followed-success.spl) was run in Splunk Search & Reporting with a time range containing the eight known SSH authentication records. Splunk displayed **8 matching input events** and **Statistics (0)** after aggregation and the threshold filter. This is consistent with the known single-failure-then-success connection (`sshd[5124]`) and six single-success connections.
-
-**Interpretation:** The known one-failure sequence is correctly excluded by the three-failure threshold. This is negative-case behavior only: a qualifying positive case, broader cross-connection detection, threshold assessment, and report/alert setup remain untested. The 8 input log events are not eight detections.
-
-## Synthetic positive test — 2026-10-21
-
-A controlled in-memory `makeresults` search generated four **synthetic**, non-indexed SSH authentication records (three failed then one accepted). Splunk returned one matching group with account `socadmin`, source `192.0.2.10`, **3 failures**, and **1 success**. This confirms the tested parsing and threshold logic on that fixture, not broad real-world detection effectiveness; `192.0.2.10` is a documentation-only address, not a real remote lab client.
-
-## Validation and tuning checklist
-
-1. Re-run the session summary query in Search & Reporting; confirm `sshd[5124]` has one failure and one success and compare actual field extraction to the raw log.
-2. Examine `172.16.110.1` from the authorized host/network configuration rather than automatically trusting or labeling it malicious.
-3. Run the candidate detection as an exploratory search. An empty result set is expected against the currently observed eight-event sample; do not claim full validation from a negative-only dataset.
-4. Obtain safely documented positive multi-failure examples (or build controlled non-production fixture events) before evaluating sensitivity, thresholds, false positives and time windows. Do not generate uncontrolled authentication traffic.
-5. Note differences between `Accepted password`, `Accepted publickey`, `Failed password`, `Failed publickey`, invalid-user messages and other SSH formats. Revisit extractions for real distribution.
-6. For multi-connection failures from one source, design a separate user/IP-time-window correlation. The **same-PID-and-port** pilot intentionally does not capture attempts spread across multiple SSH sessions.
-7. Save only a search tested for its stated purpose as a Splunk Report. Configure scheduling/alerting only after validated data volume, lag, permissions and duplicate-handling rules.
-
-## Interpretation
-
-- **Authentication success** is not proof of authorization.
-- **One failure then success** is useful investigation context, not intrinsically a brute-force detection.
-- **A shared SSH PID and source port** support the same SSH transport connection but do not independently establish what happened after authentication.
-- **SSH source IP** and the actual user operating the remote machine are different questions; the later requires broader context.
-
-## Evidence placeholders
-
-- [ ] Sanitized screenshot: eight auth events and extracted fields.
-- [ ] Sanitized screenshot: per-connection SSH session summary.
-- [ ] Validated candidate query positive/negative test results.
-- [ ] Full saved Splunk Report settings and SPL after review.
+The SSH authentication baseline and three-failure candidate details belong in [LINUX-DET-001 documentation](../detections/linux/LINUX-DET-001-ssh-auth.md), not in this project-wide roadmap.
