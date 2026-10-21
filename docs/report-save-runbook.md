@@ -2,7 +2,7 @@
 
 ## Purpose and limitations
 
-These SPL files are prepared for `index="soc-live"`, `host="soc-ubuntu-01"`. **Only LINUX-DET-003 is confirmed saved in Splunk Cloud**. LINUX-DET-001 SSH session summary was tested against real data, and a separate synthetic threshold test returned 3 failures/1 success. Other new report SPL is **draft, not run in Splunk yet**. Saving a report makes a search reusable; it does not mean that every intended field parsed correctly or that it is a validated alert.
+These SPL files are prepared for `index="soc-live"`, `host="soc-ubuntu-01"`. **All eight searches are now user-confirmed saved in Splunk Cloud (2026-10-21), though ChatGPT has not inspected the saved-search objects directly**. LINUX-DET-001 SSH session summary was tested against real data, and a separate synthetic threshold test returned 3 failures/1 success. Other new report SPL is **draft, not run in Splunk yet**. Saving a report makes a search reusable; it does not mean that every intended field parsed correctly or that it is a validated alert.
 
 A Splunk Cloud **free trial cannot use the management REST API**. Do these steps in **Search & Reporting** for each unsaved report: click file below, copy raw SPL, paste into Search, choose **Last 24 hours** (or a range containing known events), **Run**, examine fields, select **Save As > Report**, enter the exact report name, **Save**. Keep scheduling disabled; enable time-range picker when offered. If a report yields 0 events, save it only as an exploratory or baseline report and record why it is empty.
 
@@ -10,14 +10,14 @@ A Splunk Cloud **free trial cannot use the management REST API**. Do these steps
 
 | # | Splunk Report title | Canonical SPL | Status |
 |---|---|---|---|
-| 1 | `LINUX-MON-001 - Live Telemetry Health` | [SPL](../detections/linux/LINUX-MON-001-telemetry-health.spl) | To save |
-| 2 | `LINUX-DET-001 - SSH Authentication Sessions` | [SPL](../detections/linux/LINUX-DET-001-ssh-session-summary.spl) | To save |
-| 3 | `LINUX-DET-002 - Sudo Command Activity` | [SPL](../detections/linux/LINUX-DET-002-sudo-activity.spl) | To save |
-| 4 | `LINUX-DET-003 - Monitored File Changes` | [SPL](../detections/linux/LINUX-DET-003-file-change.spl) | Already saved |
-| 5 | `LINUX-DET-004 - Audited Process Executions` | [SPL](../detections/linux/LINUX-DET-004-process-execution.spl) | To save |
-| 6 | `LINUX-DET-005 - HTTP Access Activity` | [SPL](../detections/linux/LINUX-DET-005-web-requests.spl) | To save |
-| 7 | `LINUX-COR-001 - SSH Endpoint Session Correlation` | [SPL](../detections/linux/LINUX-COR-001-ssh-endpoint-session.spl) | To save |
-| 8 | `LINUX-INV-001 - Live Investigation Timeline` | [SPL](../investigations/SOC-003/live-investigation-timeline.spl) | To save |
+| 1 | `LINUX-MON-001 - Live Telemetry Health` | [SPL](../detections/linux/LINUX-MON-001-telemetry-health.spl) | Operator-confirmed saved; panel/results review pending |
+| 2 | `LINUX-DET-001 - SSH Authentication Sessions` | [SPL](../detections/linux/LINUX-DET-001-ssh-session-summary.spl) | Operator-confirmed saved; panel/results review pending |
+| 3 | `LINUX-DET-002 - Sudo Command Activity` | [SPL](../detections/linux/LINUX-DET-002-sudo-activity.spl) | Operator-confirmed saved; panel/results review pending |
+| 4 | `LINUX-DET-003 - Monitored File Changes` | [SPL](../detections/linux/LINUX-DET-003-file-change.spl) | Operator-confirmed saved; panel/results review pending |
+| 5 | `LINUX-DET-004 - Audited Process Executions` | [SPL](../detections/linux/LINUX-DET-004-process-execution.spl) | Operator-confirmed saved; panel/results review pending |
+| 6 | `LINUX-DET-005 - HTTP Access Activity` | [SPL](../detections/linux/LINUX-DET-005-web-requests.spl) | Operator-confirmed saved; panel/results review pending |
+| 7 | `LINUX-COR-001 - SSH Endpoint Session Correlation` | [SPL](../detections/linux/LINUX-COR-001-ssh-endpoint-session.spl) | Operator-confirmed saved; panel/results review pending |
+| 8 | `LINUX-INV-001 - Live Investigation Timeline` | [SPL](../investigations/SOC-003/live-investigation-timeline.spl) | Operator-confirmed saved; panel/results review pending |
 
 ### Report notes
 
@@ -41,7 +41,7 @@ A Splunk Cloud **free trial cannot use the management REST API**. Do these steps
 
 - [ ] LINUX-MON-001 has at least one known source row; time values are plausible and the time range covers ingestion.
 - [ ] LINUX-DET-001 session summary contains 7 SSH connection groups from the previously captured 8 auth events when using the same time window.
-- [x] LINUX-DET-003 file-change report saved in Splunk (user confirmed).
+- [x] All eight saved reports confirmed by lab operator, including LINUX-DET-003.
 - [ ] LINUX-DET-002 sudo parse checked against at least one auth.log command record (or recorded as no data).
 - [ ] LINUX-DET-004 audit session/process/euid fields inspected against raw examples.
 - [ ] LINUX-DET-005 method/URI/status extraction checked against actual access.log entries. If values display `unparsed`, adapt regex before relying on charts.

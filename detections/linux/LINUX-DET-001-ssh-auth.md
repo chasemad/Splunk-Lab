@@ -1,6 +1,6 @@
 # LINUX-DET-001 — SSH authentication activity
 
-**Stage:** Authentication event extraction and per-connection session summary validated in Splunk; the three-failure detection remains a candidate and is not yet confirmed as a saved report.
+**Stage:** Authentication event extraction and per-connection session summary validated in Splunk; the three-failure detection remains a candidate and is now operator-confirmed saved as a **session-summary report**. The stricter threshold remains an experimental, unscheduled candidate.
 
 ## Observed activity (October 21, 2026)
 

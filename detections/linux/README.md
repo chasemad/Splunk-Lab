@@ -1,6 +1,6 @@
 # Linux detection backlog
 
-**Status: LINUX-DET-003 report saved (operator-confirmed), LINUX-DET-001 session summary tested, remaining report searches packaged for batch manual save; scheduled alerts remain unconfigured.**
+**Status: All eight live reporting searches are saved in Splunk Cloud (operator-confirmed 2026-10-21). LINUX-DET-001 sessions and LINUX-DET-003 file-change positive/negative tests were previously reviewed; other report results and scheduled alerts still require verification.**
 
 - [LINUX-DET-001 — SSH authentication baseline and candidate detection](LINUX-DET-001-ssh-auth.md) (8 observed auth events; tuning and saved report pending).
 - [LINUX-DET-002 — Sudo command activity](LINUX-DET-002-sudo-activity.spl) (new report SPL; validation pending).
