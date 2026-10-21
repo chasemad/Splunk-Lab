@@ -1,0 +1,5 @@
+index="soc-live" host="soc-ubuntu-01" source="/var/log/auth.log" "sudo:" "COMMAND="
+| rex field=_raw "sudo:\s*(?<actor>\S+)\s*:\s*TTY=(?<tty>[^;]*);\s*PWD=(?<cwd>[^;]*);\s*USER=(?<run_as>[^;]*);\s*COMMAND=(?<command>.*)"
+| eval actor=coalesce(actor,"unparsed"), run_as=coalesce(trim(run_as),"unparsed"), command=coalesce(command,"unparsed")
+| table _time host actor run_as command cwd tty _raw
+| sort 0 -_time

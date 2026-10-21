@@ -19,3 +19,6 @@
 - [ ] Record short portfolio demonstration video.
 
 See [detection-to-dashboard implementation plan](detection-to-dashboard-plan.md) for the exact order, test gates, report names and dashboard panels.
+
+- [ ] Save prepared one-pass live report pack in Splunk Cloud (only LINUX-DET-003 confirmed saved so far).
+- [ ] Build SOC-003 controlled Kali-to-Ubuntu investigation using validated reports and dashboard.

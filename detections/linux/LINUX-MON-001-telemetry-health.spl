@@ -1,0 +1,5 @@
+index="soc-live" host="soc-ubuntu-01"
+| stats count as event_count latest(_time) as last_seen earliest(_time) as first_seen by host source sourcetype
+| eval last_seen=strftime(last_seen,"%Y-%m-%d %H:%M:%S")
+| eval first_seen=strftime(first_seen,"%Y-%m-%d %H:%M:%S")
+| sort -event_count

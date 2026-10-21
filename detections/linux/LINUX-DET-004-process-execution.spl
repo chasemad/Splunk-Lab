@@ -1,0 +1,11 @@
+index="soc-live" host="soc-ubuntu-01" source="/var/log/audit/audit.log" "type=SYSCALL" "key=\"soc_lab_exec\""
+| rex field=_raw "msg=audit\((?<audit_id>[^)]+)\)"
+| rex field=_raw "(?:^|\s)comm=\"(?<process>[^\"]+)\""
+| rex field=_raw "(?:^|\s)auid=(?<audit_user>\d+)"
+| rex field=_raw "(?:^|\s)euid=(?<effective_uid>\d+)"
+| rex field=_raw "(?:^|\s)ses=(?<audit_session>\d+)"
+| rex field=_raw "(?:^|\s)pid=(?<pid>\d+)"
+| rex field=_raw "(?:^|\s)ppid=(?<parent_pid>\d+)"
+| rex field=_raw "(?:^|\s)success=(?<success>\w+)"
+| table _time host audit_id audit_user effective_uid audit_session process pid parent_pid success _raw
+| sort 0 -_time

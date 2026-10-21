@@ -1,0 +1,28 @@
+index="soc-live" host="soc-ubuntu-01" source="/var/log/audit/audit.log"
+("type=LOGIN" OR ("type=SYSCALL" ("soc_lab_exec" OR "soc_lab_file_change")))
+| rex field=_raw "^type=(?<record_type>[A-Z_]+)"
+| rex field=_raw "(?:^|\s)pid=(?<pid>\d+)"
+| rex field=_raw "(?:^|\s)ses=(?<audit_session>\d+)"
+| rex field=_raw "(?:^|\s)comm=\"(?<process>[^\"]+)\""
+| eval is_exec=if(record_type="SYSCALL" AND match(_raw,"key=\"soc_lab_exec\""),1,0)
+| eval is_file=if(record_type="SYSCALL" AND match(_raw,"key=\"soc_lab_file_change\""),1,0)
+| stats
+    values(eval(if(record_type="LOGIN",pid,null()))) as ssh_pid
+    min(eval(if(record_type="LOGIN",_time,null()))) as audit_login_time
+    sum(is_exec) as audited_execs
+    sum(is_file) as monitored_file_ops
+    values(eval(if(is_exec=1,process,null()))) as executed_processes
+    by host audit_session
+| where isnotnull(ssh_pid)
+| mvexpand ssh_pid
+| join type=inner host ssh_pid [
+    search index="soc-live" host="soc-ubuntu-01" source="/var/log/auth.log" ("Accepted password" OR "Accepted publickey")
+    | rex field=_raw "sshd\[(?<ssh_pid>\d+)\]"
+    | rex field=_raw "Accepted (?:password|publickey) for (?<account>\S+) from (?<src_ip>(?:\d{1,3}\.){3}\d{1,3})"
+    | eval auth_time=_time
+    | table host ssh_pid account src_ip auth_time
+]
+| where abs(audit_login_time-auth_time)<=120
+| eval auth_time=strftime(auth_time,"%Y-%m-%d %H:%M:%S")
+| table auth_time host account src_ip ssh_pid audit_session audited_execs monitored_file_ops executed_processes
+| sort 0 -auth_time

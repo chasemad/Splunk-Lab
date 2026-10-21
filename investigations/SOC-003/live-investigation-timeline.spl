@@ -1,0 +1,16 @@
+index="soc-live" host="soc-ubuntu-01"
+(source="/var/log/auth.log" OR source="/var/log/audit/audit.log" OR source="/opt/soc-web-logs/access.log")
+| eval activity=case(
+    source="/var/log/auth.log" AND match(_raw,"sshd.*(Accepted|Failed)"),"SSH authentication",
+    source="/var/log/audit/audit.log" AND match(_raw,"type=SYSCALL") AND match(_raw,"soc_lab_exec"),"Audited process",
+    source="/var/log/audit/audit.log" AND match(_raw,"type=SYSCALL") AND match(_raw,"soc_lab_file_change"),"Monitored file operation",
+    source="/opt/soc-web-logs/access.log","HTTP request",
+    true(),"Other")
+| where activity!="Other"
+| rex field=_raw "sshd\[(?<sshd_pid>\d+)\]"
+| rex field=_raw "from (?<ssh_ip>(?:\d{1,3}\.){3}\d{1,3})"
+| rex field=_raw "(?:^|\s)ses=(?<audit_session>\d+)"
+| rex field=_raw "(?:^|\s)comm=\"(?<process>[^\"]+)\""
+| rex field=_raw "msg=audit\((?<audit_id>[^)]+)\)"
+| table _time host activity ssh_ip sshd_pid audit_session audit_id process source _raw
+| sort 0 _time
