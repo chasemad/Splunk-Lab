@@ -1,20 +1,20 @@
-# SOC-003 — Investigating a Remote Login on a Linux Server
+# SOC-003 — SSH Session and Endpoint Activity Investigation
 
-## Quick summary
+## Investigation overview
 
-**The question:** If someone signs in to a server remotely, can I follow what happened afterward and separate their actions from unrelated activity?
+**Objective:** Determine whether a successful remote login could be accurately linked to subsequent command execution and file activity on a Linux server.
 
-**What I did:** I connected from my Kali Linux test computer to an Ubuntu server I was monitoring. I then used Splunk to review the login, examine the activity associated with it, and check the original system records for a file that was created.
+**Approach:** I initiated an authorized SSH connection from Kali Linux to an Ubuntu server and investigated the resulting logs in Splunk Cloud. I correlated the authentication event with Linux audit records, reviewed the activity associated with that session, and examined the raw evidence for a test-file creation.
 
-**What I found:** The login, selected commands, and test-file creation could be linked to the same authorized session. Another login test happened nearby in time, but the records showed it was separate and should not be mixed into the investigation.
+**Findings:** The authentication and audit records identified the same session, allowing me to trace selected commands and the file creation back to the login. A separate, earlier login attempt was identified and excluded from the case rather than incorrectly combined with the Kali session.
 
-**Conclusion:** This was expected activity in my own lab. The evidence supported closing the investigation as **authorized testing**, not reporting a security breach.
+**Disposition:** **Authorized lab activity; no evidence of compromise.** The investigation demonstrates how I correlate security events, validate findings, and document a defensible conclusion.
 
-**[View the nine annotated evidence screenshots ↓](#evidence-gallery--real-screenshots)** · **[See the monitoring dashboard](../../dashboards/README.md)**
+**[View all nine annotated evidence screenshots](#evidence-gallery--real-screenshots)** · **[Explore the Splunk dashboard](../../dashboards/README.md)**
 
-![Actual Splunk investigation view highlighting the linked remote-login activity](screenshots/04-session54-correlation-annotated.svg)
+![SOC-003 session correlation in Splunk](screenshots/04-session54-correlation-annotated.svg)
 
-*This annotated screenshot shows how I narrowed the investigation to the login I was examining. [Original, unannotated capture](screenshots/04-session54-correlation.png).*
+*The Investigation Workspace shows the SSH session linked to recorded endpoint activity. [Original screenshot](screenshots/04-session54-correlation.png).*
 
 ## Case details and technical findings
 
