@@ -1,6 +1,6 @@
 # SOC Dashboard Studio — Three-tab source dashboard
 
-The [Dashboard Studio JSON](soc-lab-dashboard-studio.json) is the maintained repository definition for the existing Splunk Cloud dashboard. The operator has shown the Grid layout working on all three tabs and has confirmed all eight reports in the `search` app. **The source correction for six mismatched report titles has been committed but is awaiting import and runtime verification.** See the [report-save runbook](../docs/report-save-runbook.md) for the exact saved titles.
+The [Dashboard Studio JSON](soc-lab-dashboard-studio.json) is the maintained repository definition for the existing Splunk Cloud dashboard. The operator has shown the Grid layout working on all three tabs and has confirmed all eight reports in the `search` app. **The live dashboard now resolves all eight reports, and its exported source (including their time-range bindings) has been committed to this repository.** See the [report-save runbook](../docs/report-save-runbook.md) for the exact saved titles.
 
 ## Import into Splunk Cloud
 
@@ -23,7 +23,7 @@ The [Dashboard Studio JSON](soc-lab-dashboard-studio.json) is the maintained rep
 
 ## Practical caveats
 
-- Report title, owner, app, sharing and enabled status have been seen in an operator-provided Splunk Reports screenshot. The final saved-report source corrections have not yet been executed in the live dashboard; compare source and test all panels after importing.
+- Report title, owner, app, sharing and enabled status have been seen in an operator-provided Splunk Reports screenshot. The previously mismatched saved-report sources are now rendering in the operator's dashboard. Time-range filtering has been explicitly tested on telemetry, sudo and process reports; independent checks remain for the others.
 - The `minutes since newest indexed event` metric measures data freshness, **not VM uptime, collection uptime, or SLA**.
 - Source count, process execution count, and grouped file-operation count answer different questions.
 - `LINUX-COR-001` correlation was only prepared in the repository and still requires real output validation; if empty, audit LOGIN/PID matching and time picker configuration rather than interpreting it as zero suspicious sessions.
@@ -40,7 +40,7 @@ The [Dashboard Studio JSON](soc-lab-dashboard-studio.json) is the maintained rep
 - [ ] SSH-to-Auditd correlation returns a known session and is compared with raw LOGIN and authentication logs.
 - [ ] Changing time range affects the expected panels (verify saved report picker binding separately).
 - [ ] All three tabs and relevant raw-data drilldowns reviewed.
-- [ ] Current Studio JSON exported and stored in GitHub.
+- [x] Current Studio JSON exported from Splunk and stored in GitHub.
 - [ ] SOC-003 performed with one authorized Kali-to-Ubuntu login and labeled test file. See [SOC-003 investigation guide](../investigations/SOC-003/README.md).
 
 ## Grid adjacency fix — 2026-10-21
@@ -107,10 +107,16 @@ The source dashboard was updated on `main` to reference these actual titles:
 | `ds_correlation` | `LINUX-COR-001 — Session Correlation` |
 | `ds_timeline` | `LINUX-INV-001 — Investigation Timeline` |
 
-**Apply:** Back up the existing production dashboard Source locally, replace it with the newest [production JSON](soc-lab-dashboard-studio.json), click **Apply**, inspect all three tabs, then **Save**. Do not replace the dashboard with the *temporary diagnostic JSON*. The grid geometry and inline sources were not modified in the title-correction commit. Check that each panel stops showing `Could not find object id=...`, then test the reports' actual results and time picker. This fix is committed to GitHub, **not yet confirmed applied in Splunk Cloud**.
+**Apply:** Back up the existing production dashboard Source locally, replace it with the newest [production JSON](soc-lab-dashboard-studio.json), click **Apply**, inspect all three tabs, then **Save**. Do not replace the dashboard with the *temporary diagnostic JSON*. The grid geometry and inline sources were not modified in the title-correction commit. Check that each panel stops showing `Could not find object id=...`, then test the reports' actual results and time picker. This title correction was subsequently applied in Splunk Cloud, and the live export now matches the checked-in report references.
 
 **Note:** A report being `Private` is not itself evidence of an error in this owner's dashboard; two private reports were already rendering. If dashboards need to be shared with a different account later, change report/dashboard sharing according to the intended permissions.
 
 ### Completion criteria
 
 Only consider the production dashboard ready after Grid errors disappear on every tab, **all eight saved report references** resolve, process/file/HTTP/correlation outputs are reviewed against actual SPL, time picker behavior is confirmed separately for inline and saved searches, and the saved dashboard survives reopen. Capture actual Studio source/export for GitHub after validation. SOC-003 remains pending until this gate passes.
+
+## Live source export synchronized — 2026-10-21
+
+The current [production JSON](soc-lab-dashboard-studio.json) is the **actual dashboard definition copied from Splunk Cloud** after the operator updated all eight saved-report time controls. Each saved report has a display name and uses Splunk-generated `queryParameters.earliest="$global_time.earliest$"`, `queryParameters.latest="$global_time.latest$"`, and `useSavedTimeRange=false`. The prior full-layout correction, visualization definitions and inline SPL were preserved. Splunk also exported a `ds.spl2` global query-parameter default.
+
+The global time picker has been exercised against Telemetry Health, Sudo Activity and Process Execution with both short and full-day windows. The other five time-filtered report sources still need direct spot checks. HTTP diagnostic-line parsing and SSH/Auditd session attribution are separate open items; see [validation findings](../docs/dashboard-validation-2026-10-21.md).
