@@ -74,6 +74,14 @@ A completed, controlled Linux investigation correlating Kali SSH authentication 
 <!-- SCREENSHOT: SOC-002 cross-source timeline -->
 <!-- SCREENSHOT: SSH session attribution and grouped Auditd records -->
 
+### SOC-003 — Kali-to-Ubuntu SSH and Auditd correlation
+
+A completed controlled investigation traced an authorized Kali SSH login (**source `172.16.110.128`; PID `5613`**) to a matching Auditd LOGIN (**session `54`**), session-scoped process records, and a successfully created monitored file. The analyst examined all **five** companion Auditd records for the file-creation event (two PATH, CWD, SYSCALL and PROCTITLE), distinguished them from three grouped file-operation IDs, and separated a preceding Ubuntu-originated failed-login example (**session `53`**) from the Kali case. Disposition: **authorized lab activity, no confirmed compromise**.
+
+[Read the SOC-003 analyst case report](investigations/SOC-003/case-report.md) · [Reproduction runbook](investigations/SOC-003/README.md)
+
+<!-- SCREENSHOT: SOC-003 Kali SSH, Auditd LOGIN, session-54 dashboard and raw file-creation records -->
+
 ## Detection engineering
 
 The historical dataset supports five saved Splunk reports:
@@ -96,7 +104,7 @@ The Linux detection track covers SSH authentication, sudo activity, monitored fi
 
 ### Live reporting pack and end-to-end investigation
 
-All **eight live Linux reports** have been saved in Splunk Cloud and connected to the three-tab Dashboard Studio dashboard. The [report runbook](docs/report-save-runbook.md) records the exact saved-report titles and SPL source files. Their results and time-range behavior are being validated: the [dashboard validation log](docs/dashboard-validation-2026-10-21.md) documents tests, open limitations, and attribution questions. The [SOC-003 investigation runbook](investigations/SOC-003/README.md) is prepared; that distinct end-to-end exercise has not yet been executed.
+All **eight live Linux reports** have been saved in Splunk Cloud and connected to the three-tab Dashboard Studio dashboard. The [report runbook](docs/report-save-runbook.md) records the exact saved-report titles and SPL source files. Their results and time-range behavior are being validated: the [dashboard validation log](docs/dashboard-validation-2026-10-21.md) documents tests, open limitations, and attribution questions. The [SOC-003 investigation](investigations/SOC-003/case-report.md) is now documented from real controlled-lab authentication and Auditd evidence, including raw file-creation records; sanitized image publication and final repository polish are still pending.
 
 ## SOC dashboard
 
