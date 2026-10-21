@@ -1,14 +1,22 @@
-# SOC-003 — Kali-to-Ubuntu SSH Session Investigation
+# SOC-003 — Investigating a Remote Login on a Linux Server
 
-## At a glance
+## Quick summary
 
-**Investigation question:** After a remote SSH login, can we identify the activity that belongs to that specific session rather than simply grouping nearby events together?
+**The question:** If someone signs in to a server remotely, can I follow what happened afterward and separate their actions from unrelated activity?
 
-**What I did:** Used actual Splunk Cloud authentication and Linux Auditd logs to trace an authorized Kali login to its matching audit session, inspect commands and file operations, and confirm a successful file creation using raw audit evidence.
+**What I did:** I connected from my Kali Linux test computer to an Ubuntu server I was monitoring. I then used Splunk to review the login, examine the activity associated with it, and check the original system records for a file that was created.
 
-**What it demonstrates:** Multi-source correlation, careful interpretation of raw security logs, a repeatable analyst workflow, and a written conclusion supported by evidence.
+**What I found:** The login, selected commands, and test-file creation could be linked to the same authorized session. Another login test happened nearby in time, but the records showed it was separate and should not be mixed into the investigation.
 
-**Outcome:** The observed activity matched the planned lab exercise, so the case was closed as **authorized activity**. The [nine-image evidence gallery](#evidence-gallery--real-screenshots) and [dashboard screenshots](../../dashboards/README.md#screenshot-gallery) show the work; technical details follow below.
+**Conclusion:** This was expected activity in my own lab. The evidence supported closing the investigation as **authorized testing**, not reporting a security breach.
+
+**[View the nine annotated evidence screenshots ↓](#evidence-gallery--real-screenshots)** · **[See the monitoring dashboard](../../dashboards/README.md)**
+
+![Actual Splunk investigation view highlighting the linked remote-login activity](screenshots/04-session54-correlation-annotated.svg)
+
+*This annotated screenshot shows how I narrowed the investigation to the login I was examining. [Original, unannotated capture](screenshots/04-session54-correlation.png).*
+
+## Case details and technical findings
 
 | Case attribute | Value |
 |---|---|
