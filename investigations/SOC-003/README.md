@@ -1,8 +1,10 @@
 # SOC-003 — Controlled Kali-to-Ubuntu Investigation
 
-**State:** SOC-003 core SSH/Auditd session attribution and session-filtered file/process evidence captured. Raw companion-record verification and the final case report remain pending.
+**State:** SOC-003 case report published with confirmed SSH-to-Auditd session attribution, session-filtered process/file evidence, and a raw five-record successful file-creation group. **Disposition: authorized lab activity.** Sanitized screenshots and two optional follow-up audit groups remain to be published/verified.
 **System:** Kali test workstation `172.16.110.128` → Ubuntu `172.16.110.130` (`soc-ubuntu-01`) → Splunk Cloud `index="soc-live"`.
 **Purpose:** Demonstrate authorized SSH access, audited identity commands, controlled file changes, cross-source correlation, and an evidence-backed analyst disposition.
+
+**Read the completed [SOC-003 investigation and analyst case report](case-report.md)** for the observed timeline, findings, raw Auditd record grouping, rationale, and limitations.
 
 ## Stage 0 — preflight
 
@@ -58,9 +60,9 @@ Operator screenshots captured from the working Dashboard Studio on 2026-10-21:
 - SOC Overview also shows prior `soc003-validation.txt` file activity in session 53 and two failures followed by a success from `172.16.110.130`. This is separate local/self-SSH evidence and must not be attributed to the Kali session.
 - Recent activity timeline is explicitly all sessions; nearby timeline events are not automatically session 54 evidence.
 
-### Raw-event validation still required
+### Raw-event validation outcome
 
-Check all Auditd records sharing the same event ID before concluding the exact file operation:
+This search was executed against raw Auditd telemetry and returned **five companion records** under the single event ID `1792593148.187:1492`: two `PATH` entries (including `nametype=CREATE` for `/opt/soc-lab-test/soc003-kali-validation.txt`), `CWD`, a successful `openat` `SYSCALL` (`ses=54`, `auid=1000`, `uid/euid=1000`, `comm=bash`, `key=soc_lab_file_change`), and `PROCTITLE`. The search used was:
 
 ```spl
 index="soc-live" host="soc-ubuntu-01" source="/var/log/audit/audit.log"
@@ -71,9 +73,9 @@ index="soc-live" host="soc-ubuntu-01" source="/var/log/audit/audit.log"
 | sort 0 _time
 ```
 
-Confirm the PATH filename and companion SYSCALL attributes `ses=54`, `auid=1000` and `success=yes`. Check additional audit IDs for later changes separately. The distinct event ID groups represent actions; several PATH/SYSCALL records for one ID are not several independent user operations.
+**Verified**: the raw PATH filename, `nametype=CREATE`, and companion SYSCALL `ses=54`, `auid=1000` and `success=yes`. The other two grouped file-operation IDs (`1792593148.188:1494`, `1792593148.188:1495`) have dashboard evidence only; their raw companions can be validated separately as a follow-up. Multiple PATH/SYSCALL records under the same ID describe a single audited action, not multiple independent operations.
 
-After validation, write the final analyst case chronology, detection outcomes, attribution limits, and reasoned authorized-training disposition. Store sanitized screenshots in the repository.
+The complete chronology, detection outcomes, attribution limits, and authorized-training disposition are published in [case-report.md](case-report.md). Sanitized screenshots still need to be added to GitHub; filenames and captions are cataloged in the report.
 
 ## Stage 2 — trace the event across Splunk reports
 
@@ -83,8 +85,8 @@ Open the working three-tab [SOC dashboard definition](../../dashboards/soc-lab-d
 2. **Session binding:** In LINUX-COR-001, look for the matching Auditd `LOGIN` record with the same SSH PID on the same host and within the time bound. Extract its `ses` value. If this returns nothing, inspect `type=LOGIN` records manually and record correlation coverage limitations.
 3. **Processes:** In LINUX-DET-004, narrow to that `ses` and review `whoami`, `id`, `bash`, `chmod`, `stat` with `auid`, `euid`, `pid`, `ppid`. Some expected login-initialization processes may have `euid=0`; do not assume each represents manual sudo use.
 4. **File operations:** In LINUX-DET-003, identify `/opt/soc-lab-test/soc003-validation.txt`. Record `audit_id`, `PATH`, `SYSCALL`, operation success and the original login ID. One file operation may consist of several raw Auditd records.
-5. **Timeline:** Review LINUX-INV-001 for chronology. Do not attribute a neighboring log event to this connection without PID/session evidence.
-6. **Disposition:** Expected authorized laboratory test, unless observed evidence contradicts the planned sequence. Do not label this an actual enterprise intrusion.
+5. **Timeline:** The broader LINUX-INV-001 chronology was reviewed in the dashboard. Events from other audit sessions were kept as context, not attributed to session 54.
+6. **Disposition:** **Authorized lab activity**. The evidence supports closure as a controlled test, not an enterprise intrusion. See [case report](case-report.md).
 
 ## Stage 3 — targeted evidence queries
 
@@ -124,14 +126,15 @@ To see companion records with the same `audit_id`, run a second search for that 
 
 ## Expected deliverables (complete only after actual test)
 
-- [ ] Timestamped Kali start / Ubuntu session.
+- [x] Timestamped Kali-originated SSH authentication and Auditd login (14:32:20 UTC).
 - [x] Successful SSH log with source IP and PID.
 - [x] Auditd LOGIN same PID and assigned session ID.
 - [x] Session 54 process commands and original/effective user IDs recorded from dashboard.
-- [ ] Verify raw grouped PATH/SYSCALL records for session 54 file events; dashboard file evidence and audit IDs captured.
+- [x] Verify raw grouped PATH/SYSCALL for file creation event `1792593148.187:1492`, session 54.
+- [ ] Optional: independently inspect raw companion records for later file event IDs `:1494` and `:1495`.
 - [ ] Optional lab HTTP test and response code.
-- [ ] Screenshots of all three dashboard tabs with data and readable labels.
-- [ ] Investigation timeline, conclusion, limitations, and analyst disposition.
+- [ ] Publish sanitized screenshot files and captions in GitHub (operator supplied screenshot evidence for the case; original images are not yet committed).
+- [x] Investigation timeline, conclusion, limitations, and analyst disposition written in [case report](case-report.md).
 - [x] Session-filtered Dashboard Studio JSON exported from the working configuration and committed before the SOC-003 exercise.
 
 All outputs should be described as **controlled lab evidence**.
