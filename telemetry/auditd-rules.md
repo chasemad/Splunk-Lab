@@ -27,4 +27,4 @@ Auditd emits SYSCALL, PATH, CWD, PROCTITLE and other records for a single underl
 
 Next: document narrowly scoped persistent rules, test after reboot, and monitor log volume.
 
-**[PLACEHOLDER: Auditd file-change and process screenshots]**
+**Published evidence:** [SOC-003 Exhibit 09](../investigations/SOC-003/case-report.md#09--ubuntu-monitoring-preflight) shows the point-in-time Auditd service and loaded-rule preflight. [Exhibit 06](../investigations/SOC-003/case-report.md#06--raw-file-creation-audit-group) documents related Auditd file-creation records. Neither demonstrates rule persistence after reboot.
