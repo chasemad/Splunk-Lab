@@ -52,7 +52,7 @@ A controlled in-memory `makeresults` search generated four **synthetic**, non-in
 - **A shared SSH PID and source port** support the same SSH transport connection but do not independently establish what happened after authentication.
 - **SSH source IP** and the actual user operating the remote machine are different questions; the later requires broader context.
 
-## Evidence placeholders
+## Evidence and follow-up checks
 
 - [ ] Sanitized screenshot: eight auth events and extracted fields.
 - [ ] Sanitized screenshot: per-connection SSH session summary.
