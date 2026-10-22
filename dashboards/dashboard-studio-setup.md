@@ -2,6 +2,8 @@
 
 The [Dashboard Studio JSON](soc-lab-dashboard-studio.json) is the maintained repository definition for the existing Splunk Cloud dashboard. The operator has shown the Grid layout working on all three tabs and has confirmed all eight reports in the `search` app. **The live dashboard now resolves all eight reports, and its exported source (including their time-range bindings) has been committed to this repository.** See the [report-save runbook](../docs/report-save-runbook.md) for the exact saved titles.
 
+**Current status (October 21, 2026):** The three-tab dashboard and its source export are published; all eight report references render. The [SOC-003 investigation](../investigations/SOC-003/case-report.md) is complete and includes session-54 correlation evidence. The dated diagnostic steps farther down document earlier troubleshooting, not work still required to complete SOC-003. Exact saved-report SPL reconciliation and several time-filter edge cases remain open.
+
 ## Import into Splunk Cloud
 
 1. Go to **Dashboards > Create New Dashboard**, choose **Dashboard Studio**, title **Splunk SOC Lab | Live Security Operations**, and choose a **grid layout**.
@@ -26,22 +28,22 @@ The [Dashboard Studio JSON](soc-lab-dashboard-studio.json) is the maintained rep
 - Report title, owner, app, sharing and enabled status have been seen in an operator-provided Splunk Reports screenshot. The previously mismatched saved-report sources are now rendering in the operator's dashboard. Time-range filtering has been explicitly tested on telemetry, sudo and process reports; independent checks remain for the others.
 - The `minutes since newest indexed event` metric measures data freshness, **not VM uptime, collection uptime, or SLA**.
 - Source count, process execution count, and grouped file-operation count answer different questions.
-- `LINUX-COR-001` correlation was only prepared in the repository and still requires real output validation; if empty, audit LOGIN/PID matching and time picker configuration rather than interpreting it as zero suspicious sessions.
+- `LINUX-COR-001` produced session correlations in the lab, including the SOC-003 session-54 investigation. Broader mismatch/edge-case testing and exact saved-SPL reconciliation remain open; if a search is empty, check LOGIN/PID matching and time picker configuration rather than interpreting it as zero suspicious sessions.
 - `LINUX-DET-002` only captures `sudo: ... COMMAND=` entries: Auditd `euid=0` alone does not establish human sudo invocation.
 - `LINUX-DET-005` supports typical web access formats; records with `unparsed` fields need regex adjustment.
 - These searches are intentionally report-based and **not active detection alerts**.
 
 ## Readiness checklist
 
-- [ ] Overview tab loads and last-event metric has plausible age.
-- [ ] Each report resolves with correct `search` app access.
+- [x] Overview tab loads and last-event metric has plausible age in the captured test window.
+- [x] All eight saved-report references resolve for the operator's `search` app dashboard.
 - [ ] Sudo panel checked for actual `COMMAND=` content, or documented as no matching records.
-- [ ] Web panel parses client IP, HTTP method, path and status.
-- [ ] SSH-to-Auditd correlation returns a known session and is compared with raw LOGIN and authentication logs.
+- [x] Web panel shows parsed request rows and excludes the separately classified diagnostic line in the observed dashboard output.
+- [x] SOC-003 session 54 SSH-to-Auditd correlation compared with raw LOGIN and authentication evidence.
 - [ ] Changing time range affects the expected panels (verify saved report picker binding separately).
 - [ ] All three tabs and relevant raw-data drilldowns reviewed.
 - [x] Current Studio JSON exported from Splunk and stored in GitHub.
-- [ ] SOC-003 performed with one authorized Kali-to-Ubuntu login and labeled test file. See [SOC-003 investigation guide](../investigations/SOC-003/README.md).
+- [x] SOC-003 completed and published with an authorized Kali-to-Ubuntu login and labeled test file. See the [case report](../investigations/SOC-003/case-report.md).
 
 ## Grid adjacency fix — 2026-10-21
 
@@ -88,7 +90,7 @@ The operator imported the temporary `diagnostic-dashboard-studio.json` into Splu
 
 **Implication:** the minimal grid structure, live inline SPL access, and at least one saved report reference work in this Splunk Cloud workspace. This does **not** prove the other seven saved searches resolve or that the production dashboard source is current. The input's *presence* does not prove time picker propagation.
 
-**Next gate:** open the *production* three-tab dashboard (not the temporary Diagnostic dashboard) in Edit > Source, and compare the layout coordinates to `main`. Confirm `viz_total_events.position.y=130`, `viz_proc.position.y=445`, `viz_session_correlation.position.y=115` and `viz_process_evidence.position.x=600`. If old coordinates persist in Splunk, back up its source and apply the current checked-in production definition; then recheck. If coordinates already match, capture the full Source and precise validation errors before editing. Review failing individual saved reports by selecting them via the Studio report picker.
+**Historical next gate (since completed):** open the *production* three-tab dashboard (not the temporary Diagnostic dashboard) in Edit > Source, and compare the layout coordinates to `main`. Confirm `viz_total_events.position.y=130`, `viz_proc.position.y=445`, `viz_session_correlation.position.y=115` and `viz_process_evidence.position.x=600`. If old coordinates persist in Splunk, back up its source and apply the current checked-in production definition; then recheck. If coordinates already match, capture the full Source and precise validation errors before editing. Review failing individual saved reports by selecting them via the Studio report picker.
 
 ## Saved-search title mismatch resolved in source (2026-10-21)
 
@@ -113,10 +115,10 @@ The source dashboard was updated on `main` to reference these actual titles:
 
 ### Completion criteria
 
-Only consider the production dashboard ready after Grid errors disappear on every tab, **all eight saved report references** resolve, process/file/HTTP/correlation outputs are reviewed against actual SPL, time picker behavior is confirmed separately for inline and saved searches, and the saved dashboard survives reopen. Capture actual Studio source/export for GitHub after validation. SOC-003 remains pending until this gate passes.
+Only consider the production dashboard ready after Grid errors disappear on every tab, **all eight saved report references** resolve, process/file/HTTP/correlation outputs are reviewed against actual SPL, time picker behavior is confirmed separately for inline and saved searches, and the saved dashboard survives reopen. The actual Studio source/export has been committed and SOC-003 has been completed. Remaining validation gaps are recorded in the [dashboard validation notes](../docs/dashboard-validation-2026-10-21.md).
 
 ## Live source export synchronized — 2026-10-21
 
 The current [production JSON](soc-lab-dashboard-studio.json) is the **actual dashboard definition copied from Splunk Cloud** after the operator updated all eight saved-report time controls. Each saved report has a display name and uses Splunk-generated `queryParameters.earliest="$global_time.earliest$"`, `queryParameters.latest="$global_time.latest$"`, and `useSavedTimeRange=false`. The prior full-layout correction, visualization definitions and inline SPL were preserved. Splunk also exported a `ds.spl2` global query-parameter default.
 
-The global time picker has been exercised against Telemetry Health, Sudo Activity and Process Execution with both short and full-day windows. The other five time-filtered report sources still need direct spot checks. HTTP diagnostic-line parsing and SSH/Auditd session attribution are separate open items; see [validation findings](../docs/dashboard-validation-2026-10-21.md).
+The global time picker has been exercised against Telemetry Health, Sudo Activity and Process Execution with both short and full-day windows. The other five time-filtered report sources still need direct spot checks. HTTP request classification and SOC-003 session-54 SSH/Auditd attribution have since been demonstrated; wider tests and saved-SPL comparison remain open. See [validation findings](../docs/dashboard-validation-2026-10-21.md).
