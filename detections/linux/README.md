@@ -1,6 +1,6 @@
-# Linux detection backlog
+# Linux monitoring and detection searches
 
-**Status: All eight live reporting searches are saved in Splunk Cloud (operator-confirmed 2026-10-21). LINUX-DET-001 sessions and LINUX-DET-003 file-change positive/negative tests were previously reviewed; other report results and scheduled alerts still require verification.**
+**Status:** All eight live reporting searches were saved in Splunk Cloud (operator-confirmed 2026-10-21). The SOC-003 case demonstrates SSH-to-Auditd correlation and session-specific endpoint activity; earlier SSH and file-change queries also have recorded tests. Exact saved-SPL comparison, additional edge-case tests and any scheduled alerts remain separate follow-ups.
 
 - [LINUX-DET-001 — SSH authentication baseline and candidate detection](LINUX-DET-001-ssh-auth.md) (session report saved; candidate three-failure alert not deployed).
 - [LINUX-DET-002 — Sudo command activity](LINUX-DET-002-sudo-activity.spl) (new report SPL; validation pending).
