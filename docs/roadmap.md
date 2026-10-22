@@ -4,11 +4,13 @@ The lab has three documented investigations, eight saved live Linux reports, a t
 
 ## Essential security and reliability
 
-- [ ] Revoke or rotate the temporary HEC test token; document secure TLS certificate validation.
-- [ ] Review forwarder credentials, file permissions, and TLS peer-verification settings without committing secrets.
+- [x] Disable the temporary `SOC-Lab-Ubuntu-HEC` token in Splunk Cloud (operator screenshot, October 21, 2026). Independently verifying TLS certificate validation remains a separate follow-up.
+- [x] Review forwarder credential-file paths, ownership and permissions (operator screenshot): active Splunk Cloud credential-related files are owned by `splunkfwd` and show mode `600`; public/default configuration files show `644`/`444` where applicable. A read-only key-name check of the two `444` default `outputs.conf` files returned no matches for the specified sensitive keys. Full configuration/secret-history inspection and TLS peer-verification auditing remain separate tasks.
 - [ ] Make narrowly scoped Auditd rules persistent; verify them after a planned restart.
 - [ ] Verify Universal Forwarder restart behavior, log rotation, and ingestion recovery.
 - [ ] Check Ubuntu disk/LVM capacity, time synchronization, and Splunk retention constraints.
+
+**Forwarding check (October 21, 2026):** Splunk Search & Reporting showed 63 events in the previous 30 minutes (42 Auditd, 13 syslog, 8 authentication) after disabling the HEC test token. This demonstrates recent indexed telemetry but does not independently establish that every event was ingested after the token was disabled.
 
 ## Detection validation
 
