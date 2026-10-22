@@ -1,5 +1,5 @@
 # Local secrets and raw telemetry
-*.spl
+# SPL search definitions (*.spl) are intentionally versioned.
 *.pem
 *.key
 *.p12
