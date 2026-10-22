@@ -18,4 +18,4 @@ COR-001 uses the ordering predicate:
 
 Known limitations: synthetic data, limited baseline, simplistic grouping, missing session identifiers, incomplete attribution. See [historical](historical/README.md), [correlations](correlations/README.md), and [planned Linux rules](linux/README.md).
 
-**[PLACEHOLDER: screenshot of five saved reports]**
+**Evidence availability:** The historical report outcomes are documented above, but dedicated screenshots of these five synthetic-data reports have not been published. The [SOC-001 case](../investigations/SOC-001/README.md) provides the investigation context. For screenshot-backed live Linux evidence, start with [SOC-003](../investigations/SOC-003/case-report.md).
