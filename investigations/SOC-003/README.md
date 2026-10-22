@@ -25,10 +25,10 @@ Use your normally authorized SSH credentials. **Inside the Ubuntu shell reached 
 date -u "+UBUNTU_SESSION_UTC=%Y-%m-%dT%H:%M:%SZ"
 whoami
 id
-printf 'SOC-003 authorized training activity\n' > /opt/soc-lab-test/soc003-validation.txt
-chmod 640 /opt/soc-lab-test/soc003-validation.txt
-printf 'Second expected file update\n' >> /opt/soc-lab-test/soc003-validation.txt
-stat /opt/soc-lab-test/soc003-validation.txt
+printf 'SOC-003 authorized training activity\n' > /opt/soc-lab-test/soc003-kali-validation.txt
+chmod 640 /opt/soc-lab-test/soc003-kali-validation.txt
+printf 'Second expected file update\n' >> /opt/soc-lab-test/soc003-kali-validation.txt
+stat /opt/soc-lab-test/soc003-kali-validation.txt
 exit
 ```
 
@@ -44,7 +44,7 @@ Screenshots from **Search & Reporting** document a controlled test on 2026-10-21
 2. **Kali identity:** The Kali shell separately displayed hostname `luxieum`, source address `172.16.110.128`, current user `root`; the Ubuntu target was `172.16.110.130`.
 3. **SOC-003 Kali-to-Ubuntu login:** `/var/log/auth.log` showed `Accepted password for socadmin from 172.16.110.128 port 54272`, recorded as `sshd[5613]` at **14:32:20.566 UTC**.
 4. **Cross-source match:** `/var/log/audit/audit.log` yielded one `type=LOGIN` row with `pid=5613`, `auid=1000`, **`ses=54`**, at **14:32:20.566 UTC**, and audit message ID **`1792593140.566:1414`**. This is the observed PID/time bridge from the Kali-authenticated connection to an Auditd login session. The `uid=0` on the LOGIN record belongs to the privileged daemon context and is not, by itself, proof that the interactive user ran commands as root.
-5. **Next case-evidence gate:** Set Investigation Workspace's **Audit session (case filter)** to **54** and choose a time window covering 14:32 UTC. Check candidate correlation, filtered audited process evidence and filtered monitored-file evidence. Look for `soc003-kali-validation.txt` **only if the file commands were actually executed during this separate Kali-originated session**. If a panel is empty, inspect raw records instead of assuming the event occurred.
+5. **Case-evidence review procedure (since completed):** Set Investigation Workspace's **Audit session (case filter)** to **54** and choose a time window covering 14:32 UTC. Check candidate correlation, filtered audited process evidence and filtered monitored-file evidence. Look for `soc003-kali-validation.txt` **only if the file commands were actually executed during this separate Kali-originated session**. If a panel is empty, inspect raw records instead of assuming the event occurred.
 
 **Do not combine** session 53's two failures and accepted login with session 54's Kali login as though they were a single remote session. Both are valid controlled lab observations with different originating hosts. Correlation here establishes a plausible session linkage; final analyst disposition still requires checking the process/file audit IDs and observed command sequence.
 
@@ -84,7 +84,7 @@ Open the working three-tab [SOC dashboard definition](../../dashboards/soc-lab-d
 1. **Authentication:** In LINUX-DET-001, identify the new successful SSH connection using `socadmin`, `172.16.110.128`, `sshd[PID]`, port and UTC timestamp.
 2. **Session binding:** In LINUX-COR-001, look for the matching Auditd `LOGIN` record with the same SSH PID on the same host and within the time bound. Extract its `ses` value. If this returns nothing, inspect `type=LOGIN` records manually and record correlation coverage limitations.
 3. **Processes:** In LINUX-DET-004, narrow to that `ses` and review `whoami`, `id`, `bash`, `chmod`, `stat` with `auid`, `euid`, `pid`, `ppid`. Some expected login-initialization processes may have `euid=0`; do not assume each represents manual sudo use.
-4. **File operations:** In LINUX-DET-003, identify `/opt/soc-lab-test/soc003-validation.txt`. Record `audit_id`, `PATH`, `SYSCALL`, operation success and the original login ID. One file operation may consist of several raw Auditd records.
+4. **File operations:** In LINUX-DET-003, identify `/opt/soc-lab-test/soc003-kali-validation.txt` for Kali session 54. The similarly named `soc003-validation.txt` belongs to the separate local session 53. Record `audit_id`, `PATH`, `SYSCALL`, operation success and the original login ID. One file operation may consist of several raw Auditd records.
 5. **Timeline:** The broader LINUX-INV-001 chronology was reviewed in the dashboard. Events from other audit sessions were kept as context, not attributed to session 54.
 6. **Disposition:** **Authorized lab activity**. The evidence supports closure as a controlled test, not an enterprise intrusion. See [case report](case-report.md).
 
@@ -115,7 +115,7 @@ Find all Auditd records containing the SOC-003 test file:
 
 ```spl
 index="soc-live" host="soc-ubuntu-01" source="/var/log/audit/audit.log"
-"soc003-validation.txt"
+"soc003-kali-validation.txt"
 | rex field=_raw "msg=audit\((?<audit_id>[^)]+)\)"
 | rex field=_raw "type=(?<record_type>[A-Z_]+)"
 | table _time audit_id record_type _raw
@@ -124,7 +124,7 @@ index="soc-live" host="soc-ubuntu-01" source="/var/log/audit/audit.log"
 
 To see companion records with the same `audit_id`, run a second search for that exact value, not just the filename. Check `success=yes`, `nametype=CREATE` for creation, and session identity on associated SYSCALL records. Compare against the broader saved report.
 
-## Expected deliverables (complete only after actual test)
+## Completed evidence checklist and optional extensions
 
 - [x] Timestamped Kali-originated SSH authentication and Auditd login (14:32:20 UTC).
 - [x] Successful SSH log with source IP and PID.
