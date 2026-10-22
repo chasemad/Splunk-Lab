@@ -28,4 +28,4 @@ sourcetype = soc:web:access
 
 The Splunk Cloud UF credentials package was installed privately; the forwarder showed an active SSL destination on port 9997. Do not commit the `.spl` package or any tokens. Confirm file permissions, effective settings, TLS verification, log rotation and persistence after reboot.
 
-**[PLACEHOLDER: redacted active forward-server screenshot]**
+**Evidence status:** [SOC-003 Exhibit 09](../investigations/SOC-003/case-report.md#09--ubuntu-monitoring-preflight) includes a point-in-time forwarder service preflight. A dedicated, sanitized forward-server configuration screenshot has not been published. Do not commit actual deployment credentials or tokens.
