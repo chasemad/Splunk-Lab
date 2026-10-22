@@ -1,6 +1,6 @@
 # From live investigations to detections, reports, and Dashboard Studio
 
-This is the implementation sequence for the live `soc-live` dataset. Historical `soc_lab` detections (DET-001–004, COR-001) remain separate. Statuses should represent actual tested outcomes, not anticipated completion.
+This document preserves the original build plan for the live `soc-live` dataset. The lab now has eight saved Linux reports, a published three-tab dashboard and the completed SOC-003 case. **The proposed report names below are historical planning labels, not the exact titles currently saved in Splunk.** For the actual titles and query files, use the [saved-report inventory](report-save-runbook.md). Historical `soc_lab` detections (DET-001–004, COR-001) remain separate.
 
 ## Standard process for every Linux rule
 
@@ -12,7 +12,7 @@ This is the implementation sequence for the live `soc-live` dataset. Historical 
 6. **Decide whether to alert** — After repeatable tests and accounting for ingestion lag, permissions, search schedule, overlapping windows, duplicates and noise, create an alert only if supported by the Splunk plan.
 7. **Connect dashboard panels** — Display independently reproducible counts, last-seen timestamps, and drilldowns. Never label a matching search result a confirmed incident without analyst review.
 
-## Build order and proposed saved-report names
+## Original build order and proposed saved-report names
 
 | Order | ID | Proposed Splunk report | Inputs | Validation target |
 |---|---|---|---|---|
@@ -27,7 +27,7 @@ This is the implementation sequence for the live `soc-live` dataset. Historical 
 
 First derive authenticated SSH events from `auth.log` including `sshd[pid]`. Join to a matching Auditd `LOGIN` record **using that PID and host**, and then aggregate relevant SYSCALL/PATH records by the resulting `ses`. Preserve timestamps and avoid accidental PID reuse over long periods. Username/time proximity alone is not session attribution.
 
-## Stage gates
+## Original stage gates (completion varies by test)
 
 **Gate A: pilot rule validated** — Re-run LINUX-DET-003, capture positive create + modify, negative read-only, record false positives and exact SPL in GitHub.
 
