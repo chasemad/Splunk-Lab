@@ -33,7 +33,7 @@ The list below uses the **actual Splunk saved-report titles** from the Reports p
 
 **LINUX-DET-004 — Process Execution:** Auditd process execution events with original/effective IDs and session context; execve success does not prove command intent or subsequent filesystem success.
 
-**LINUX-DET-005 — HTTP Requests:** The live saved report was updated to show recognized requests while excluding a server diagnostic line. Its exact revised SPL still needs to be exported and reconciled with GitHub.
+**LINUX-DET-005 — HTTP Requests:** The October 21 report-editor screenshot shows a query returning four recognized HTTP request rows and excluding the diagnostic line. [GitHub SPL](../detections/linux/LINUX-DET-005-web-requests.spl) now matches the visible query. The operator should confirm **Save** and reopen the report to establish that the displayed query is its persisted definition; broader parsing tests remain separate.
 
 **LINUX-COR-001 — Session Correlation:** Links SSH PID from auth.log with Auditd LOGIN PID and session. SOC-003 confirmed a raw-evidence match (PID 5613 / session 54); broader unmatched-login cases, join limits and exact saved-SPL parity remain to be tested.
 
