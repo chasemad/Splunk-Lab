@@ -13,7 +13,7 @@ The lab has three documented investigations, eight saved live Linux reports, a t
 ## Detection validation
 
 - [ ] Export exact SPL for all eight saved Linux reports and compare it to repository versions.
-- [ ] Reconcile the updated live HTTP parsing query with the canonical GitHub SPL.
+- [x] Reconcile the HTTP query visible in the October 21 Splunk report-editor screenshot with the canonical GitHub SPL. Confirm **Save/reopen** persistence before treating exact saved-report parity as established.
 - [x] Prepare a [validation matrix](linux-report-validation-matrix.md) and [test plan](detection-test-plan.md); runtime outcomes still need to be recorded.
 - [ ] Revisit SSH failed-login threshold and cross-connection coverage using controlled fixtures.
 - [ ] Review the two additional SOC-003 file-operation record groups if useful for deeper evidence completeness.
