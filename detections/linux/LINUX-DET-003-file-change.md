@@ -83,7 +83,7 @@ index="soc-live" host="soc-ubuntu-01" source="/var/log/audit/audit.log"
 - These searches assume the rule is loaded, the forwarder is reading the audit log, and relevant records have not aged out of Splunk.
 - For any production-style high-fidelity rule, first document the genuinely sensitive target paths, expected writers, and authorization baseline.
 
-## Evidence placeholders
+## Evidence and follow-up checks
 
 - [ ] Screenshot: exploratory search grouped 25 raw records into 7 audit operations.
 - [ ] Screenshot: revised SPL results showing SOC-002 file creation.
