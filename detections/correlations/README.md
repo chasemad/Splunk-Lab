@@ -10,4 +10,4 @@ Correlates repeated failed VPN authentication, subsequent successful login, and 
 
 Observed: 8 failures (last 14:08 UTC), first success 14:09 UTC, first discovery 14:11 UTC for `amorgan`. This does not prove one underlying session or malicious intent. Username-only matching and fixed time windows are important limitations.
 
-**[PLACEHOLDER: correlation output screenshot]**
+**Evidence status:** A dedicated screenshot of the historical COR-001 report has not been published. The result described above comes from the synthetic dataset; see the related [SOC-001 analysis](../../investigations/SOC-001/README.md).
