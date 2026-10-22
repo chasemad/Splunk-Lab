@@ -9,4 +9,4 @@ DET-001 through DET-004 are saved in Splunk Cloud and were validated against `in
 
 For each future exported rule, include source requirements, complete SPL, time range, expected result, false positives, tuning rationale and limitations.
 
-**[PLACEHOLDER: DET-001–004 screenshots]**
+**Evidence status:** The historical report results are described here, but dedicated DET-001–004 screenshots have not been published. The [SOC-001 investigation](../../investigations/SOC-001/README.md) contains the related synthetic-data analysis.
