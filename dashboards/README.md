@@ -41,7 +41,7 @@ The [diagnostic dashboard JSON](diagnostic-dashboard-studio.json) is retained as
 
 ## Screenshot gallery
 
-These are annotated presentation copies of curated captures from the real Splunk environment. Editorial outlines guide the reader without changing the captured log values. Each exhibit links to its original PNG.
+These are annotated presentation copies of curated captures from the real Splunk environment. Editorial outlines guide the reader without changing the captured log values. Each exhibit links to its PNG presentation source. Exhibit 04's PNG was additionally cropped to exclude unrelated personal browser tabs; the Splunk search and result data were preserved.
 
 ### 01 — SOC Overview
 
@@ -65,7 +65,7 @@ These are annotated presentation copies of curated captures from the real Splunk
 
 ![HTTP request and diagnostic record classification](screenshots/04-http-request-classification-annotated.svg)
 
-*Parser validation distinguished four HTTP request records from one diagnostic/unparsed record among five indexed log lines.* · [Original PNG](screenshots/04-http-request-classification.png)
+*Parser validation distinguished four HTTP request records from one diagnostic/unparsed record among five indexed log lines. The browser-tab strip was cropped from the public PNG and annotated exhibit without changing the Splunk results.* · [Cropped PNG](screenshots/04-http-request-classification.png)
 
 ### 05 — Corrected HTTP request view
 
