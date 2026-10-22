@@ -94,9 +94,9 @@ For an otherwise unexplained event sequence on a real server, investigation woul
 - Log timestamps and Splunk's display timezone should be checked when recreating timeline evidence.
 - Audit rules were initially created with `auditctl`; persistence across reboot remains separate infrastructure work.
 
-## Evidence and screenshot placeholders
+## Evidence availability and optional exhibits
 
-Add **real, sanitized Splunk screenshots** before publishing. Suggested relative paths:
+This case is documented from live lab telemetry; a separate SOC-002 screenshot gallery has not been published. The later [SOC-003 investigation](../SOC-003/case-report.md) demonstrates the same workflow with nine annotated evidence screenshots. If dedicated SOC-002 exhibits add value, capture **real, sanitized Splunk screenshots** using the following suggested relative paths:
 
 - `../../evidence/SOC-002/01-ssh-authentication.png` — SSH `Accepted password` record for `sshd[4937]`.
 - `../../evidence/SOC-002/02-login-session-27.png` — Auditd `LOGIN` event mapping PID 4937 to session 27.
@@ -146,13 +146,13 @@ index="soc-live" source="/var/log/audit/audit.log"
 | sort 0 _time
 ```
 
-## Follow-up engineering work
+## Engineering outcomes and remaining work
 
-1. Develop narrow Linux detections for SSH authentication, unexpected privilege use, selected file changes, and process patterns, grounding logic in available telemetry.
-2. Test each detection with controlled positive and negative events; document expected administrative false positives.
-3. Create an investigation-focused dashboard with authentication, Auditd, file activity, and telemetry health views.
-4. Make audit rules persistent after reviewing their scope and volume; verify Splunk forwarding across restarts and rotation.
-5. Include this case and supporting screenshots in the portfolio repository with the limitations clearly stated.
+1. **Completed:** Developed and documented [Linux searches](../../detections/linux/README.md) for SSH authentication, administrative activity, selected file changes, process execution and session correlation.
+2. **Partially completed:** Recorded controlled positive and negative tests for selected searches; additional detection coverage and saved-report parity checks remain in the [validation matrix](../../docs/linux-report-validation-matrix.md).
+3. **Completed:** Built the [three-tab SOC dashboard](../../dashboards/README.md) with authentication, Auditd, file activity and telemetry health views.
+4. **Remaining:** Make audit rules persistent after reviewing scope and volume; verify forwarding across restarts and log rotation.
+5. **Presentation:** SOC-002 remains documented here; the later [SOC-003 evidence gallery](../SOC-003/case-report.md#evidence-gallery--real-screenshots) provides the featured, screenshot-backed example. Dedicated SOC-002 exhibits are optional.
 
 ---
 
