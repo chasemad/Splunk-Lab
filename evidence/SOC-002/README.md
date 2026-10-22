@@ -1,6 +1,6 @@
-# SOC-002 screenshot placeholders
+# SOC-002 — Optional evidence gallery plan
 
-The case report is at [investigations/SOC-002/README.md](../../investigations/SOC-002/README.md).
+The completed case report is at [investigations/SOC-002/README.md](../../investigations/SOC-002/README.md). No dedicated SOC-002 images have been published. The later [SOC-003 case gallery](../../investigations/SOC-003/case-report.md#evidence-gallery--real-screenshots) demonstrates the same investigation method with annotated screenshots.
 
 The following are **planned filenames**, not evidence already uploaded:
 
