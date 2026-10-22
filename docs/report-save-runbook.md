@@ -1,14 +1,14 @@
-# One-pass Splunk Cloud report creation pack
+# Splunk Cloud — Saved Linux report inventory and runbook
 
 ## Purpose and limitations
 
 These SPL files are prepared for `index="soc-live"`, `host="soc-ubuntu-01"`. **All eight searches are user-confirmed saved in Splunk Cloud (2026-10-21), and their titles, owner, app, sharing and status have been inspected from an operator-supplied Splunk Reports screenshot. The actual saved SPL contents have not been independently compared with the GitHub source files.** LINUX-DET-001 SSH session summary was tested against real data, and a separate synthetic threshold test returned 3 failures/1 success. Other saved report outputs have been observed in dashboard panels, but exact saved SPL and comprehensive positive/negative validation remain to be reconciled. Saving a report makes a search reusable; it does not mean that every intended field parsed correctly or that it is a validated alert.
 
-A Splunk Cloud **free trial cannot use the management REST API**. Do these steps in **Search & Reporting** for each unsaved report: click file below, copy raw SPL, paste into Search, choose **Last 24 hours** (or a range containing known events), **Run**, examine fields, select **Save As > Report**, enter the exact report name, **Save**. Keep scheduling disabled; enable time-range picker when offered. If a report yields 0 events, save it only as an exploratory or baseline report and record why it is empty.
+The reports were saved and inspected through the Splunk Cloud user interface in this lab; no management API export was available in that workflow. For any future or recreated report, follow these steps in **Search & Reporting**: click file below, copy raw SPL, paste into Search, choose **Last 24 hours** (or a range containing known events), **Run**, examine fields, select **Save As > Report**, enter the exact report name, **Save**. Keep scheduling disabled; enable time-range picker when offered. If a report yields 0 events, save it only as an exploratory or baseline report and record why it is empty.
 
 The list below uses the **actual Splunk saved-report titles** from the Reports page. Six of the names contain an **em dash (—)**, while the working SSH and file-change reports use a normal **hyphen (-)**. Dashboard Studio `ds.savedSearch.options.ref` must match the exact title, including punctuation. All eight reports are owned by `sc_admin`, belong to the `search` app, are marked `Private`, and show `Enabled` in the screenshot. Private sharing works for an owner-accessible dashboard, but can limit other viewers; review this before sharing the dashboard with recruiters.
 
-## Save in this order
+## Eight saved reports
 
 | # | Splunk Report title | Canonical SPL | Status |
 |---|---|---|---|
@@ -35,7 +35,7 @@ The list below uses the **actual Splunk saved-report titles** from the Reports p
 
 **LINUX-DET-005 — HTTP Requests:** The live saved report was updated to show recognized requests while excluding a server diagnostic line. Its exact revised SPL still needs to be exported and reconciled with GitHub.
 
-**LINUX-COR-001 — Session Correlation:** Candidate correlation linking SSH pid from auth.log with Auditd LOGIN pid and audit session; tests needed for real output and join limits.
+**LINUX-COR-001 — Session Correlation:** Links SSH PID from auth.log with Auditd LOGIN PID and session. SOC-003 confirmed a raw-evidence match (PID 5613 / session 54); broader unmatched-login cases, join limits and exact saved-SPL parity remain to be tested.
 
 **LINUX-INV-001 — Investigation Timeline:** Three-source analyst event timeline; not a direct proof that timestamp-adjacent events share an origin.
 
@@ -47,7 +47,7 @@ The list below uses the **actual Splunk saved-report titles** from the Reports p
 - [ ] LINUX-DET-002 sudo parse checked against at least one auth.log command record (or recorded as no data).
 - [ ] LINUX-DET-004 audit session/process/euid fields inspected against raw examples.
 - [ ] LINUX-DET-005 method/URI/status extraction checked against actual access.log entries. If values display `unparsed`, adapt regex before relying on charts.
-- [ ] LINUX-COR-001 returns plausible matched SSH and Auditd sessions (if none, troubleshoot subsearch match + timestamps; don't force a fake match).
+- [x] SOC-003 matched SSH PID 5613 to Auditd LOGIN session 54; test additional unmatched and edge-case sessions before generalizing the search.
 - [ ] LINUX-INV-001 timeline sorts across auth, process, watched file operations and HTTP data.
 - [x] Saved report names, app context (`search`), owner (`sc_admin`), sharing (`Private`) and enabled status recorded from the Reports page; individual report time-range behavior still needs testing.
 
@@ -63,7 +63,7 @@ Open **Dashboards > Create New Dashboard > Dashboard Studio**, use Grid layout, 
 
 In Dashboard Studio, use **Saved search / report** as the data source where possible (Splunk `ds.savedSearch`); select the correct app context (`search` for Search & Reporting), owner and exact name. Save dashboard source JSON, review queries, and capture actual screenshots. Non-scheduled reports may execute dynamically and are subject to concurrent search limits. Keep expensive investigation searches off auto-refresh if performance is poor.
 
-## SOC-003 — controlled live Kali investigation
+## SOC-003 — controlled live Kali investigation (completed; reproduction procedure)
 
 Do a controlled, documented sequence **only against your owned Ubuntu lab VM**:
 
