@@ -1,5 +1,9 @@
 # Local secrets and raw telemetry
-# SPL search definitions (*.spl) are intentionally versioned.
+# Splunk Cloud deployment/credential packages can use .spl too.
+# Ignore .spl by default; allow only documented plaintext search locations.
+*.spl
+!detections/linux/*.spl
+!investigations/SOC-003/*.spl
 *.pem
 *.key
 *.p12
