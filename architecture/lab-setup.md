@@ -1,7 +1,7 @@
 # Lab architecture and setup
 
 ## Verified environment
-- Apple Silicon Mac, 24 GB RAM, VMware Fusion.
+- VMware Fusion virtualization environment.
 - Ubuntu Server 24.04.5 LTS ARM64, hostname `soc-ubuntu-01`, monitored endpoint.
 - Kali Linux Rolling, controlled lab activity generator; SSH and ICMP connectivity to Ubuntu verified.
 - VMware NAT subnet 172.16.110.0/24; lab Ubuntu 172.16.110.130 and Kali 172.16.110.128 (historical local addresses; may change).
