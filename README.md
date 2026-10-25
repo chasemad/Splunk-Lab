@@ -59,7 +59,7 @@ flowchart LR
   S --> I["Investigation reports"]
 ```
 
-The virtual machines run in VMware Fusion on an Apple Silicon Mac. The earlier synthetic dataset is stored separately from live lab logs. See the [architecture and setup documentation](architecture/lab-setup.md) for implementation details.
+The virtual machines run in VMware Fusion. The earlier synthetic dataset is stored separately from live lab logs. See the [architecture and setup documentation](architecture/lab-setup.md) for implementation details.
 
 ## SOC dashboard
 
@@ -108,7 +108,7 @@ The [Linux detection catalog](detections/linux/README.md), [historical detection
 | Ubuntu Server 24.04 | Monitored Linux endpoint |
 | Kali Linux | Authorized activity-generation workstation |
 | Linux Auditd | Record selected process executions and monitored file operations |
-| VMware Fusion / Apple Silicon | Run the isolated lab virtual machines |
+| VMware Fusion | Run the lab virtual machines |
 
 The live data is stored in Splunk's `soc-live` index; the synthetic historical data is kept in `soc_lab`.
 
